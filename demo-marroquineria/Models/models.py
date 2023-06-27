@@ -19,7 +19,7 @@ class Role(models.Model):
 #  **PERSONA**
 
 class People(models.Model):  
-    p_Role = models.ForeignKey(Role,on_delete=models.CASCADE)
+    p_Role = models.ForeignKey(Role, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     type_doc = models.CharField(max_length=4)
@@ -28,6 +28,7 @@ class People(models.Model):
     phone = models.PositiveBigIntegerField(validators=[MinValueValidator(1000000000, message='el número debe tener mínimo 10 digitos'),
                                             MaxValueValidator(9999999999, message='el número debe tener máximo 10 digitos')])
     adress = models.CharField(max_length=60) 
+    status = models.BooleanField(default=True)
     
     def __str__(self) :
         return self.p_Role.name_role
