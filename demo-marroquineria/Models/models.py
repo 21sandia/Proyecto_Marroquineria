@@ -1,6 +1,44 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import (
+    AbstractBaseUser, 
+    BaseUserManager,
+    PermissionsMixin,
+)
+
 from enum import Enum 
 from django.db import models
+
+
+#  **USER**
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError('Ingrese el email')
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+    
+    def create_superuser(self, email, password):
+        user = self.create_user(email, password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+
+        return user
+
+class User(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=255)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+
 
 #   **ROL**
 
@@ -14,11 +52,12 @@ class Role(models.Model):
         verbose_name = 'Rol'
         verbose_name_plural = 'Role'
         db_table = 'Role'
-    
+
 
 #  **PERSONA**
 
-class People(models.Model):  
+class People(models.Model): 
+    p_User = models.ForeignKey(User, on_delete=models.CASCADE) 
     p_Role = models.ForeignKey(Role, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -31,7 +70,7 @@ class People(models.Model):
     status = models.BooleanField(default=True)
     
     def __str__(self) :
-        return self.p_Role.name_role
+        return self.p_User.email
     
     class Meta:
         verbose_name = 'Persona'
