@@ -5,6 +5,8 @@ from .models import *
 from .serializers import *
 
 
+#  **ROL**
+
 @api_view(['GET'])
 def list_role(request):
     queryset = Role.objects.all()
@@ -16,19 +18,19 @@ def create_role(request):
     serializer = RoleSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data, status=status.HTTP_201_CREATED)      
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
 
 @api_view(['PATCH'])
 def update_role(request, pk):
     try:
         role = Role.objects.get(pk=pk)
     except Role.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     serializer = RoleSerializer(role, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data)
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
 
 @api_view(['DELETE'])
 def delete_role(request, pk):
@@ -38,9 +40,10 @@ def delete_role(request, pk):
         return Response (status=status.HTTP_404_NOT_FOUND)
     
     role.delete()
-    return Response (status=status.HTTP_204_NO_CONTENT)
+    return Response (data={'code':'HTTP_201_CREATED', 'message':'Elminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
 
 
+#  **PEOPLE**
 
 @api_view(['GET'])
 def list_people(request):
@@ -53,19 +56,19 @@ def create_people(request):
     serializer = PeopleSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data, status=status.HTTP_201_CREATED)      
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
 
 @api_view(['PATCH'])
 def update_people(request, pk):
     try:
         people = People.objects.get(pk=pk)
     except People.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     serializer = PeopleSerializer(people, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data)
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
 
 @api_view(['DELETE'])
 def delete_people(request, pk):
@@ -75,9 +78,10 @@ def delete_people(request, pk):
         return Response (status=status.HTTP_404_NOT_FOUND)
     
     people.delete()
-    return Response (status=status.HTTP_204_NO_CONTENT)
+    return Response (data={'code':'HTTP_201_CONTENT', 'message':'Se ha elminado correctamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
 
 
+#  **CATEGORY**
 
 @api_view(['GET'])
 def list_category(request):
@@ -90,19 +94,19 @@ def create_category(request):
     serializer = CategorySerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data, status=status.HTTP_201_CREATED)      
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
 
 @api_view(['PATCH'])
 def update_category(request, pk):
     try:
         category = Category.objects.get(pk=pk)
     except Category.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     serializer = CategorySerializer(category, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data)
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
 
 @api_view(['DELETE'])
 def delete_category(request, pk):
@@ -112,9 +116,10 @@ def delete_category(request, pk):
         return Response (status=status.HTTP_404_NOT_FOUND)
     
     category.delete()
-    return Response (status=status.HTTP_204_NO_CONTENT)
+    return Response (data={'code':'HTTP_201_CONTENT', 'message':'Se ha elminado correctamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
 
 
+#  **TYPE PRODUCT**
 
 @api_view(['GET'])
 def list_type_prod(request):
@@ -127,30 +132,32 @@ def create_type_prod(request):
     serializer = Type_prodSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data, status=status.HTTP_201_CREATED)      
+    return Response(data={'code':'', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)      
 
 @api_view(['PATCH'])
 def update_type_prod(request, pk):
     try:
         type_prod = Type_prod.objects.get(pk=pk)
     except Type_prod.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     serializer = Type_prodSerializer(type_prod, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data)
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
 
 @api_view(['DELETE'])
 def delete_type_prod(request, pk):
     try:
         type_prod = Type_prod.objects.get(pk=pk)
     except Type_prod.DoesNotExist:
-        return Response (status=status.HTTP_404_NOT_FOUND)
+        return Response (data={'code':'HTTP_201_CONTENT', 'message':'Se ha elminado correctamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
     
     type_prod.delete()
     return Response (status=status.HTTP_204_NO_CONTENT)
 
+
+# **PRODUCT**
 
 @api_view(['GET'])
 def list_product(request):
@@ -163,19 +170,19 @@ def create_product(request):
     serializer = ProductSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data, status=status.HTTP_201_CREATED)      
+    return Response(data={'code':'', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)      
 
 @api_view(['PATCH'])
 def update_product(request, pk):
     try:
         product = Product.objects.get(pk=pk)
     except Product.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     serializer = ProductSerializer(product, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data)
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
 
 @api_view(['DELETE'])
 def delete_product(request, pk):
@@ -185,9 +192,10 @@ def delete_product(request, pk):
         return Response (status=status.HTTP_404_NOT_FOUND)
     
     product.delete()
-    return Response (status=status.HTTP_204_NO_CONTENT)
+    return Response (data={'code':'HTTP_201_CONTENT', 'message':'Se ha elminado correctamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
 
 
+#  **ORDER**
 
 @api_view(['GET'])
 def list_order(request):
@@ -225,6 +233,7 @@ def delete_order(request, pk):
     return Response (status=status.HTTP_204_NO_CONTENT)
 
 
+#  **CARTS**
 
 @api_view(['GET'])
 def list_carts(request):
@@ -262,6 +271,7 @@ def delete_carts(request, pk):
     return Response (status=status.HTTP_204_NO_CONTENT)
 
 
+#  **DETAIL SALE**
 
 @api_view(['GET'])
 def list_detail_sale(request):
@@ -300,7 +310,7 @@ def delete_detail_sale(request, pk):
 
 
 
-
+#  **USERS**
 @api_view(['GET'])
 def list_users(request):
     queryset = User.objects.all()

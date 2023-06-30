@@ -1,5 +1,7 @@
 from django.urls import path
-from . import views
+from Models import views
+from Models.controllers import viewsUser
+
 
 urlpatterns = [
     path('roles/', views.list_role, name='list_role'),
@@ -7,10 +9,10 @@ urlpatterns = [
     path('roles/update/<int:pk>/', views.update_role, name='update_role'),
     path('roles/delete/<int:pk>/', views.delete_role, name='delete_role'),
     
-    path('people/', views.list_people, name='list_people'),
-    path('people/create/', views.create_people, name='create_people'),
-    path('people/update/<int:pk>/', views.update_people, name='update_people'),
-    path('people/delete/<int:pk>/', views.delete_people, name='delete_people'),
+    path('people/', viewsUser.list_people, name='list_people'),
+    path('people/create/', viewsUser.create_people, name='create_people'),
+    path('people/update/<int:pk>/', viewsUser.update_people, name='update_people'),
+    path('people/delete/<int:pk>/', viewsUser.delete_people, name='delete_people'),
     
     path('categories/', views.list_category, name='list_category'),
     path('categories/create/', views.create_category, name='create_category'),
