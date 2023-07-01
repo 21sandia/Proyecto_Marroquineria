@@ -1,7 +1,7 @@
 from django.urls import path
 from Models import views
 from Models.controllers import viewsUser
-
+#nuevo
 
 urlpatterns = [
     path('roles/', views.list_role, name='list_role'),
