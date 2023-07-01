@@ -49,3 +49,4 @@ urlpatterns = [
     path('update-user/<int:pk>/', views.update_user, name='update_user'),
     path('delete-user/<int:pk>/', views.delete_user, name='delete_user'),
 ]
+# rama2
