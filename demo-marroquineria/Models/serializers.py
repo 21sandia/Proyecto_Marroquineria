@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Role, People
-from .models import Category, Type_prod, Product
-from .models import Order, Carts, Detail_sale
+from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -27,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Role
+        model = Rol
         fields = '__all__'
 
 class PeopleSerializer(serializers.ModelSerializer):
@@ -37,13 +35,8 @@ class PeopleSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    class  Meta:
-        model = Category
-        fields = '__all__'
-
-class Type_prodSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Type_prod
+        model = Category
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -51,19 +44,35 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
-class OrderSerializer(serializers.ModelSerializer):
+class StateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
+        model = Status
         fields = '__all__'
 
-class CartsSerializer(serializers.ModelSerializer):
+class Type_prodSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Carts
+        model = TypeProd
+        fields = '__all__'
+
+class Detail_prodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetailProd
+        fields = '__all__'
+
+class SaleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sale
         fields = '__all__'
 
 class Detail_saleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Detail_sale
+        model = DetailSale
         fields = '__all__'
 
+"""
+class CartsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Carts
+        fields = '__all__'
+"""
 

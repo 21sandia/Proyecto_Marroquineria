@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'demo_marroquineria.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Sales',
+        'NAME': 'Saless',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST':'localhost',

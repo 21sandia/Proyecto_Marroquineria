@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view
+"""from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import *
@@ -38,3 +38,4 @@ def delete_carts(request, pk):
     
     carts.delete()
     return Response (data={'code':'HTTP_201_CONTENT', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
+"""

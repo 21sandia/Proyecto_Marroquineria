@@ -7,7 +7,7 @@ from ..serializers import *
 @api_view(['GET'])
 def list_category(request):
     queryset = Category.objects.all()
-    serializer = RoleSerializer(queryset, many=True)
+    serializer = CategorySerializer(queryset, many=True)
     return Response(serializer.data) 
 
 @api_view(['POST'])
@@ -15,6 +15,7 @@ def create_category(request):
     serializer = CategorySerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
+
     return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
 
 @api_view(['PATCH'])
@@ -33,7 +34,7 @@ def update_category(request, pk):
 def delete_category(request, pk):
     try:
         category = Category.objects.get(pk=pk)
-    except category.DoesNotExist:
+    except Category.DoesNotExist:
         return Response (status=status.HTTP_404_NOT_FOUND)
     
     category.delete()

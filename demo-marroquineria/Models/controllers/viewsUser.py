@@ -5,37 +5,36 @@ from ..models import *
 from ..serializers import *
 
 @api_view(['GET'])
-def list_people(request):
-    queryset = People.objects.all()
-    serializer = PeopleSerializer(queryset, many=True)
-    return Response(serializer.data) 
+def list_user(request):
+    queryset = User.objects.all()
+    serializer = UserSerializer(queryset, many=True)
+    return Response(serializer.data)
 
 @api_view(['POST'])
-def create_people(request):
-    serializer = PeopleSerializer(data=request.data)
+def create_user(request):
+    serializer = UserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
 
 @api_view(['PATCH'])
-def update_people(request, pk):
+def update_user(request, pk):
     try:
-        people = People.objects.get(pk=pk)
-    except People.DoesNotExist:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
         return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    serializer = PeopleSerializer(people, data=request.data, partial=True)
+    serializer = UserSerializer(user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
 
 @api_view(['DELETE'])
-def delete_people(request, pk):
+def delete_user(request, pk):
     try:
-        people = People.objects.get(pk=pk)
-    except People.DoesNotExist:
-        return Response (status=status.HTTP_404_NOT_FOUND)
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     
-    people.delete()
-    return Response (data={'code':'HTTP_201_CONTENT', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
-
+    user.delete()
+    return Response(data={'code':'HTTP_201_CREATED', 'message':'Elminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)

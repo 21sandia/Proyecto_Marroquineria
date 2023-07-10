@@ -8,13 +8,12 @@ from django.contrib.auth.models import (
 from enum import Enum 
 from django.db import models
 
-
 #  **USER**
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError('Ingrese el email')
+            raise ValueError('Falta Email')
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -40,155 +39,106 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
 
-#   **ROL**
-
-class Role(models.Model):  
-    name_role = models.CharField(max_length=50)
-
-    def __str__(self) :
-        return self.name_role
-    
-    class Meta:
-        verbose_name = 'Rol'
-        verbose_name_plural = 'Role'
-        db_table = 'Role'
-
-
-#  **PERSONA**
-
-class People(models.Model): 
-    p_User = models.ForeignKey(User, on_delete=models.CASCADE) 
-    p_Role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, unique=True)
-    last_name = models.CharField(max_length=50, unique=True)
-    document = models.PositiveBigIntegerField(unique=True)
-    phone = models.PositiveBigIntegerField(validators=[MinValueValidator(1000000000, message='el número debe tener mínimo 10 digitos'),
-                                            MaxValueValidator(9999999999, message='el número debe tener máximo 10 digitos')], unique=True)
-    adress = models.CharField(max_length=60, unique=True) 
-    status = models.BooleanField(default=True, unique=True)
-    
-    def __str__(self) :
-        return self.p_User.email
-    
-    class Meta:
-        verbose_name = 'Persona'
-        verbose_name_plural = 'Persona'
-        db_table = 'People'
-    
-# **CATEGORIA**
-
 class Category(models.Model):
-    name_category = models.CharField(max_length=50)
-    description = models.TextField()
-    
-    def __str__(self) :
-        return self.name_category
-    
+    id_category = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
+
     class Meta:
-        verbose_name = 'Categoria'
-        verbose_name_plural = 'Categoria'
-        db_table = 'Category'
-    
-#  **TIPO PRODUCTO**
+        managed = False
+        db_table = 'category'
 
-class Type_prod(models.Model):
-    p_Category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    color = models.CharField(max_length=20)
-    size = models.CharField(max_length=20)
-    material = models.CharField(max_length=50)
-    dimensions = models.CharField(max_length=20)
-    guarantee = models.CharField(max_length=100)
 
-    def __str__(self) :
-        return str(self.p_Category)
-    
+class DetailProd(models.Model):
+    id_detail_prod = models.AutoField(primary_key=True)
+    fk_id_product = models.ForeignKey('Product', models.DO_NOTHING, db_column='fk_id_product', blank=True, null=True)
+    registration_date = models.DateField(blank=True, null=True)
+    color = models.CharField(max_length=30, blank=True, null=True)
+    size_p = models.CharField(max_length=50, blank=True, null=True)
+    material = models.CharField(max_length=40, blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True)
+
     class Meta:
-        verbose_name = 'Tipo_producto'
-        verbose_name_plural = 'Tipo_producto'
-        db_table = 'Type_prod'
+        managed = False
+        db_table = 'detail_prod'
 
 
-#  **PRODUCTO** 
+class DetailSale(models.Model):
+    id_detail_sale = models.AutoField(primary_key=True)
+    fk_id_sale = models.ForeignKey('Sale', models.DO_NOTHING, db_column='fk_id_sale', blank=True, null=True)
+    customer_name = models.CharField(max_length=50, blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True)
+    price_unit = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
-class Product(models.Model):  
-    type_Product = models.ForeignKey(Type_prod, on_delete=models.CASCADE)
-    name_product = models.CharField(max_length=50)
-    reference = models.BigIntegerField()
-    description = models.TextField()
-    name_provider = models.CharField(max_length=50)
-    quantity = models.PositiveIntegerField()
-    registration_date = models.DateField(auto_now_add=True)
-    initial_price = models.PositiveIntegerField()
-    price = models.PositiveIntegerField()
-    status = models.BooleanField(default=True)
-
-    def __str__(self) :
-        return self.name_product
-    
     class Meta:
-        verbose_name = 'Producto'
-        verbose_name_plural = 'Producto'
-        db_table = 'Product'
+        managed = False
+        db_table = 'detail_sale'
 
 
-# **ORDEN DE COMPRA**
+class People(models.Model):
+    id_people = models.AutoField(primary_key=True)
+    fk_id_rol = models.ForeignKey('Rol', models.DO_NOTHING, db_column='fk_id_rol', blank=True, null=True)
+    fk_id_status = models.ForeignKey('Status', models.DO_NOTHING, db_column='fk_id_status', blank=True, null=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
+    last_name = models.CharField(max_length=30, blank=True, null=True)
+    document = models.IntegerField(blank=True, null=True)
+    phone = models.CharField(max_length=10, blank=True, null=True)
+    address = models.CharField(max_length=30, blank=True, null=True)
 
-class OrderStatus(Enum):
-    CREATED = 'CREATED'
-    PAYED = 'PAYED'
-    COMPLETED = 'COMPLETED'
-    CANCELED = 'CANCELED'
-
-class Order(models.Model):
-    o_People = models.ForeignKey(People, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50, choices=[(tag, tag.value) for tag in OrderStatus], default=OrderStatus.CREATED.value)
-    shipping_total = models.DecimalField(default=5, max_digits=10, decimal_places=2)
-    total = models.DecimalField(default=0, max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.o_People.name
-    
     class Meta:
-        verbose_name = 'Orden_compra'
-        verbose_name_plural = 'Ordene_compra'
-        db_table = 'Order'
-    
-    
-# **CARRITO DE COMPRAS**
+        managed = False
+        db_table = 'people'
 
-class Carts(models.Model): 
-    c_People = models.ForeignKey(People, null=True, on_delete=models.CASCADE)
-    c_Product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
-    subtotal = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)                         
-    total = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) :
-        return self.c_People.name
-    
+class Product(models.Model):
+    id_product = models.AutoField(primary_key=True)
+    fk_id_status = models.ForeignKey('Status', models.DO_NOTHING, db_column='fk_id_status', blank=True, null=True)
+    fk_id_type_prod = models.ForeignKey('TypeProd', models.DO_NOTHING, db_column='fk_id_type_prod', blank=True, null=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
+    image = models.CharField(max_length=500, blank=True, null=True)
+    reference = models.CharField(max_length=60, blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
     class Meta:
-        verbose_name = 'Carrito'
-        verbose_name_plural = 'Carrito'
-        db_table = 'Carts'
+        managed = False
+        db_table = 'product'
 
 
-#  **DETALLE VENTAS**
+class Rol(models.Model):
+    id_rol = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
 
-class Detail_sale(models.Model):
-    ds_Carts = models.ForeignKey(Carts, on_delete=models.CASCADE)
-    date_sale = models.DateTimeField(auto_now_add=True)
-    quantity = models.PositiveIntegerField()
-    unit_price = models.PositiveIntegerField()
-    total_price = models.PositiveIntegerField()
-
-    def __str__(self) :
-        return self.ds_Carts.c_People
-    
     class Meta:
-        verbose_name = 'Detalle_venta'
-        verbose_name_plural = 'Detalle_venta'
-        db_table = 'Detail_sale'
-    
+        managed = False
+        db_table = 'rol'
 
 
+class Sale(models.Model):
+    id_sale = models.AutoField(primary_key=True)
+    fk_id_product = models.ForeignKey(Product, models.DO_NOTHING, db_column='fk_id_product', blank=True, null=True)
+    date_sale = models.DateField(blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sale'
+
+
+class Status(models.Model):
+    id_status = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'status'
+
+
+class TypeProd(models.Model):
+    id_type_prod = models.AutoField(primary_key=True)
+    fk_id_category = models.ForeignKey(Category, models.DO_NOTHING, db_column='fk_id_category', blank=True, null=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'type_prod'
