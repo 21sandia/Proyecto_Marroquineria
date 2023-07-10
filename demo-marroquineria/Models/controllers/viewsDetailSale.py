@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_detail_sale(request):
-    queryset = Detail_sale.objects.all()
+    queryset = DetailSale.objects.all()
     serializer = Detail_saleSerializer(queryset, many=True)
     return Response(serializer.data) 
 
@@ -20,8 +20,8 @@ def create_detail_sale(request):
 @api_view(['PATCH'])
 def update_detail_sale(request, pk):
     try:
-        detail_sale = Detail_sale.objects.get(pk=pk)
-    except Detail_sale.DoesNotExist:
+        detail_sale = DetailSale.objects.get(pk=pk)
+    except DetailSale.DoesNotExist:
         return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     serializer = Detail_saleSerializer(detail_sale, data=request.data, partial=True)
@@ -32,9 +32,9 @@ def update_detail_sale(request, pk):
 @api_view(['DELETE'])
 def delete_detail_sale(request, pk):
     try:
-        detail_sale = Detail_sale.objects.get(pk=pk)
-    except Detail_sale.DoesNotExist:
-        return Response (status=status.HTTP_404_NOT_FOUND)
+        detail_sale = DetailSale.objects.get(pk=pk)
+    except DetailSale.DoesNotExist:
+        return Response (data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     detail_sale.delete()
     return Response (data={'code':'HTTP_201_CONTENT', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)

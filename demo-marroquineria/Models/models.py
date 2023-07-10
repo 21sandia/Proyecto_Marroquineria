@@ -41,7 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Category(models.Model):
     id_category = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=30, )
 
     class Meta:
         managed = False
@@ -50,12 +50,12 @@ class Category(models.Model):
 
 class DetailProd(models.Model):
     id_detail_prod = models.AutoField(primary_key=True)
-    fk_id_product = models.ForeignKey('Product', models.DO_NOTHING, db_column='fk_id_product', blank=True, null=True)
-    registration_date = models.DateField(blank=True, null=True)
-    color = models.CharField(max_length=30, blank=True, null=True)
-    size_p = models.CharField(max_length=50, blank=True, null=True)
-    material = models.CharField(max_length=40, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
+    fk_id_product = models.ForeignKey('Product', models.DO_NOTHING, db_column='fk_id_product', )
+    registration_date = models.DateField()
+    color = models.CharField(max_length=30, )
+    size_p = models.CharField(max_length=50, )
+    material = models.CharField(max_length=40, )
+    quantity = models.IntegerField()
 
     class Meta:
         managed = False
@@ -64,11 +64,11 @@ class DetailProd(models.Model):
 
 class DetailSale(models.Model):
     id_detail_sale = models.AutoField(primary_key=True)
-    fk_id_sale = models.ForeignKey('Sale', models.DO_NOTHING, db_column='fk_id_sale', blank=True, null=True)
-    customer_name = models.CharField(max_length=50, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
-    price_unit = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    fk_id_sale = models.ForeignKey('Sale', models.DO_NOTHING, db_column='fk_id_sale', )
+    customer_name = models.CharField(max_length=50, )
+    quantity = models.IntegerField()
+    price_unit = models.DecimalField(max_digits=10, decimal_places=2, )
+    total = models.DecimalField(max_digits=10, decimal_places=2, )
 
     class Meta:
         managed = False
@@ -77,13 +77,13 @@ class DetailSale(models.Model):
 
 class People(models.Model):
     id_people = models.AutoField(primary_key=True)
-    fk_id_rol = models.ForeignKey('Rol', models.DO_NOTHING, db_column='fk_id_rol', blank=True, null=True)
-    fk_id_status = models.ForeignKey('Status', models.DO_NOTHING, db_column='fk_id_status', blank=True, null=True)
-    name = models.CharField(max_length=30, blank=True, null=True)
-    last_name = models.CharField(max_length=30, blank=True, null=True)
-    document = models.IntegerField(blank=True, null=True)
-    phone = models.CharField(max_length=10, blank=True, null=True)
-    address = models.CharField(max_length=30, blank=True, null=True)
+    fk_id_rol = models.ForeignKey('Rol', models.DO_NOTHING, db_column='fk_id_rol', )
+    fk_id_status = models.ForeignKey('Status', models.DO_NOTHING, db_column='fk_id_status', )
+    name = models.CharField(max_length=30, )
+    last_name = models.CharField(max_length=30, )
+    document = models.IntegerField()
+    phone = models.CharField(max_length=10, )
+    address = models.CharField(max_length=30, )
 
     class Meta:
         managed = False
@@ -92,12 +92,12 @@ class People(models.Model):
 
 class Product(models.Model):
     id_product = models.AutoField(primary_key=True)
-    fk_id_status = models.ForeignKey('Status', models.DO_NOTHING, db_column='fk_id_status', blank=True, null=True)
-    fk_id_type_prod = models.ForeignKey('TypeProd', models.DO_NOTHING, db_column='fk_id_type_prod', blank=True, null=True)
-    name = models.CharField(max_length=30, blank=True, null=True)
-    image = models.CharField(max_length=500, blank=True, null=True)
-    reference = models.CharField(max_length=60, blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    fk_id_status = models.ForeignKey('Status', models.DO_NOTHING, db_column='fk_id_status', )
+    fk_id_type_prod = models.ForeignKey('TypeProd', models.DO_NOTHING, db_column='fk_id_type_prod', )
+    name = models.CharField(max_length=30, )
+    image = models.CharField(max_length=500, )
+    reference = models.CharField(max_length=60, )
+    price = models.DecimalField(max_digits=10, decimal_places=2, )
 
     class Meta:
         managed = False
@@ -106,7 +106,7 @@ class Product(models.Model):
 
 class Rol(models.Model):
     id_rol = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=30, )
 
     class Meta:
         managed = False
@@ -115,10 +115,10 @@ class Rol(models.Model):
 
 class Sale(models.Model):
     id_sale = models.AutoField(primary_key=True)
-    fk_id_product = models.ForeignKey(Product, models.DO_NOTHING, db_column='fk_id_product', blank=True, null=True)
-    date_sale = models.DateField(blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    fk_id_product = models.ForeignKey(Product, models.DO_NOTHING, db_column='fk_id_product', )
+    date_sale = models.DateField()
+    quantity = models.IntegerField()
+    total = models.DecimalField(max_digits=10, decimal_places=2, )
 
     class Meta:
         managed = False
@@ -127,7 +127,7 @@ class Sale(models.Model):
 
 class Status(models.Model):
     id_status = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=30, )
 
     class Meta:
         managed = False
@@ -136,8 +136,8 @@ class Status(models.Model):
 
 class TypeProd(models.Model):
     id_type_prod = models.AutoField(primary_key=True)
-    fk_id_category = models.ForeignKey(Category, models.DO_NOTHING, db_column='fk_id_category', blank=True, null=True)
-    name = models.CharField(max_length=30, blank=True, null=True)
+    fk_id_category = models.ForeignKey(Category, models.DO_NOTHING, db_column='fk_id_category', )
+    name = models.CharField(max_length=30, )
 
     class Meta:
         managed = False

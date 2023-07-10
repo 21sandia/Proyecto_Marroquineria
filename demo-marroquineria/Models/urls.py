@@ -4,10 +4,10 @@ from Models.controllers import viewsSale, viewsDetailSale
 
 urlpatterns = [
 
-    path('state/', viewsState.list_state, name='list_state'),
-    path('state/create/', viewsState.create_state, name='create_state'),
-    path('state/update/<int:pk>/', viewsState.update_state, name='update_state'),
-    path('state/delete/<int:pk>/', viewsState.delete_state, name='delete_state'),
+    path('state/', viewsState.list_Status, name='list_state'),
+    path('state/create/', viewsState.create_Status, name='create_state'),
+    path('state/update/<int:pk>/', viewsState.update_Status, name='update_state'),
+    path('state/delete/<int:pk>/', viewsState.delete_Status, name='delete_state'),
 
     path('roles/', viewsRole.list_role, name='list_role'),
     path('roles/create/', viewsRole.create_role, name='create_role'),

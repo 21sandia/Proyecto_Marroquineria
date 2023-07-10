@@ -34,7 +34,7 @@ def delete_people(request, pk):
     try:
         people = People.objects.get(pk=pk)
     except People.DoesNotExist:
-        return Response (status=status.HTTP_404_NOT_FOUND)
+        return Response (data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     people.delete()
     return Response (data={'code':'HTTP_201_CONTENT', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)

@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_type_prod(request):
-    queryset = Type_prod.objects.all()
+    queryset = TypeProd.objects.all()
     serializer = Type_prodSerializer(queryset, many=True)
     return Response(serializer.data) 
 
@@ -20,8 +20,8 @@ def create_type_prod(request):
 @api_view(['PATCH'])
 def update_type_prod(request, pk):
     try:
-        type_prod = Type_prod.objects.get(pk=pk)
-    except Type_prod.DoesNotExist:
+        type_prod = TypeProd.objects.get(pk=pk)
+    except TypeProd.DoesNotExist:
         return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     serializer = Type_prodSerializer(type_prod, data=request.data, partial=True)
@@ -32,9 +32,9 @@ def update_type_prod(request, pk):
 @api_view(['DELETE'])
 def delete_type_prod(request, pk):
     try:
-        type_prod = Type_prod.objects.get(pk=pk)
-    except Type_prod.DoesNotExist:
-        return Response (status=status.HTTP_404_NOT_FOUND)
+        type_prod = TypeProd.objects.get(pk=pk)
+    except TypeProd.DoesNotExist:
+        return Response (data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     type_prod.delete()
     return Response (data={'code':'HTTP_201_CREATED', 'message':'Elminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
