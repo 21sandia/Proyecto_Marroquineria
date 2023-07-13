@@ -12,12 +12,19 @@ def list_user(request):
 
 @api_view(['POST'])
 def create_user(request):
+    email = request.data.get('email')
+    existing_user = User.objects.filter(email=email).first()
+
+    if existing_user:
+        return Response(data={'code': 'HTTP_400_BAD_REQUEST', 'message': 'El usuario ya existe', 'status': False}, status=status.HTTP_400_BAD_REQUEST)
+
     serializer = UserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
+    
     return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
 
-@api_view(['PATCH'])
+@api_view(['POST'])
 def update_user(request, pk):
     try:
         user = User.objects.get(pk=pk)

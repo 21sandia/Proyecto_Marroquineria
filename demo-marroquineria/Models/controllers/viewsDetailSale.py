@@ -12,7 +12,8 @@ def list_detail_sale(request):
 
 @api_view(['POST'])
 def create_detail_sale(request):
-    serializer = Detail_saleSerializer(data=request.data)
+    queryset = DetailSale.objects.all()
+    serializer = Detail_saleSerializer(queryset, data=request.data, many=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      

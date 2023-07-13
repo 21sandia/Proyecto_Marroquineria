@@ -1,9 +1,6 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsPeople, viewsRole, viewsCategory , viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsUser
 from Models.controllers import viewsSale, viewsDetailSale

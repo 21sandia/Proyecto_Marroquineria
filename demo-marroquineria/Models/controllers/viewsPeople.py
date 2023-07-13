@@ -14,8 +14,16 @@ def list_people(request):
 def create_people(request):
     serializer = PeopleSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+
+    # Verificar si la persona ya existe
+    name = serializer.validated_data['name']
+    existing_person = People.objects.filter(name=name).first()
+    if existing_person:
+        return Response(data={'code': 'HTTP_400_BAD_REQUEST', 'message': 'La persona ya existe', 'status': False}, status=status.HTTP_400_BAD_REQUEST)
+
     serializer.save()
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
+    return Response(data={'code': 'HTTP_201_CREATED', 'message': 'Creado Exitosamente', 'status': True}, status=status.HTTP_201_CREATED)
+     
 
 @api_view(['PATCH'])
 def update_people(request, pk):

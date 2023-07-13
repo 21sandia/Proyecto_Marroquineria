@@ -14,8 +14,16 @@ def list_type_prod(request):
 def create_type_prod(request):
     serializer = Type_prodSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+
+    # Verificar si el tipo de producto ya existe
+    name = serializer.validated_data['name']
+    existing_type = TypeProd.objects.filter(name=name).first()
+    if existing_type:
+        return Response(data={'code': 'HTTP_400_BAD_REQUEST', 'message': 'El tipo de producto ya existe', 'status': False}, status=status.HTTP_400_BAD_REQUEST)
+
     serializer.save()
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
+    return Response(data={'code': 'HTTP_201_CREATED', 'message': 'Creado Exitosamente', 'status': True}, status=status.HTTP_201_CREATED)
+      
 
 @api_view(['PATCH'])
 def update_type_prod(request, pk):

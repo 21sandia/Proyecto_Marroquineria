@@ -14,11 +14,18 @@ def list_category(request):
 def create_category(request):
     serializer = CategorySerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+    
+    # Verificar si la categoría ya existe
+    name = serializer.validated_data['name']
+    existing_category = Category.objects.filter(name=name).first()
+    if existing_category:
+        return Response(data={'code': 'HTTP_400_BAD_REQUEST', 'message': 'La categoría ya existe', 'status': False}, status=status.HTTP_400_BAD_REQUEST)
+    
     serializer.save()
+    return Response(data={'code': 'HTTP_201_CREATED', 'message': 'Creado Exitosamente', 'status': True}, status=status.HTTP_201_CREATED)
+      
 
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
-
-@api_view(['PATCH'])
+@api_view(['POST'])
 def update_category(request, pk):
     try:
         category = Category.objects.get(pk=pk)

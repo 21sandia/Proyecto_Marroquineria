@@ -14,8 +14,16 @@ def list_product(request):
 def create_product(request):
     serializer = ProductSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+
+    # Verificar si el producto ya existe
+    name = serializer.validated_data['name']
+    existing_product = Product.objects.filter(name=name).first()
+    if existing_product:
+        return Response(data={'code': 'HTTP_400_BAD_REQUEST', 'message': 'El producto ya existe', 'status': False}, status=status.HTTP_400_BAD_REQUEST)
+
     serializer.save()
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
+    return Response(data={'code': 'HTTP_201_CREATED', 'message': 'Creado Exitosamente', 'status': True}, status=status.HTTP_201_CREATED)
+      
 
 @api_view(['PATCH'])
 def update_product(request, pk):

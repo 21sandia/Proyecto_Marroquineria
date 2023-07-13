@@ -1,14 +1,79 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.auth.models import (
-    AbstractBaseUser, 
-    BaseUserManager,
-    PermissionsMixin,
-)
-
-from enum import Enum 
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager, PermissionsMixin,)
+from django.contrib.auth.models import Group
 from django.db import models
 
-#  **USER**
+
+
+class Status(models.Model):
+    name = models.CharField(max_length=30, )
+
+    class Meta:
+        db_table = 'status'
+
+class Role(models.Model):
+    name = models.CharField(max_length=30)
+    groups = models.ManyToManyField(Group, verbose_name='Grupos', blank=True)
+
+    class Meta:
+        db_table = 'rol'
+
+class Category(models.Model):
+    name = models.CharField(max_length=30, )
+
+    class Meta:
+        db_table = 'category'
+
+
+class TypeProd(models.Model):
+    fk_id_category = models.ForeignKey(Category, on_delete=models.CASCADE )
+    name = models.CharField(max_length=30, )
+
+    class Meta:
+        db_table = 'type_prod'  
+        
+
+class Product(models.Model):
+    fk_id_status = models.ForeignKey(Status, on_delete=models.CASCADE )
+    fk_id_type_prod = models.ForeignKey(TypeProd, on_delete=models.CASCADE )
+    name = models.CharField(max_length=30, )
+    image = models.CharField(max_length=500, )
+    reference = models.CharField(max_length=60, )
+    price = models.DecimalField(max_digits=10, decimal_places=2, )
+
+    class Meta:
+        db_table = 'product'
+
+
+class DetailProd(models.Model):
+    fk_id_product = models.ForeignKey(Product, on_delete=models.CASCADE )
+    registration_date = models.DateField()
+    color = models.CharField(max_length=30, )
+    size_p = models.CharField(max_length=50, )
+    material = models.CharField(max_length=40, )
+    quantity = models.IntegerField()
+
+    class Meta:
+        db_table = 'detail_prod'
+
+class Sale(models.Model):
+    fk_id_product = models.ForeignKey(Product, on_delete=models.CASCADE )
+    date_sale = models.DateField()
+    quantity = models.IntegerField()
+    total = models.DecimalField(max_digits=10, decimal_places=2, )
+
+    class Meta:
+        db_table = 'sale'
+
+class DetailSale(models.Model):
+    fk_id_sale = models.ForeignKey(Sale, on_delete=models.CASCADE)
+    customer_name = models.CharField(max_length=50, )
+    quantity = models.IntegerField()
+    price_unit = models.DecimalField(max_digits=10, decimal_places=2, )
+    total = models.DecimalField(max_digits=10, decimal_places=2, )
+
+    class Meta:
+        db_table = 'detail_sale'
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
@@ -18,7 +83,12 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
 
+        #Asignar grupo despues de crear el usuario
+        if 'groups' in extra_fields:
+            user.user_rol.groups.set(extra_fields['groups'])
+
         return user
+        
     
     def create_superuser(self, email, password):
         user = self.create_user(email, password)
@@ -29,116 +99,31 @@ class UserManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):
+    
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
+    user_rol = models.ForeignKey(Role, on_delete=models.CASCADE)
+    fk_id_status = models.ForeignKey(Status, on_delete=models.CASCADE)
+    last_name = models.CharField(max_length=30)
+    document = models.IntegerField()
+    date_birth = models.DateField()
+    phone = models.CharField(max_length=10)
+    address = models.CharField(max_length=30)
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
 
-
-class Category(models.Model):
-    id_category = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, )
-
+    def __str__(self):
+        return self.name
+    
     class Meta:
-        managed = False
-        db_table = 'category'
+        verbose_name = 'User'
+        verbose_name_plural = 'user'
+        db_table = 'user'
 
 
-class DetailProd(models.Model):
-    id_detail_prod = models.AutoField(primary_key=True)
-    fk_id_product = models.ForeignKey('Product', models.DO_NOTHING, db_column='fk_id_product', )
-    registration_date = models.DateField()
-    color = models.CharField(max_length=30, )
-    size_p = models.CharField(max_length=50, )
-    material = models.CharField(max_length=40, )
-    quantity = models.IntegerField()
 
-    class Meta:
-        managed = False
-        db_table = 'detail_prod'
-
-
-class DetailSale(models.Model):
-    id_detail_sale = models.AutoField(primary_key=True)
-    fk_id_sale = models.ForeignKey('Sale', models.DO_NOTHING, db_column='fk_id_sale', )
-    customer_name = models.CharField(max_length=50, )
-    quantity = models.IntegerField()
-    price_unit = models.DecimalField(max_digits=10, decimal_places=2, )
-    total = models.DecimalField(max_digits=10, decimal_places=2, )
-
-    class Meta:
-        managed = False
-        db_table = 'detail_sale'
-
-
-class People(models.Model):
-    id_people = models.AutoField(primary_key=True)
-    fk_id_rol = models.ForeignKey('Rol', models.DO_NOTHING, db_column='fk_id_rol', )
-    fk_id_status = models.ForeignKey('Status', models.DO_NOTHING, db_column='fk_id_status', )
-    name = models.CharField(max_length=30, )
-    last_name = models.CharField(max_length=30, )
-    document = models.IntegerField()
-    phone = models.CharField(max_length=10, )
-    address = models.CharField(max_length=30, )
-
-    class Meta:
-        managed = False
-        db_table = 'people'
-
-
-class Product(models.Model):
-    id_product = models.AutoField(primary_key=True)
-    fk_id_status = models.ForeignKey('Status', models.DO_NOTHING, db_column='fk_id_status', )
-    fk_id_type_prod = models.ForeignKey('TypeProd', models.DO_NOTHING, db_column='fk_id_type_prod', )
-    name = models.CharField(max_length=30, )
-    image = models.CharField(max_length=500, )
-    reference = models.CharField(max_length=60, )
-    price = models.DecimalField(max_digits=10, decimal_places=2, )
-
-    class Meta:
-        managed = False
-        db_table = 'product'
-
-
-class Rol(models.Model):
-    id_rol = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, )
-
-    class Meta:
-        managed = False
-        db_table = 'rol'
-
-
-class Sale(models.Model):
-    id_sale = models.AutoField(primary_key=True)
-    fk_id_product = models.ForeignKey(Product, models.DO_NOTHING, db_column='fk_id_product', )
-    date_sale = models.DateField()
-    quantity = models.IntegerField()
-    total = models.DecimalField(max_digits=10, decimal_places=2, )
-
-    class Meta:
-        managed = False
-        db_table = 'sale'
-
-
-class Status(models.Model):
-    id_status = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, )
-
-    class Meta:
-        managed = False
-        db_table = 'status'
-
-
-class TypeProd(models.Model):
-    id_type_prod = models.AutoField(primary_key=True)
-    fk_id_category = models.ForeignKey(Category, models.DO_NOTHING, db_column='fk_id_category', )
-    name = models.CharField(max_length=30, )
-
-    class Meta:
-        managed = False
-        db_table = 'type_prod'
