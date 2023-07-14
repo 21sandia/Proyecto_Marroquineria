@@ -3,7 +3,8 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsPeople, viewsRole, viewsCategory , viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsUser
-from Models.controllers import viewsSale, viewsDetailSale
+from Models.controllers import viewsSale, viewsDetailSale, viewsGroup
+from django.contrib.auth.models import Group
 
 urlpatterns = [
 
@@ -16,6 +17,8 @@ urlpatterns = [
     path('create-roles/', viewsRole.create_role, name='create_role'), # Crear
     path('update-roles/<int:pk>/', viewsRole.update_role, name='update_role'), # Editar
     path('delete-roles/<int:pk>/', viewsRole.delete_role, name='delete_role'), # Eliminar
+
+    path('list-group/', viewsGroup.list_group, name='list_group'), # Listar
     
     path('list-people/', viewsPeople.list_people, name='list_people'), # Listar
     path('create-people/', viewsPeople.create_people, name='create_people'), # Crear

@@ -52,6 +52,11 @@ class RoleSerializer(serializers.ModelSerializer):
         model = Role
         fields = '__all__'
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
