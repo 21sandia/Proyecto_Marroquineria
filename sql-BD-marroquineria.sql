@@ -7,18 +7,20 @@ CREATE TABLE rol(
 id_rol serial PRIMARY KEY,
 name varchar(30)
 );
-
-CREATE TABLE people(
-id_people serial PRIMARY KEY,
+/*
+CREATE drop TABLE people (
+id_people int PRIMARY KEY,
 fk_id_rol int,
 fk_id_status int,
 name varchar(30),
 last_name varchar(30),
 document int,
+date_birth date,
 phone varchar(10),
-address varchar(30)
+address varchar(30),
+email varchar(50),
+password varchar(50)	
 );
-
 ALTER TABLE people
 ADD CONSTRAINT FK_rol_people
 FOREIGN KEY (fk_id_rol)
@@ -28,7 +30,7 @@ ALTER TABLE people
 ADD CONSTRAINT FK_status_people
 FOREIGN KEY (fk_id_status)
 REFERENCES status(id_status);
-
+*/
 CREATE TABLE category (
 id_category serial PRIMARY KEY,
 name varchar(30)
