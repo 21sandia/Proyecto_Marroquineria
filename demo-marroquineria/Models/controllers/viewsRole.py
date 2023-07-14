@@ -8,7 +8,22 @@ from ..serializers import *
 def list_role(request):
     queryset = Role.objects.all()
     serializer = RoleSerializer(queryset, many=True)
-    return Response(serializer.data) 
+
+    if not serializer.data:
+        response_data = {
+            'code': 'HTTP_404_NOT_FOUND',
+            'message': 'No hay roles registrados',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+
+    response_data = {
+        'code': 'HTTP_200_OK',
+        'message': 'Consulta Realizada Exitosamente',
+        'status': True,
+        'data': serializer.data
+    }
+    return Response(response_data, status=status.HTTP_200_OK) 
 
 @api_view(['POST'])
 def create_role(request):
@@ -44,4 +59,4 @@ def delete_role(request, pk):
         return Response (data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     role.delete()
-    return Response (data={'code':'HTTP_201_CREATED', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
+    return Response (data={'code':'HTTP_202_ACCEPTED', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_202_ACCEPTED)

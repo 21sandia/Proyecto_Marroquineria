@@ -8,7 +8,22 @@ from ..serializers import *
 def list_people(request):
     queryset = People.objects.all()
     serializer = PeopleSerializer(queryset, many=True)
-    return Response(serializer.data) 
+
+    if not serializer.data:
+        response_data = {
+            'code': 'HTTP_404_NOT_FOUND',
+            'message': 'No encontrado',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+
+    response_data = {
+        'code': 'HTTP_200_OK',
+        'message': 'Consulta Realizada Exitosamente',
+        'status': True,
+        'data': serializer.data
+    }
+    return Response(response_data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def create_people(request):
@@ -45,5 +60,5 @@ def delete_people(request, pk):
         return Response (data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     people.delete()
-    return Response (data={'code':'HTTP_201_CONTENT', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
+    return Response (data={'code':'HTTP_202_ACCEPTED', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_202_ACCEPTED)
 

@@ -8,7 +8,13 @@ from ..serializers import *
 def list_carts(request):
     queryset = Carts.objects.all()
     serializer = CartsSerializer(queryset, many=True)
-    return Response(serializer.data) 
+    response_data = {
+        'code': 'HTTP_200_OK',
+        'message': 'Consulta Realizada Exitosamente',
+        'status': True,
+        'data': serializer.data
+    }
+    return Response(response_data, status=status.HTTP_200_OK) 
 
 @api_view(['POST'])
 def create_carts(request):

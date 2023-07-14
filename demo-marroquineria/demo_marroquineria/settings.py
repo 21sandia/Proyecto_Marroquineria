@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
+    "corsheaders",
     'rest_framework_simplejwt',
     'rest_framework',
     'Models',
@@ -157,5 +157,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'Models.User'
 
-CORS_ALLOWED_ORIGINS = [
-]
+CORS_ALLOWED_ORIGINS = []

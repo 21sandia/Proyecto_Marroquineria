@@ -7,13 +7,28 @@ from ..serializers import *
 @api_view(['GET'])
 def list_detail_sale(request):
     queryset = DetailSale.objects.all()
-    serializer = Detail_saleSerializer(queryset, many=True)
-    return Response(serializer.data) 
+    serializer = DetailSaleSerializer(queryset, many=True)
+
+    if not serializer.data:
+        response_data = {
+            'code': 'HTTP_404_NOT_FOUND',
+            'message': 'No Disponible',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+
+    response_data = {
+        'code': 'HTTP_200_OK',
+        'message': 'Consulta Realizada Exitosamente',
+        'status': True,
+        'data': serializer.data
+    }
+    return Response(response_data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def create_detail_sale(request):
     queryset = DetailSale.objects.all()
-    serializer = Detail_saleSerializer(queryset, data=request.data, many=True)
+    serializer = DetailSaleSerializer(queryset, data=request.data, many=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
@@ -25,7 +40,7 @@ def update_detail_sale(request, pk):
     except DetailSale.DoesNotExist:
         return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    serializer = Detail_saleSerializer(detail_sale, data=request.data, partial=True)
+    serializer = DetailSaleSerializer(detail_sale, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
@@ -38,4 +53,4 @@ def delete_detail_sale(request, pk):
         return Response (data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     detail_sale.delete()
-    return Response (data={'code':'HTTP_201_CONTENT', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_204_NO_CONTENT)
+    return Response (data={'code':'HTTP_202_ACCEPTED', 'message':'Eliminado Exitosamente', 'status':True}, status=status.HTTP_202_ACCEPTED)

@@ -8,7 +8,22 @@ from ..serializers import *
 def list_category(request):
     queryset = Category.objects.all()
     serializer = CategorySerializer(queryset, many=True)
-    return Response(serializer.data) 
+
+    if not serializer.data:
+        response_data = {
+            'code': 'HTTP_404_NOT_FOUND',
+            'message': 'No hay categorías registradas',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+
+    response_data = {
+        'code': 'HTTP_200_OK',
+        'message': 'Consulta Realizada Exitosamente',
+        'status': True,
+        'data': serializer.data
+    }
+    return Response(response_data, status=status.HTTP_200_OK) 
 
 @api_view(['POST'])
 def create_category(request):
@@ -35,7 +50,7 @@ def update_category(request, pk):
     serializer = CategorySerializer(category, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
+    return Response(data={'code':'HTTP_202_ACCEPTED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_202_ACCEPTED)
 
 @api_view(['DELETE'])
 def delete_category(request, pk):

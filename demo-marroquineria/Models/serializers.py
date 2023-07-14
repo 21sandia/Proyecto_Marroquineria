@@ -68,12 +68,12 @@ class StatusSerializer(serializers.ModelSerializer):
         model = Status
         fields = '__all__'
 
-class Type_prodSerializer(serializers.ModelSerializer):
+class TypeProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = TypeProd
         fields = '__all__'
 
-class Detail_prodSerializer(serializers.ModelSerializer):
+class DetailProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailProd
         fields = '__all__'
@@ -83,7 +83,7 @@ class SaleSerializer(serializers.ModelSerializer):
         model = Sale
         fields = '__all__'
 
-class Detail_saleSerializer(serializers.ModelSerializer):
+class DetailSaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailSale
         fields = '__all__'
