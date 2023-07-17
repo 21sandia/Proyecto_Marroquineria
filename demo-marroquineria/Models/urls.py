@@ -2,16 +2,18 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
-from Models.controllers import viewsPeople, viewsRole, viewsCategory , viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsUser
-from Models.controllers import viewsSale, viewsDetailSale, viewsGroup
+from Models.controllers import viewsRole, viewsCategory , viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsUser
+from Models.controllers import viewsSale, viewsDetailSale, viewsGroup, viewsRecupContrasena
 from django.contrib.auth.models import Group
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
 
-    path('list-state/', viewsState.list_Status, name='list_state'), # Listar 
-    path('create-state/', viewsState.create_Status, name='create_state'), # Crear
-    path('update-state/<int:pk>/', viewsState.update_Status, name='update_state'), # Editar
-    path('delete-state/<int:pk>/', viewsState.delete_Status, name='delete_state'), # Eliminar
+    path('list-state/', viewsState.list_Status_g, name='list_state'), # Listar 
+    path('create-state/', viewsState.create_Status_g, name='create_state'), # Crear
+    path('update-state/<int:pk>/', viewsState.update_Status_g, name='update_state'), # Editar
+    path('delete-state/<int:pk>/', viewsState.delete_Status_g, name='delete_state'), # Eliminar
 
     path('list-roles/', viewsRole.list_role, name='list_role'), # Listar
     path('create-roles/', viewsRole.create_role, name='create_role'), # Crear
@@ -19,11 +21,6 @@ urlpatterns = [
     path('delete-roles/<int:pk>/', viewsRole.delete_role, name='delete_role'), # Eliminar
 
     path('list-group/', viewsGroup.list_group, name='list_group'), # Listar
-    
-    path('list-people/', viewsPeople.list_people, name='list_people'), # Listar
-    path('create-people/', viewsPeople.create_people, name='create_people'), # Crear
-    path('update-people/<int:pk>/', viewsPeople.update_people, name='update_people'), # Editar
-    path('delete-people/<int:pk>/', viewsPeople.delete_people, name='delete_people'), # Eliminar
     
     path('list-category/', viewsCategory.list_category, name='list_category'), # Listar
     path('create-category/', viewsCategory.create_category, name='create_category'), # Crear
@@ -60,9 +57,14 @@ urlpatterns = [
     path('update-user/<int:pk>/', viewsUser.update_user, name='update_user'), # Editar
     path('delete-user/<int:pk>/', viewsUser.delete_user, name='delete_user'), # Eliminar
 
+    #  **RECUPERAR CONTRASEÑA**
+    path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), #  
+    path('cambio_contrasena/<str:uid>/<str:token>/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), #  
+
     # **Token**
-    path('models-token-auth/', obtain_auth_token),
     path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
     path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

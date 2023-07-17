@@ -12,16 +12,16 @@ def list_group(request):
 
     if not serializer.data:
         response_data = {
-            'code': 'HTTP_404_NOT_FOUND',
+            'code': status.HTTP_404_NOT_FOUND,
             'message': 'No Disponible',
             'status': False
         }
-        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+        return Response(response_data)
 
     response_data = {
-        'code': 'HTTP_200_OK',
+        'code': status.HTTP_200_OK,
         'message': 'Consulta Realizada Exitosamente',
         'status': True,
         'data': serializer.data
     }
-    return Response(response_data, status=status.HTTP_200_OK)
+    return Response(response_data)

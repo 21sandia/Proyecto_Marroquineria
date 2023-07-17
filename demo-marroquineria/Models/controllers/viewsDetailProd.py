@@ -12,45 +12,45 @@ def list_detailProd(request):
 
     if not serializer.data:
         response_data = {
-            'code': 'HTTP_404_NOT_FOUND',
+            'code': status.HTTP_404_NOT_FOUND,
             'message': 'No Disponible',
             'status': False
         }
-        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+        return Response(response_data)
 
     response_data = {
-        'code': 'HTTP_200_OK',
+        'code': status.HTTP_200_OK,
         'message': 'Consulta Realizada Exitosamente',
         'status': True,
         'data': serializer.data
     }
-    return Response(response_data, status=status.HTTP_200_OK)
+    return Response(response_data)
 
 @api_view(['POST'])
 def create_detailProd(request):
     serializer = DetailProdSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Creado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)      
+    return Response(data={'code':status.HTTP_201_CREATED, 'message':'Creado Exitosamente', 'status':True})      
 
 @api_view(['PATCH'])
 def update_detailProd(request, pk):
     try:
         detail_prod = DetailProd.objects.get(pk=pk)
     except DetailProd.DoesNotExist:
-        return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'code':status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'No Encontrado', 'status':True})
     
     serializer = DetailProdSerializer(detail_prod, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
+    return Response(data={'code':status.HTTP_201_CREATED, 'message':'Actualizado Exitosamente', 'status':True})
 
 @api_view(['DELETE'])
 def delete_detailProd(request, pk):
     try:
         detail_prod = DetailProd.objects.get(pk=pk)
     except DetailProd.DoesNotExist:
-        return Response (data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response (data={'code':status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'No Encontrado', 'status':True})
     
     detail_prod.delete()
-    return Response (data={'code':'HTTP_202_ACCEPTED', 'message':'Elminado Exitosamente', 'status':True}, status=status.HTTP_202_ACCEPTED)
+    return Response (data={'code':status.HTTP_202_ACCEPTED, 'message':'Eliminado Exitosamente', 'status':True})

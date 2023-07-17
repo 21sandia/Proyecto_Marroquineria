@@ -11,19 +11,19 @@ def list_type_prod(request):
 
     if not serializer.data:
         response_data = {
-            'code': 'HTTP_404_NOT_FOUND',
+            'code': status.HTTP_404_NOT_FOUND,
             'message': 'No hay tipos de productos registrados',
             'status': False
         }
-        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+        return Response(response_data)
 
     response_data = {
-        'code': 'HTTP_200_OK',
+        'code': status.HTTP_200_OK,
         'message': 'Consulta Realizada Exitosamente',
         'status': True,
         'data': serializer.data
     }
-    return Response(response_data, status=status.HTTP_200_OK) 
+    return Response(response_data) 
 
 @api_view(['POST'])
 def create_type_prod(request):
@@ -34,30 +34,30 @@ def create_type_prod(request):
     name = serializer.validated_data['name']
     existing_type = TypeProd.objects.filter(name=name).first()
     if existing_type:
-        return Response(data={'code': 'HTTP_400_BAD_REQUEST', 'message': 'El tipo de producto ya existe', 'status': False}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'El tipo de producto ya existe', 'status': False})
 
     serializer.save()
-    return Response(data={'code': 'HTTP_201_CREATED', 'message': 'Creado Exitosamente', 'status': True}, status=status.HTTP_201_CREATED)
+    return Response(data={'code': status.HTTP_201_CREATED, 'message': 'Creado Exitosamente', 'status': True})
       
 
-@api_view(['POST'])
+@api_view(['PATCH'])
 def update_type_prod(request, pk):
     try:
         type_prod = TypeProd.objects.get(pk=pk)
     except TypeProd.DoesNotExist:
-        return Response(data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'code':status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'No Encontrado', 'status':True})
     
     serializer = TypeProdSerializer(type_prod, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':'HTTP_201_CREATED', 'message':'Actualizado Exitosamente', 'status':True}, status=status.HTTP_201_CREATED)
+    return Response(data={'code':status.HTTP_201_CREATED, 'message':'Actualizado Exitosamente', 'status':True})
 
 @api_view(['DELETE'])
 def delete_type_prod(request, pk):
     try:
         type_prod = TypeProd.objects.get(pk=pk)
     except TypeProd.DoesNotExist:
-        return Response (data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 'message':'No Encontrado', 'status':True}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response (data={'code':status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'No Encontrado', 'status':True})
     
     type_prod.delete()
-    return Response (data={'code':'HTTP_202_ACCEPTED', 'message':'Elminado Exitosamente', 'status':True}, status=status.HTTP_202_ACCEPTED)
+    return Response (data={'code':status.HTTP_202_ACCEPTED, 'message':'Eliminado Exitosamente', 'status':True})

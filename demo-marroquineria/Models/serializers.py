@@ -45,6 +45,11 @@ class UserSerializer(serializers.ModelSerializer):
             Role.groups.set(groups_data)
         
         return user
+    
+class recup_ContrasenaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = '__all__'
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -70,7 +75,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Status
+        model = Status_g
         fields = '__all__'
 
 class TypeProdSerializer(serializers.ModelSerializer):

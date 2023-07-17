@@ -4,7 +4,7 @@ from django.db import models
 
 
 
-class Status(models.Model):
+class Status_g(models.Model):
     name = models.CharField(max_length=30, )
 
     class Meta:
@@ -33,10 +33,10 @@ class TypeProd(models.Model):
         
 
 class Product(models.Model):
-    fk_id_status = models.ForeignKey(Status, on_delete=models.CASCADE )
+    fk_id_status = models.ForeignKey(Status_g, on_delete=models.CASCADE )
     fk_id_type_prod = models.ForeignKey(TypeProd, on_delete=models.CASCADE )
     name = models.CharField(max_length=30, )
-    image = models.CharField(max_length=500, )
+    image = models.ImageField(upload_to='media/')
     reference = models.CharField(max_length=60, )
     price = models.DecimalField(max_digits=10, decimal_places=2, )
 
@@ -106,7 +106,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
 
     user_rol = models.ForeignKey(Role, on_delete=models.CASCADE)
-    fk_id_status = models.ForeignKey(Status, on_delete=models.CASCADE)
+    fk_id_status = models.ForeignKey(Status_g, on_delete=models.CASCADE)
     last_name = models.CharField(max_length=30)
     document = models.IntegerField()
     date_birth = models.DateField()
