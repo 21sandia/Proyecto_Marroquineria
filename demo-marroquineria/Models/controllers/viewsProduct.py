@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_product(request):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by('name')
     serializer = ProductSerializer(queryset, many=True)
 
     if not serializer.data:
@@ -24,6 +24,7 @@ def list_product(request):
         'data': serializer.data
     }
     return Response(response_data)
+products = Product.objects.order_by('name')
 
 @api_view(['POST'])
 def create_product(request):

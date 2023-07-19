@@ -48,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
     
 class recup_ContrasenaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Role
+        model = User
         fields = '__all__'
 
 

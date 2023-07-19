@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_category(request):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('name')
     serializer = CategorySerializer(queryset, many=True)
 
     if not serializer.data:

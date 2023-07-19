@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_role(request):
-    queryset = Role.objects.all()
+    queryset = Role.objects.all().order_by('name')
     serializer = RoleSerializer(queryset, many=True)
 
     if not serializer.data:

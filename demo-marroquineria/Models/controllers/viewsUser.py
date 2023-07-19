@@ -45,7 +45,7 @@ def create_user(request):
 
 @api_view(['GET'])
 def list_user(request):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('name')
     serializer = UserSerializer(queryset, many=True)
 
     if not serializer.data:

@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_type_prod(request):
-    queryset = TypeProd.objects.all()
+    queryset = TypeProd.objects.all().order_by('name')
     serializer = TypeProdSerializer(queryset, many=True)
 
     if not serializer.data:

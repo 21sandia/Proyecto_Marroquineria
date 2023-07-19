@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_detail_sale(request):
-    queryset = DetailSale.objects.all()
+    queryset = DetailSale.objects.all().order_by('customer_name')
     serializer = DetailSaleSerializer(queryset, many=True)
 
     if not serializer.data:

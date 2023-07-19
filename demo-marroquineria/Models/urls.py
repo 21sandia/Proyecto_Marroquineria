@@ -3,7 +3,8 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsRole, viewsCategory , viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsUser
-from Models.controllers import viewsSale, viewsDetailSale, viewsGroup, viewsRecupContrasena
+from Models.controllers import viewsSale, viewsDetailSale, viewsGroup
+from Models.controllers import viewsRecupContrasena
 from django.contrib.auth.models import Group
 from django.conf import settings
 from django.conf.urls.static import static
@@ -59,7 +60,7 @@ urlpatterns = [
 
     #  **RECUPERAR CONTRASEÑA**
     path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), #  
-    path('cambio_contrasena/<str:uid>/<str:token>/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), #  
+    path('cambiar_contrasena/<str:uidb64>/<str:token>/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), #  
 
     # **Token**
     path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token

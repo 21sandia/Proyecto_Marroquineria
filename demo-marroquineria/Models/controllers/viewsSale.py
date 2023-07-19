@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_sale(request):
-    queryset = Sale.objects.all()
+    queryset = Sale.objects.all().order_by('date_sale')
     serializer = SaleSerializer(queryset, many=True)
 
     if not serializer.data:

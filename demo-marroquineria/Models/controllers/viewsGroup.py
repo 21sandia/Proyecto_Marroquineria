@@ -7,7 +7,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_group(request):
-    queryset = Group.objects.all()
+    queryset = Group.objects.all().order_by('name')
     serializer = GroupSerializer(queryset, many=True)
 
     if not serializer.data:

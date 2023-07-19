@@ -45,12 +45,8 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-
-    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
@@ -58,7 +54,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-"ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),
+"ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
 "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 } 
 
@@ -73,11 +69,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':(
-          'rest_framework.authentication.TokenAuthentication',
-    )
-}
 
 ROOT_URLCONF = 'demo_marroquineria.urls'
 
@@ -170,15 +161,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
 ]
 
-DEFAULT_FROM_EMAIL = 'Marroquineria <alexmillan1607@gmail.com>'
+DEFAULT_FROM_EMAIL = 'Marroquineria <ecommerce.marquetp@gmail.com>'
 #Correo
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'alexmillan1607@gmail.com'
-EMAIL_HOST_PASSWORD = 'iydbilczjjwxviub'
+EMAIL_HOST_USER = 'ecommerce.marquetp@gmail.com'
+EMAIL_HOST_PASSWORD = 'hcebxlliqgrrwqom'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 
-FRONTEND_URL = 'http://127.0.0.1:8000/recup_contrasena'
-FRONTEND_URL = 'http://127.0.0.1:8000/cambio_contrasena'
+FRONTEND_URL = 'http://127.0.0.1:8000/cambiar_contrasena'
+

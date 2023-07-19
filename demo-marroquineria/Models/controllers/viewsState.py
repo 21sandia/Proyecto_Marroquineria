@@ -6,7 +6,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_Status_g(request):
-    queryset = Status_g.objects.all()
+    queryset = Status_g.objects.all().order_by('name')
     serializer = StatusSerializer(queryset, many=True)
 
     if not serializer.data:

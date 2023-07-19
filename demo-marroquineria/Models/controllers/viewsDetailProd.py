@@ -7,7 +7,7 @@ from ..serializers import *
 
 @api_view(['GET'])
 def list_detailProd(request):
-    queryset = DetailProd.objects.all()
+    queryset = DetailProd.objects.all().order_by('registration_date')
     serializer = DetailProdSerializer(queryset, many=True)
 
     if not serializer.data:
