@@ -11,7 +11,7 @@ def list_Status_g(request):
 
     if not serializer.data:
         response_data = {
-            'code': status.HTTP_404_NOT_FOUND,
+            'code': status.HTTP_200_OK,
             'message': 'No hay estados registrados',
             'status': False
         }
@@ -27,29 +27,37 @@ def list_Status_g(request):
 
 @api_view(['POST'])
 def create_Status_g(request):
+    # Verifica si el estado ya existe
+    existing_status = Status_g.objects.filter(**request.data).first()
+    if existing_status:
+        # Si el estado ya existe, envia el mensaje
+        serializer = StatusSerializer(existing_status)
+        return Response(data={'code': status.HTTP_200_OK, 'message': 'El objeto ya existe.', 'status': True, 'data': serializer.data})
+
+    # Si el estado no existe, lo guarda
     serializer = StatusSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':status.HTTP_201_CREATED, 'message':'Creado Exitosamente', 'status':True})      
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Creado Exitosamente', 'status': True, 'data': serializer.data})      
 
 @api_view(['PATCH'])
 def update_Status_g(request, pk):
     try:
-        Status = Status.objects.get(pk=pk)
-    except Status.DoesNotExist:
-        return Response(data={'code':status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'No Encontrado', 'status':True})
+        Statusc = Status_g.objects.get(pk=pk)
+    except Status_g.DoesNotExist:
+        return Response(data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
     
-    serializer = StatusSerializer(Status, data=request.data, partial=True)
+    serializer = StatusSerializer(Statusc, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':status.HTTP_201_CREATED, 'message':'Actualizado Exitosamente', 'status':True})
+    return Response(data={'code':status.HTTP_200_OK, 'message':'Actualizado Exitosamente', 'status':True})
 
 @api_view(['DELETE'])
 def delete_Status_g(request, pk):
     try:
-        Status_g = Status_g.objects.get(pk=pk)
+        Status = Status_g.objects.get(pk=pk)
     except Status_g.DoesNotExist:
-        return Response (data={'code':status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'No Encontrado', 'status':True})
+        return Response (data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
     
-    Status_g.delete()
-    return Response (data={'code':status.HTTP_202_ACCEPTED, 'message':'Eliminado Exitosamente', 'status':True})
+    Status.delete()
+    return Response (data={'code':status.HTTP_200_OK, 'message':'Eliminado Exitosamente', 'status':True})

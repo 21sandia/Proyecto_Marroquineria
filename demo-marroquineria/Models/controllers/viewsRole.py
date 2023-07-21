@@ -11,7 +11,7 @@ def list_role(request):
 
     if not serializer.data:
         response_data = {
-            'code': status.HTTP_404_NOT_FOUND,
+            'code': status.HTTP_200_OK,
             'message': 'No hay roles registrados',
             'status': False
         }
@@ -33,30 +33,30 @@ def create_role(request):
     name = serializer.validated_data['name']
     existing_role = Role.objects.filter(name=name).first()
     if existing_role:
-        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'El rol ya existe', 'status': False})
+        return Response(data={'code': status.HTTP_200_OK, 'message': 'El rol ya existe', 'status': False})
 
     serializer.save()
     
-    return Response(data={'code':status.HTTP_201_CREATED, 'message':'Creado Exitosamente', 'status':True})     
+    return Response(data={'code':status.HTTP_200_OK, 'message':'Creado Exitosamente', 'status':True})     
 
 @api_view(['PATCH'])
 def update_role(request, pk):
     try:
         role = Role.objects.get(pk=pk)
     except Role.DoesNotExist:
-        return Response(data={'code':status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'No Encontrado', 'status':True})
+        return Response(data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
     
     serializer = RoleSerializer(role, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':status.HTTP_201_CREATED, 'message':'Actualizado Exitosamente', 'status':True})
+    return Response(data={'code':status.HTTP_200_OK, 'message':'Actualizado Exitosamente', 'status':True})
 
 @api_view(['DELETE'])
 def delete_role(request, pk):
     try:
         role = Role.objects.get(pk=pk)
     except Role.DoesNotExist:
-        return Response (data={'code':status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'No Encontrado', 'status':True})
+        return Response (data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
     
     role.delete()
-    return Response (data={'code':status.HTTP_202_ACCEPTED, 'message':'Eliminado Exitosamente', 'status':True})
+    return Response (data={'code':status.HTTP_200_OK, 'message':'Eliminado Exitosamente', 'status':True})
