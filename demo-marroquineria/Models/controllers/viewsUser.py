@@ -27,7 +27,7 @@ def create_user(request):
     if User.objects.filter(email=validated_data['email']).exists():
         return Response(
             data={
-                'code':status.HTTP_200_OK,
+                'code':status.HTTP_400_BAD_REQUEST,
                 'message':'Este usuario ya existe',
                 'status': True
             })

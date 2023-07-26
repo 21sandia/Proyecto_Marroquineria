@@ -23,16 +23,16 @@ def list_Status_g(request):
         'status': True,
         'data': serializer.data
     }
-    return Response(response_data) 
+    return Response(response_data)
 
 @api_view(['POST'])
 def create_Status_g(request):
     # Verifica si el estado ya existe
     existing_status = Status_g.objects.filter(**request.data).first()
     if existing_status:
-        # Si el estado ya existe, envia el mensaje
+        # Si el estado ya existe, envía el mensaje
         serializer = StatusSerializer(existing_status)
-        return Response(data={'code': status.HTTP_200_OK, 'message': 'El objeto ya existe.', 'status': True, 'data': serializer.data})
+        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'El objeto ya existe.', 'status': False, 'data': serializer.data})
 
     # Si el estado no existe, lo guarda
     serializer = StatusSerializer(data=request.data)
@@ -43,21 +43,21 @@ def create_Status_g(request):
 @api_view(['PATCH'])
 def update_Status_g(request, pk):
     try:
-        Statusc = Status_g.objects.get(pk=pk)
+        status_g = Status_g.objects.get(pk=pk)
     except Status_g.DoesNotExist:
-        return Response(data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
+        return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No Encontrado', 'status': True})
     
-    serializer = StatusSerializer(Statusc, data=request.data, partial=True)
+    serializer = StatusSerializer(status_g, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':status.HTTP_200_OK, 'message':'Actualizado Exitosamente', 'status':True})
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Actualizado Exitosamente', 'status': True})
 
 @api_view(['DELETE'])
 def delete_Status_g(request, pk):
     try:
-        Status = Status_g.objects.get(pk=pk)
+        status_g = Status_g.objects.get(pk=pk)
     except Status_g.DoesNotExist:
-        return Response (data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
+        return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No Encontrado', 'status': True})
     
-    Status.delete()
-    return Response (data={'code':status.HTTP_200_OK, 'message':'Eliminado Exitosamente', 'status':True})
+    status_g.delete()
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Eliminado Exitosamente', 'status': True})

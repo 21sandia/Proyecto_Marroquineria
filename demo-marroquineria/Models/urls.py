@@ -3,7 +3,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsRole, viewsCategory , viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsUser
-from Models.controllers import viewsSale, viewsDetailSale, viewsGroup
+from Models.controllers import viewsSale, viewsDetailSale, viewsGroup, viewsGetAllDataProd, viewsUserGetAllData
 from Models.controllers import viewsRecupContrasena
 from django.contrib.auth.models import Group
 from django.conf import settings
@@ -43,6 +43,8 @@ urlpatterns = [
     path('update-detail_prod/<int:pk>/', viewsDetailProd.update_detailProd, name='update_detail_prod'), # Editar
     path('delete-detail_prod/<int:pk>/', viewsDetailProd.delete_detailProd, name='delete_detail_prod'), # Eliminar
 
+    path('get_all_data/', viewsGetAllDataProd.get_all_models_data, name='get_all_data'), # Trae todos los datos de views get_all_data
+
     path('list-sales/', viewsSale.list_sale, name='list_sale'), # Listar 
     path('create-sales/', viewsSale.create_sale, name='create_sale'), # Crear
     path('update-sales/<int:pk>/', viewsSale.update_sale, name='update_sale'), # Editar
@@ -57,6 +59,8 @@ urlpatterns = [
     path('create-user/', viewsUser.create_user, name='create_user'), # Crear
     path('update-user/<int:pk>/', viewsUser.update_user, name='update_user'), # Editar
     path('delete-user/<int:pk>/', viewsUser.delete_user, name='delete_user'), # Eliminar
+
+    path('get_all_dataUser/', viewsUserGetAllData.get_related_foreign_keys, name='get_all_models_data'), # Trae todos los datos de views User get_all_data
 
     #  **RECUPERAR CONTRASEÑA**
     path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), #  

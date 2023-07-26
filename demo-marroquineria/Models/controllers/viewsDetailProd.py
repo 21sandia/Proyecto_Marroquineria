@@ -1,4 +1,3 @@
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -28,29 +27,35 @@ def list_detailProd(request):
 
 @api_view(['POST'])
 def create_detailProd(request):
+    
+    existing_detail_prod = DetailProd.objects.filter(**request.data).first()
+    if existing_detail_prod:
+        serializer = DetailProdSerializer(existing_detail_prod)
+        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'El objeto ya existe.', 'status': False, 'data': serializer.data})
+
     serializer = DetailProdSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':status.HTTP_200_OK, 'message':'Creado Exitosamente', 'status':True})      
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Creado Exitosamente', 'status': True, 'data': serializer.data})
 
 @api_view(['PATCH'])
 def update_detailProd(request, pk):
     try:
         detail_prod = DetailProd.objects.get(pk=pk)
     except DetailProd.DoesNotExist:
-        return Response(data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
+        return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No Encontrado', 'status': True})
     
     serializer = DetailProdSerializer(detail_prod, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':status.HTTP_200_OK, 'message':'Actualizado Exitosamente', 'status':True})
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Actualizado Exitosamente', 'status': True})
 
 @api_view(['DELETE'])
 def delete_detailProd(request, pk):
     try:
         detail_prod = DetailProd.objects.get(pk=pk)
     except DetailProd.DoesNotExist:
-        return Response (data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
+        return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No Encontrado', 'status': True})
     
     detail_prod.delete()
-    return Response (data={'code':status.HTTP_200_OK, 'message':'Eliminado Exitosamente', 'status':True})
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Eliminado Exitosamente', 'status': True})

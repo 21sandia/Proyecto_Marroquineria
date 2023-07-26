@@ -1,5 +1,4 @@
 from django.contrib.auth.models import Group
-
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import *
@@ -15,7 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'email', 'name', 'last_name', 'document', 'date_birth', 'phone', 'address', 'is_staff', 'is_active', 'groups', 'password', 'user_rol', 'fk_id_status')
+        fields = ('id', 'email', 'name', 'last_name', 'document', 'date_birth', 
+                  'phone', 'address', 'groups', 'password', 'user_rol', 'fk_id_status')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validate_data):
@@ -45,6 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
             Role.groups.set(groups_data)
         
         return user
+
     
 class recup_ContrasenaSerializer(serializers.ModelSerializer):
     class Meta:

@@ -23,33 +23,33 @@ def list_sale(request):
         'status': True,
         'data': serializer.data
     }
-    return Response(response_data) 
+    return Response(response_data)
 
 @api_view(['POST'])
 def create_sale(request):
     serializer = SaleSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':status.HTTP_200_OK, 'message':'Creado Exitosamente', 'status':True})      
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Creado Exitosamente', 'status': True})
 
 @api_view(['PATCH'])
 def update_sale(request, pk):
     try:
         sale = Sale.objects.get(pk=pk)
     except Sale.DoesNotExist:
-        return Response(data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
-    
+        return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No Encontrado', 'status': True})
+
     serializer = SaleSerializer(sale, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data={'code':status.HTTP_200_OK, 'message':'Actualizado Exitosamente', 'status':True})
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Actualizado Exitosamente', 'status': True})
 
 @api_view(['DELETE'])
 def delete_sale(request, pk):
     try:
         sale = Sale.objects.get(pk=pk)
     except Sale.DoesNotExist:
-        return Response (data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
-    
+        return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No Encontrado', 'status': True})
+
     sale.delete()
-    return Response (data={'code':status.HTTP_200_OK, 'message':'Eliminado Exitosamente', 'status':True})
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Eliminado Exitosamente', 'status': True})
