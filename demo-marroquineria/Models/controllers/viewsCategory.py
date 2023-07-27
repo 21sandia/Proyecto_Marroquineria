@@ -1,7 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from requests.exceptions import RequestException
 from ..models import *
 from ..serializers import *
 import requests
@@ -61,7 +60,7 @@ def update_category(request, pk):
     except Category.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No encontrado', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:
@@ -78,7 +77,7 @@ def delete_category(request, pk):
     except Category.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'Categoría No encontrada', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:

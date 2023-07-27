@@ -4,6 +4,8 @@ from rest_framework import status
 from requests.exceptions import RequestException
 from ..models import *
 from ..serializers import *
+import requests
+
 
 @api_view(['GET'])
 def list_role(request):
@@ -40,7 +42,7 @@ def create_role(request):
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 'message': 'Creado Exitosamente', 'status': True})
     
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
     
     except Exception as e:
@@ -59,7 +61,7 @@ def update_role(request, pk):
     except Role.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No encontrado', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:
@@ -76,7 +78,7 @@ def delete_role(request, pk):
     except Role.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No encontrado', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:

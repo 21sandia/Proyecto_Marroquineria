@@ -1,10 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.db import IntegrityError
-from django.db.models import ProtectedError
 from ..models import *
 from ..serializers import *
+import requests
 
 @api_view(['GET'])
 def list_detailProd(request):

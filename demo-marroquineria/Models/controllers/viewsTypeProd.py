@@ -62,7 +62,7 @@ def update_type_prod(request, pk):
     except TypeProd.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No encontrado', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:
@@ -80,7 +80,7 @@ def delete_type_prod(request, pk):
     except TypeProd.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No se encontró', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:

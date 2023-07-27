@@ -1,9 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from requests.exceptions import RequestException
 from ..models import *
 from ..serializers import *
+import requests
 
 @api_view(['GET'])
 def list_sale(request):
@@ -40,7 +40,7 @@ def create_sale(request):
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 'message': 'Creada Exitosamente', 'status': True})
     
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
     
     except Exception as e:
@@ -59,7 +59,7 @@ def update_sale(request, pk):
     except Role.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No encontrada', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:
@@ -76,7 +76,7 @@ def delete_sale(request, pk):
     except Sale.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No encontrada', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:

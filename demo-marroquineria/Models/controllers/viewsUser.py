@@ -5,9 +5,9 @@ from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from requests.exceptions import RequestException
 from ..models import *
 from ..serializers import *
+import requests
 
 def enviar_correo_confirmacion(user_name, user_email):
     # Asunto y cuerpo del correo electrónico
@@ -39,7 +39,7 @@ def create_user(request):
         enviar_correo_confirmacion(user_name,user_email)
         serializer.save()
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(
             data={
                 'code': status.HTTP_503_SERVICE_UNAVAILABLE,

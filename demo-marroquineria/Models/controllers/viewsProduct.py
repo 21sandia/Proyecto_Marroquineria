@@ -1,6 +1,5 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from requests.exceptions import RequestException
 from rest_framework import status
 from ..models import *
 from ..serializers import *
@@ -66,7 +65,7 @@ def update_product(request, pk):
     except Product.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No encontrado', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:
@@ -83,7 +82,7 @@ def delete_product(request, pk):
     except Product.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No encontrado', 'status': False})
 
-    except RequestException:
+    except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
 
     except Exception as e:
