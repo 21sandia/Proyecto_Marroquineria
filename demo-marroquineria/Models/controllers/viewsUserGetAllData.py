@@ -22,6 +22,7 @@ def get_related_foreign_keys(request):
 
     # Obtener los estados relacionados con usuarios
     status_data = Status_g.objects.filter(user__isnull=False).distinct()
+    
 
     # Serializar los datos de estados
     status_serializer = StatusSerializer(status_data, many=True)
@@ -32,6 +33,12 @@ def get_related_foreign_keys(request):
         user_obj['role_data'] = [{'id': role['id'], 'name': role['name']} for role in roles_data if role['id'] == user_obj['user_rol']]
         user_obj['status_data'] = [{'id': status['id'], 'name': status['name']} for status in status_data if status['id'] == user_obj['fk_id_status']]
 
-    return Response(data={'code': status.HTTP_200_OK, 'message': 'Datos obtenidos Exitosamente', 'status': True, 'data': user_data})
+    # Eliminar los campos user_rol y fk_id_status del diccionario
+        user_obj.pop('user_rol', None)
+        user_obj.pop('fk_id_status', None)
+
+    return Response(data={'code': status.HTTP_200_OK, 
+                          'message': 'Datos obtenidos Exitosamente', 
+                          'status': True, 'data': user_data})
 
 

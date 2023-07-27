@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import *
-
+exclude = ['groups']
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(validators=[])
@@ -70,9 +70,15 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['id', 'name', 'image', 'reference', 'price', 'fk_id_status', 'fk_id_type_prod']
+
+    def get_image(self, obj):
+        return f"http://localhost:8000{obj.image.url}"
+        
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:

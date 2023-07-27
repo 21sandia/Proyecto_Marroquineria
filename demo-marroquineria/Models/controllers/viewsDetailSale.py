@@ -37,7 +37,7 @@ def create_detail_sale(request):
 
     if existing_details:
         serializer = DetailSaleSerializer(existing_details, many=True)
-        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Algunos objetos ya existen.', 'status': False, 'data': serializer.data})
+        return Response(data={'code': status.HTTP_200_OK, 'message': 'Algunos objetos ya existen.', 'status': False, 'data': serializer.data})
 
     serializer = DetailSaleSerializer(data=data, many=True)
     serializer.is_valid(raise_exception=True)
@@ -49,7 +49,7 @@ def update_detail_sale(request, pk):
     try:
         detail_sale = DetailSale.objects.get(pk=pk)
     except DetailSale.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No Encontrado', 'status': True})
+        return Response(data={'code': status.HTTP_200_OK, 'message': 'No Encontrado', 'status': True})
     
     serializer = DetailSaleSerializer(detail_sale, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
@@ -61,7 +61,7 @@ def delete_detail_sale(request, pk):
     try:
         detail_sale = DetailSale.objects.get(pk=pk)
     except DetailSale.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No Encontrado', 'status': True})
+        return Response(data={'code': status.HTTP_200_OK, 'message': 'No Encontrado', 'status': True})
     
     detail_sale.delete()
     return Response(data={'code': status.HTTP_200_OK, 'message': 'Eliminado Exitosamente', 'status': True})

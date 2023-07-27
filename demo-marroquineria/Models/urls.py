@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
-from Models.controllers import viewsRole, viewsCategory , viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsUser
+from Models.controllers import viewsRole, viewsCategory , viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsGetAllDetaProd, viewsUser
 from Models.controllers import viewsSale, viewsDetailSale, viewsGroup, viewsGetAllDataProd, viewsUserGetAllData
 from Models.controllers import viewsRecupContrasena
 from django.contrib.auth.models import Group
@@ -43,7 +43,9 @@ urlpatterns = [
     path('update-detail_prod/<int:pk>/', viewsDetailProd.update_detailProd, name='update_detail_prod'), # Editar
     path('delete-detail_prod/<int:pk>/', viewsDetailProd.delete_detailProd, name='delete_detail_prod'), # Eliminar
 
-    path('get_all_data/', viewsGetAllDataProd.get_all_models_data, name='get_all_data'), # Trae todos los datos de views get_all_data
+    path('get_all_detal_prod/', viewsGetAllDetaProd.get_all_datap, name='get_all_data'),  # Trae todos los datos relacionados con detalle productos
+
+    path('get_all_data_prod/', viewsGetAllDataProd.get_all_models_data, name='get_all_data'), # Trae todos los datos relacionados con productos
 
     path('list-sales/', viewsSale.list_sale, name='list_sale'), # Listar 
     path('create-sales/', viewsSale.create_sale, name='create_sale'), # Crear
