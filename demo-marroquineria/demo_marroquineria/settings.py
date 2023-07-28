@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     "corsheaders",
     'rest_framework_simplejwt',
     'rest_framework',
+    'django_filters',
     'Models',
+    
 ]
 
 REST_FRAMEWORK = {

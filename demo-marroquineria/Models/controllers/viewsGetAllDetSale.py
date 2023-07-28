@@ -9,29 +9,40 @@ def get_all_datasale(request):
     # Obtener los productos y sus foreign keys relacionadas usando prefetch_related
     det_sale_data = DetailSale.objects.prefetch_related('fk_id_sale').all()
 
-    # Serializar los datos
-    det_sale_serializer = DetailSaleSerializer(det_sale_data, many=True)
+    if det_sale_data:
+        # Serializar los datos
+        det_sale_serializer = DetailSaleSerializer(det_sale_data, many=True)
+        response_data = []
+        # Modificar los datos para agregar los nombres del estado, tipo de producto y categoría
+        for det_sale_obj in det_sale_serializer.data:
+            # Obtener el ID del estado y el nombre asociado
+            sale_id = det_sale_obj['fk_id_product']
+            sale_obj = Sale.objects.get(pk=sale_id)
+            det_sale_obj['status_data'] = {'id': sale_id, 'name': sale_obj.name}
 
-    # Modificar los datos para agregar los nombres del producto
-    response_data = []
-    for det_sale_obj in det_sale_serializer.data:
-        # Obtener el ID del producto y el nombre asociado
-        sale_id = det_sale_obj['fk_id_product']
-        sale_obj = Sale.objects.get(pk=sale_id)
-        det_sale_obj['status_data'] = {'id': sale_id, 'name': det_sale_obj.name}
+            # Eliminar los campos de las claves foráneas que ya no se necesitan
+            det_sale_obj.pop('fk_id_sale')
+            response_data.append(det_sale_obj) # Agregar la sale modificada a la lista de respuesta
 
-        # Eliminar los campos de las claves foráneas que ya no se necesitan
-        det_sale_obj.pop('fk_id_sale')
+        response = {
+            'code': status.HTTP_200_OK,
+            'status': True,
+            'message': 'Consulta realizada Exitosamente',
+            'data': response_data
+        }
 
-        # Agregar el producto modificado a la lista de respuesta
-        response_data.append(det_sale_obj)
+        # Retornar la respuesta con los datos serializados y modificados
+        return Response(response)
+    else:
+        response = {
+            'code': status.HTTP_200_OK,
+            'status': False,
+            'message': 'No hay información disponible',
+            'data': []
+        }
 
-    # Retornar la respuesta con los datos serializados y modificados
-    response = {
-        'code': status.HTTP_200_OK,
-        'status': True,
-        'message': 'Datos obtenidos Exitosamente',
-        'data': response_data
-    }
+        return Response(response)
+    
 
-    return Response(response)
+
+    

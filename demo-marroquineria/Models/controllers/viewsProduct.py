@@ -56,12 +56,19 @@ def create_product(request):
 def update_product(request, pk):
     try:
         product = Product.objects.get(pk=pk)
-
         serializer = ProductSerializer(product, data=request.data, partial=True)
+
+        # Comprueba si hay un archivo de imagen en la solicitud
+        if 'image' in request.FILES:
+            product.image = request.FILES['image']
+
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(data={'code': status.HTTP_200_OK, 'message': 'Actualizado exitosamente', 'status': True})
-
+        return Response({
+            'code': status.HTTP_200_OK,
+            'message': 'Actualizado exitosamente', 
+            'status': True
+        })
     except Product.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No encontrado', 'status': False})
 
