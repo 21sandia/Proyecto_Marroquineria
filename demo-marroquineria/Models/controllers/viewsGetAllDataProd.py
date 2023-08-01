@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Product, Status_g, TypeProd, Category
+from ..models import Product, States, TypeProd, Category
 from ..serializers import ProductSerializer
 
 @api_view(['GET'])
@@ -17,7 +17,7 @@ def get_all_models_data(request):
         for product_obj in product_serializer.data:
             # Obtener el ID del estado y el nombre asociado
             status_id = product_obj['fk_id_status']
-            status_obj = Status_g.objects.get(pk=status_id)
+            status_obj = States.objects.get(pk=status_id)
             product_obj['status_data'] = {'id': status_id, 'name': status_obj.name}
 
             # Obtener el ID del tipo de producto y el nombre asociado

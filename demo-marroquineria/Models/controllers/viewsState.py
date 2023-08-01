@@ -8,7 +8,7 @@ import requests
 
 @api_view(['GET'])
 def list_Status_g(request):
-    queryset = Status_g.objects.all().order_by('name')
+    queryset = States.objects.all().order_by('name')
     serializer = StatusSerializer(queryset, many=True)
 
     if not serializer.data:
@@ -34,7 +34,7 @@ def create_Status_g(request):
         serializer.is_valid(raise_exception=True)
         # Verifica si el estado ya existe
         name = serializer.validated_data['name']
-        existing_status_g = Status_g.objects.filter(name=name).first()
+        existing_status_g = States.objects.filter(name=name).first()
         # Si el estado ya existe, envía el mensaje
         if existing_status_g:
             return Response(data={'code': status.HTTP_200_OK, 'message': 'El estado ya existe', 'status': False})
@@ -52,14 +52,14 @@ def create_Status_g(request):
 @api_view(['PATCH'])
 def update_Status_g(request, pk):
     try:
-        status_g = Status_g.objects.get(pk=pk)
+        status_g = States.objects.get(pk=pk)
 
-        serializer = StatusSerializer(status_g, data=request.data, partial=True)
+        serializer = StatusSerializer(States, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 'message': 'Estado Actualizado exitosamente', 'status': True})
 
-    except Status_g.DoesNotExist:
+    except States.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No encontrado', 'status': False})
 
     except requests.ConnectionError:
@@ -72,12 +72,12 @@ def update_Status_g(request, pk):
 @api_view(['DELETE'])
 def delete_Status_g(request, pk):
     try:
-        status_g = Status_g.objects.get(pk=pk)
+        status_g = States.objects.get(pk=pk)
         status_g.delete()
 
         return Response(data={'code': status.HTTP_200_OK, 'message': 'Se ha Eliminado exitosamente', 'status': True})
 
-    except Status_g.DoesNotExist:
+    except States.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'Estado No encontrado', 'status': False})
 
     except requests.ConnectionError:

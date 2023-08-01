@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import User, Role, Status_g
+from ..models import User, Role, States
 from ..serializers import RoleSerializer, StatusSerializer, UserSerializer
 
 @api_view(['GET'])
@@ -21,7 +21,7 @@ def get_related_foreign_keys(request):
     roles_data = roles_serializer.data
 
     # Obtener los estados relacionados con usuarios
-    status_data = Status_g.objects.filter(user__isnull=False).distinct()
+    status_data = States.objects.filter(user__isnull=False).distinct()
     
 
     # Serializar los datos de estados

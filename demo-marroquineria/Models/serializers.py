@@ -82,7 +82,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Status_g
+        model = States
         fields = '__all__'
 
 class TypeProdSerializer(serializers.ModelSerializer):
