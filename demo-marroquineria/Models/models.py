@@ -10,6 +10,7 @@ class States(models.Model):
 
 class Role(models.Model):
     name = models.CharField(max_length=30)
+    description = models.CharFiel(max_length=122)
     groups = models.ManyToManyField(Group, verbose_name='Grupos', blank=True)
 
     class Meta:
