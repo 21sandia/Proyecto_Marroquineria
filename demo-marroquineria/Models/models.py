@@ -54,7 +54,6 @@ class DetailProd(models.Model):
         db_table = 'detail_prod'
         
 class People(models.Model):
-    
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
