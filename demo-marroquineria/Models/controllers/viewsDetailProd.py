@@ -1,13 +1,13 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import *
+from ..models import DetailProds
 from ..serializers import *
 import requests
 
 @api_view(['GET'])
 def list_detailProd(request):
-    queryset = DetailProd.objects.all().order_by('registration_date')
+    queryset = DetailProds.objects.all().order_by('fk_id_product')
     serializer = DetailProdSerializer(queryset, many=True)
 
     if not serializer.data:
@@ -29,7 +29,7 @@ def list_detailProd(request):
 @api_view(['POST'])
 def create_detailProd(request):
     
-    existing_detail_prod = DetailProd.objects.filter(**request.data).first()
+    existing_detail_prod = DetailProds.objects.filter(**request.data).first()
     if existing_detail_prod:
         serializer = DetailProdSerializer(existing_detail_prod)
         return Response(data={'code': status.HTTP_200_OK, 'message': 'El objeto ya existe.', 'status': False, 'data': serializer.data})
@@ -42,8 +42,8 @@ def create_detailProd(request):
 @api_view(['PATCH'])
 def update_detailProd(request, pk):
     try:
-        detail_prod = DetailProd.objects.get(pk=pk)
-    except DetailProd.DoesNotExist:
+        detail_prod = DetailProds.objects.get(pk=pk)
+    except DetailProds.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No Encontrado', 'status': True})
     
     serializer = DetailProdSerializer(detail_prod, data=request.data, partial=True)
@@ -54,8 +54,8 @@ def update_detailProd(request, pk):
 @api_view(['DELETE'])
 def delete_detailProd(request, pk):
     try:
-        detail_prod = DetailProd.objects.get(pk=pk)
-    except DetailProd.DoesNotExist:
+        detail_prod = DetailProds.objects.get(pk=pk)
+    except DetailProds.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No Encontrado', 'status': True})
     
     detail_prod.delete()

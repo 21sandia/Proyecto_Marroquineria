@@ -1,114 +1,90 @@
-from django.contrib.auth.models import Group
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from .models import *
-exclude = ['groups']
+from .models import Users, Peoples, Rol, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys
+
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(validators=[])
-    groups = serializers.PrimaryKeyRelatedField(
-        many = True,
-        queryset = Group.objects.all(),
-        required = False
-    )
 
     class Meta:
-        model = get_user_model()
-        fields = ('id', 'email', 'name', 'last_name', 'document', 'date_birth', 
-                  'phone', 'address', 'groups', 'password', 'user_rol', 'fk_id_status')
+        model = Users
+        fields = ('fk_id_state', 'fk_id_rol', 'fk_id_people', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validate_data):
-        groups_data = validate_data.pop('groups', [])
         password = validate_data.pop('password')
         validate_data['is_active'] = True
         user = self.Meta.model(**validate_data)
         user.set_password(password)
         user.save()
 
-        if groups_data:
-            user.user_rol.groups.set(groups_data)
-
         return user
-        
-    def update(self, instance, validated_data):
-        groups_data = validated_data.pop('groups',  None)
-        password = validated_data.pop('password', None)
-        user = super().update(instance, validated_data)
 
-        if password:
-            user.set_password(password)
-            user.save()
-            user.save()
 
-        if groups_data:
-            Role.groups.set(groups_data)
-        
-        return user
+class PeopleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Peoples
+        fields = '__all__'
 
     
 class recup_ContrasenaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = Users
         fields = '__all__'
 
 
-class RoleSerializer(serializers.ModelSerializer):
+class RolSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Role
-        fields = '__all__'
-
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
+        model = Rol
         fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = Categorys
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
+    image = serializers.ImageField(use_url=True) 
 
     class Meta:
-        model = Product
-        fields = ['id', 'name', 'image', 'reference', 'price', 'fk_id_status', 'fk_id_type_prod']
+        model = Products
+        fields = ['id', 'name', 'image', 'reference', 'description', 'price_shop', 'price_sale', 'fk_id_state', 'fk_id_type_prod']
 
-    def get_image(self, obj):
-        return f"http://localhost:8000{obj.image.url}"
+    def validate(self, data):
+        price_shop = data.get('price_shop')
+        price_sale = data.get('price_sale')
+
+        if price_shop and price_sale and price_sale < price_shop:
+            raise serializers.ValidationError("El precio de venta debe ser mayor o igual al precio de compra.")
+        
+        return data
         
 
-class StatusSerializer(serializers.ModelSerializer):
+class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = States
         fields = '__all__'
 
 class TypeProdSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TypeProd
+        model = TypeProds
         fields = '__all__'
 
 class DetailProdSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DetailProd
+        model = DetailProds
         fields = '__all__'
 
 class SaleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Sale
+        model = Sales
         fields = '__all__'
 
 class DetailSaleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DetailSale
+        model = DetailSales
         fields = '__all__'
 
-"""
-class CartsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Carts
-        fields = '__all__'
-"""
+
+
 

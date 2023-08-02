@@ -1,13 +1,13 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Sale, DetailSale
+from ..models import Sales, DetailSales
 from ..serializers import DetailSaleSerializer
 
 @api_view(['GET'])
 def get_all_datasale(request):
     # Obtener los productos y sus foreign keys relacionadas usando prefetch_related
-    det_sale_data = DetailSale.objects.prefetch_related('fk_id_sale').all()
+    det_sale_data = DetailSales.objects.prefetch_related('fk_id_sale').all()
 
     if det_sale_data:
         # Serializar los datos
@@ -16,9 +16,9 @@ def get_all_datasale(request):
         # Modificar los datos para agregar los nombres del estado, tipo de producto y categoría
         for det_sale_obj in det_sale_serializer.data:
             # Obtener el ID del estado y el nombre asociado
-            sale_id = det_sale_obj['fk_id_product']
-            sale_obj = Sale.objects.get(pk=sale_id)
-            det_sale_obj['status_data'] = {'id': sale_id, 'name': sale_obj.name}
+            sale_id = det_sale_obj['fk_id_sale']
+            sale_obj = Sales.objects.get(pk=sale_id)
+            det_sale_obj['sale_data'] = {'id': sale_id, 'name': sale_obj.name}
 
             # Eliminar los campos de las claves foráneas que ya no se necesitan
             det_sale_obj.pop('fk_id_sale')

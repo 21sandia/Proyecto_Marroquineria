@@ -24,7 +24,7 @@ def create_user(request):
     serializer.is_valid(raise_exception=True)
     validated_data = serializer.validated_data
 
-    if User.objects.filter(email=validated_data['email']).exists():
+    if Users.objects.filter(email=validated_data['email']).exists():
         return Response(
             data={
                 'code':status.HTTP_200_OK,
@@ -60,7 +60,7 @@ def create_user(request):
 
 @api_view(['GET'])
 def list_user(request):
-    queryset = User.objects.all().order_by('name')
+    queryset = Users.objects.all().order_by('name')
     serializer = UserSerializer(queryset, many=True)
 
     if not serializer.data:
@@ -83,8 +83,8 @@ def list_user(request):
 @api_view(['PATCH'])
 def update_user(request, pk):
     try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
+        user = Users.objects.get(pk=pk)
+    except Users.DoesNotExist:
         return Response(data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
     
     try:
@@ -106,8 +106,8 @@ def update_user(request, pk):
 @api_view(['DELETE'])
 def delete_user(request, pk):
     try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
+        user = Users.objects.get(pk=pk)
+    except Users.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message':'Usuario no encontrado', 'status': False})
     
     try:

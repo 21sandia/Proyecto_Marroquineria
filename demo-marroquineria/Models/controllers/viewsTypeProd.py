@@ -8,7 +8,7 @@ import requests
 
 @api_view(['GET'])
 def list_type_prod(request):
-    queryset = TypeProd.objects.all().order_by('name')
+    queryset = TypeProds.objects.all().order_by('name')
     serializer = TypeProdSerializer(queryset, many=True)
 
     if not serializer.data:
@@ -35,7 +35,7 @@ def create_type_prod(request):
 
         # Verificar si la categoría ya existe
         name = serializer.validated_data['name']
-        existing_type_prod = TypeProd.objects.filter(name=name).first()
+        existing_type_prod = TypeProds.objects.filter(name=name).first()
         if existing_type_prod:
             return Response(data={'code': status.HTTP_200_OK, 'message': 'El tipo de producto Ya existe', 'status': False})
 
@@ -52,14 +52,14 @@ def create_type_prod(request):
 @api_view(['PATCH'])
 def update_type_prod(request, pk):
     try:
-        type_prod = TypeProd.objects.get(pk=pk)
+        type_prod = TypeProds.objects.get(pk=pk)
 
         serializer = TypeProdSerializer(type_prod, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 'message': 'Actualizado exitosamente', 'status': True})
 
-    except TypeProd.DoesNotExist:
+    except TypeProds.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No encontrado', 'status': False})
 
     except requests.ConnectionError:
@@ -72,12 +72,12 @@ def update_type_prod(request, pk):
 @api_view(['DELETE'])
 def delete_type_prod(request, pk):
     try:
-        type_prod = TypeProd.objects.get(pk=pk)
+        type_prod = TypeProds.objects.get(pk=pk)
         type_prod.delete()
 
         return Response(data={'code': status.HTTP_200_OK, 'message': 'Eliminado exitosamente', 'status': True})
 
-    except TypeProd.DoesNotExist:
+    except TypeProds.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 'message': 'No se encontró', 'status': False})
 
     except requests.ConnectionError:

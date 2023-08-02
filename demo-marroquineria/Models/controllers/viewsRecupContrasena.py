@@ -30,8 +30,8 @@ def recuperar_contrasena(request):
     token = default_token_generator.make_token(user)
     # Codificar el ID del usuario en base64
     uid_base64 = base64.urlsafe_b64encode(force_bytes(user.pk)).decode()
-    # Construir la URL para restablecer la contraseña con el token e ID del usuario codificado
-    reset_password_url = f'{settings.FRONTEND_URL}/{uid_base64}/{token}/'
+    # Construir la URL para restablecer la contraseña con el ID del usuario codificado
+    reset_password_url = f'{settings.FRONTEND_URL}/{uid_base64}/'
 
     # Cuepo del mensaje del correo
     asunto = 'Recuperación de contraseña'
@@ -61,8 +61,21 @@ User = get_user_model()
 # Funcion para cambiar la contraseña
 @api_view(['POST'])
 def cambiar_contrasena(request, uidb64, token):
+    # Obtiene la nueva contraseña y la confirma
+    new_password = request.data.get('new_password')
+    confirm_password = request.data.get('confirm_password')
+
+    # Verifica si las contraseñas fueron proporcionadas
+    if not new_password or not confirm_password:
+        return Response(
+            data={'code': 'HTTP_400_BAD_REQUEST', 
+                  'message': 'Se requiere nueva contraseña y confirmación de contraseña', 
+                  'status': False}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
-        #Decodificación  del ID del user codificado en base64
+        # Decodificación del ID del user codificado en base64
         uid = urlsafe_base64_decode(uidb64).decode()
         # Intenta obtener al usuario en base al ID del usuario decodificado
         user = get_user_model().objects.get(pk=uid)
@@ -72,10 +85,6 @@ def cambiar_contrasena(request, uidb64, token):
 
     # Verificar si el usuario existe y si el token proporcionado es válido para ese usuario
     if user is not None and default_token_generator.check_token(user, token):
-        # Obtiene la nueva contraseña y la confirma
-        new_password = request.data.get('new_password')
-        confirm_password = request.data.get('confirm_password')
-
         # Verifica si las contraseñas coinciden
         if new_password != confirm_password:
             return Response(
@@ -112,3 +121,4 @@ def cambiar_contrasena(request, uidb64, token):
               'status':False}, 
         status=status.HTTP_500_INTERNAL_SERVER_ERROR
     )
+    

@@ -1,13 +1,13 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import *
+from ..models import DetailSales
 from ..serializers import *
 import requests
 
 @api_view(['GET'])
 def list_detail_sale(request):
-    queryset = DetailSale.objects.all().order_by('customer_name')
+    queryset = DetailSales.objects.all().order_by('customer_name')
     serializer = DetailSaleSerializer(queryset, many=True)
 
     if not serializer.data:
@@ -32,7 +32,7 @@ def create_detail_sale(request):
 
     existing_details = []
     for detail_data in data:
-        existing_detail = DetailSale.objects.filter(**detail_data).first()
+        existing_detail = DetailSales.objects.filter(**detail_data).first()
         if existing_detail:
             existing_details.append(existing_detail)
 
@@ -48,8 +48,8 @@ def create_detail_sale(request):
 @api_view(['PATCH'])
 def update_detail_sale(request, pk):
     try:
-        detail_sale = DetailSale.objects.get(pk=pk)
-    except DetailSale.DoesNotExist:
+        detail_sale = DetailSales.objects.get(pk=pk)
+    except DetailSales.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No Encontrado', 'status': True})
     
     serializer = DetailSaleSerializer(detail_sale, data=request.data, partial=True)
@@ -60,8 +60,8 @@ def update_detail_sale(request, pk):
 @api_view(['DELETE'])
 def delete_detail_sale(request, pk):
     try:
-        detail_sale = DetailSale.objects.get(pk=pk)
-    except DetailSale.DoesNotExist:
+        detail_sale = DetailSales.objects.get(pk=pk)
+    except DetailSales.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 'message': 'No Encontrado', 'status': True})
     
     detail_sale.delete()
