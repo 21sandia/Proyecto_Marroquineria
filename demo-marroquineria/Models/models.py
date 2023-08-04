@@ -9,18 +9,6 @@ class Categorys(models.Model):
         db_table = 'categorys'
 
 
-class DetailProds(models.Model):
-    fk_id_product = models.ForeignKey('Products', models.DO_NOTHING, db_column='fk_id_product')
-    date = models.DateField(auto_now_add=True)
-    color = models.CharField(max_length=30)
-    size_p = models.CharField(max_length=50)
-    material = models.CharField(max_length=40)
-    quantity = models.IntegerField()
-
-    class Meta:
-        db_table = 'detail_prods'
-
-
 class DetailSales(models.Model):
     fk_id_sale = models.ForeignKey('Sales', models.DO_NOTHING, db_column='fk_id_sale')
     fk_id_prod = models.ForeignKey('Products', models.DO_NOTHING, db_column='fk_id_prod')
@@ -47,13 +35,25 @@ class Peoples(models.Model):
         db_table = 'peoples'
 
 
+class DetailProds(models.Model):
+    date = models.DateField(auto_now_add=True)
+    color = models.CharField(max_length=30)
+    size_p = models.CharField(max_length=50)
+    material = models.CharField(max_length=40)
+
+    class Meta:
+        db_table = 'detail_prods'
+
+
 class Products(models.Model):
     fk_id_state = models.ForeignKey('States', models.DO_NOTHING, db_column='fk_id_state')
     fk_id_type_prod = models.ForeignKey('TypeProds', models.DO_NOTHING, db_column='fk_id_type_prod')
+    fk_id_detail_prod = models.ForeignKey('detail_prod', models.DO_NOTHING, db_column='fk_id_detail_prod', blank=True, null=True)
     name = models.CharField(max_length=30)
     image = models.ImageField(upload_to='media/')
     reference = models.CharField(max_length=60)
     description = models.CharField(max_length=1000)
+    quantity = models.IntegerField(default=00)
     price_shop = models.DecimalField(max_digits=10, decimal_places=2)
     price_sale = models.DecimalField(max_digits=10, decimal_places=2)
 

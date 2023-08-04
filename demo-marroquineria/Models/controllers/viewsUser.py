@@ -10,33 +10,53 @@ from ..serializers import *
 import requests
 
 
+def enviar_correo_confirmacion(user_name, user_email):
+    # Asunto y cuerpo del correo electrónico
+    asunto = 'Confirmación de registro y bienvenida'
+    mensaje = f'¡Bienvenido(a) {user_name}!, \n \
+    Gracias por registrarte en nuestro sitio web. Tu cuenta ha sido creada exitosamente.\n\n \
+    Saludos,\n \
+    MarquetPlace'
+    send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, [user_email], fail_silently=False)
+
 @api_view(['POST'])
-def create_user(self, request, *args, **kwargs):
-    validated_data = request.data
+def create_user(request):
+    serializer = UserSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    validated_data = serializer.validated_data
 
-    people_id = validated_data.pop('fk_id_people')
-    people = Peoples.objects.get(id=people_id)
+    if Users.objects.filter(email=validated_data['email']).exists():
+        return Response(
+            data={
+                'code':status.HTTP_200_OK,
+                'message':'Este usuario ya existe',
+                'status': True
+            })
 
-    if Users.objects.filter(fk_id_people=people_id).exists():
-        raise serializers.ValidationError('A User for this Person already exists')
-
-    validated_data['email'] = people.email
-
-    user = Users(fk_id_people=people, **validated_data)
-    user.set_password(validated_data['password'])
-    user.save()
-
-    # Send welcome email to the user
-    send_mail(
-        'Bienvenido a nuestra plataforma Market Place',
-        'Estimado(a) {},\n\nGracias por registrarse con nosotros. Su cuenta se ha creado correctamente'.format(people.name),
-        'noreply@example.com',
-        [people.email],
-        fail_silently=False,)
+    user_name = validated_data['name']
+    user_email = validated_data['email']
     
-    data = {}
+    try:
+        enviar_correo_confirmacion(user_name,user_email)
+        serializer.save()
 
-    return Response(data)
+    except requests.ConnectionError:
+        return Response(
+            data={
+                'code': status.HTTP_503_SERVICE_UNAVAILABLE,
+                'message': 'Error de conexión o de red',
+                'status': False
+            })
+
+    except Exception:
+        return Response(
+            data={
+                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                'message': 'El servidor ha fallado',
+                'status': False
+            })
+
+    return Response(data={'code': status.HTTP_200_OK, 'message': 'Creado Exitosamente', 'status': True})
 
 
 @api_view(['GET'])

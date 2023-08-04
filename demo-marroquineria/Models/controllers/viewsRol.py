@@ -5,22 +5,13 @@ from ..models import *
 from ..serializers import *
 import requests
 
-@api_view(['GET'])
-def list_rol(request):
-    queryset = Rol.objects.all().order_by('name')
-    serializer = RolSerializer(queryset, many=True)
 
-    if not serializer.data:
-        response_data = {'code': status.HTTP_200_OK,
-                         'message': 'No hay roles registrados',
-                         'status': False}
-        return Response(response_data)
+def crear_roles_iniciales():
+    roles_iniciales = ["Administrador", "Vendedor", "Repartidor", "Cliente"]
 
-    response_data = {'code': status.HTTP_200_OK,
-                     'message': 'Consulta Realizada Exitosamente',
-                     'status': True,
-                     'data': serializer.data}
-    return Response(response_data)
+    for rol_nombre in roles_iniciales:
+        Rol.objects.get_or_create(name=rol_nombre)
+
 
 @api_view(['POST'])
 def create_rol(request):
@@ -49,6 +40,25 @@ def create_rol(request):
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor: '+str(e), 
                               'status': False})
+    
+
+@api_view(['GET'])
+def list_rol(request):
+    queryset = Rol.objects.all().order_by('name')
+    serializer = RolSerializer(queryset, many=True)
+
+    if not serializer.data:
+        response_data = {'code': status.HTTP_200_OK,
+                         'message': 'No hay roles registrados',
+                         'status': False}
+        return Response(response_data)
+
+    response_data = {'code': status.HTTP_200_OK,
+                     'message': 'Consulta Realizada Exitosamente',
+                     'status': True,
+                     'data': serializer.data}
+    return Response(response_data)
+
     
 @api_view(['PATCH'])
 def update_rol(request, pk):

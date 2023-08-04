@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Users
-        fields = ('fk_id_state', 'fk_id_rol', 'fk_id_people', 'password')
+        fields = ('fk_id_state', 'fk_id_rol', 'fk_id_people', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validate_data):
@@ -48,17 +48,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Products
-        fields = ['id', 'name', 'image', 'reference', 'description', 'price_shop', 'price_sale', 'fk_id_state', 'fk_id_type_prod']
-
-    def validate(self, data):
-        price_shop = data.get('price_shop')
-        price_sale = data.get('price_sale')
-
-        if price_shop and price_sale and price_sale < price_shop:
-            raise serializers.ValidationError("El precio de venta debe ser mayor o igual al precio de compra.")
-        
-        return data
-        
+        fields = ['id', 'name', 'image', 'reference', 'description', 'quantity', 'price_shop', 'price_sale', 'fk_id_state', 'fk_id_type_prod']
 
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
