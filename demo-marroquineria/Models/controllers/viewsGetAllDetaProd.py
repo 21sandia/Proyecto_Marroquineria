@@ -31,22 +31,18 @@ def get_all_datap(request):
             # Agregar el producto modificado a la lista de respuesta
             response_data.append(det_prod_obj)
 
-        response = {
-            'code': status.HTTP_200_OK,
-            'status': True,
-            'message': 'Consulta realizada Exitosamente',
-            'data': response_data
-        }
+        response = {'code': status.HTTP_200_OK,
+                    'status': True,
+                    'message': 'Consulta realizada Exitosamente',
+                    'data': response_data}
 
         # Retornar la respuesta con los datos serializados y modificados
         return Response(response)
     else:
-        response = {
-            'code': status.HTTP_200_OK,
-            'status': False,
-            'message': 'No hay información disponible',
-            'data': []
-        }
+        response = {'code': status.HTTP_200_OK,
+                    'status': False,
+                    'message': 'No hay información disponible',
+                    'data': []}
 
         return Response(response)
 

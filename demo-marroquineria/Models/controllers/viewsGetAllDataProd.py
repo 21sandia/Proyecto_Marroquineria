@@ -26,7 +26,7 @@ def get_all_models_data(request):
             product_obj['type_prod_data'] = {'id': type_prod_id, 'name': type_prod_obj.name}
 
             # Obtener el ID de la categoría y el nombre asociado
-            category_id = type_prod_obj.fk_id_category
+            category_id = type_prod_obj.fk_id_category_id
             category_obj = Categorys.objects.get(pk=category_id)
             product_obj['category_data'] = {'id': category_id, 'name': category_obj.name}
 
@@ -35,22 +35,18 @@ def get_all_models_data(request):
             product_obj.pop('fk_id_type_prod')
             response_data.append(product_obj) # Agregar el producto modificado a la lista de respuesta
 
-        response = {
-            'code': status.HTTP_200_OK,
-            'status': True,
-            'message': 'Consulta realizada Exitosamente',
-            'data': response_data
-        }
+        response = {'code': status.HTTP_200_OK,
+                    'status': True,
+                    'message': 'Consulta realizada Exitosamente',
+                    'data': response_data}
 
         # Retornar la respuesta con los datos serializados y modificados
         return Response(response)
     else:
-        response = {
-            'code': status.HTTP_200_OK,
-            'status': False,
-            'message': 'No hay información disponible',
-            'data': []
-        }
+        response = {'code': status.HTTP_200_OK,
+                    'status': False,
+                    'message': 'No hay información disponible',
+                    'data': []}
 
         return Response(response)
 

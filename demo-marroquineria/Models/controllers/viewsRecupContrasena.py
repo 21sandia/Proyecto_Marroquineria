@@ -19,11 +19,9 @@ def recuperar_contrasena(request):
         user = get_user_model().objects.get(email=email)
     except get_user_model().DoesNotExist:
         # Si el usuario no se encuentra, devolver una respuesta de error
-        response_data = {
-            'code': status.HTTP_200_OK,
-            'message': 'Usuario no existente',
-            'status': False
-        }
+        response_data = {'code': status.HTTP_200_OK,
+                         'message': 'Usuario no existente',
+                         'status': False}
         return Response(data=response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # Generar un token de restablecimiento de contraseña
@@ -48,13 +46,10 @@ def recuperar_contrasena(request):
 
     # Devuelve una respuesta de éxito indicando que se ha enviado el correo
     return Response(
-        data={
-            'code': status.HTTP_200_OK,
-            'message': 'Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña',
-            'status': True
-        },
-        status=status.HTTP_200_OK
-    )
+        data={'code': status.HTTP_200_OK,
+              'message': 'Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña',
+              'status': True},
+        status=status.HTTP_200_OK)
 
 User = get_user_model()
 
@@ -71,8 +66,7 @@ def cambiar_contrasena(request, uidb64, token):
             data={'code': 'HTTP_400_BAD_REQUEST', 
                   'message': 'Se requiere nueva contraseña y confirmación de contraseña', 
                   'status': False}, 
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            status=status.HTTP_400_BAD_REQUEST)
 
     try:
         # Decodificación del ID del user codificado en base64
@@ -91,8 +85,7 @@ def cambiar_contrasena(request, uidb64, token):
                 data={'code': 'HTTP_400_BAD_REQUEST', 
                       'message': 'Las contraseñas no coinciden', 
                       'status': False}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                status=status.HTTP_400_BAD_REQUEST)
 
         # Si las contraseñas coinciden, la establece y la guarda
         user.set_password(new_password)
@@ -111,14 +104,12 @@ def cambiar_contrasena(request, uidb64, token):
             data={'code':'200_OK', 
                   'message': 'Contraseña restablecida exitosamente', 
                   'status':True}, 
-            status=status.HTTP_200_OK
-        )
+            status=status.HTTP_200_OK)
 
     # Si el usuario o el token no son válidos, devuelve una respuesta de error
     return Response(
         data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 
               'message': 'El enlace de restablecimiento de contraseña es inválido', 
               'status':False}, 
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR
-    )
+        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     

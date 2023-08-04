@@ -3,7 +3,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsDetailProd, viewsGetAllDetaProd, viewsUser
-from Models.controllers import viewsSale, viewsDetailSale, viewsGetAllDataProd, viewsUserGetAllData, viewsGetAllDetSale
+from Models.controllers import viewsSale, viewsDetailSale, viewsGetAllDataProd, viewsUserGetAllData, viewsGetAllDetSale, viewsTpCategory
 from Models.controllers import viewsRecupContrasena
 from django.conf import settings
 from django.conf.urls.static import static
@@ -22,6 +22,21 @@ urlpatterns = [
     path('update-rol/<int:pk>/', viewsRol.update_rol, name='update_rol'), # Editar
     path('delete-rol/<int:pk>/', viewsRol.delete_rol, name='delete_rol'), # Eliminar
 
+    # Peoples
+    path('list-people/', viewsPeople.list_people, name='list_people'), # Listar 
+    path('create-people/', viewsPeople.create_people, name='create_people'), # Crear
+    path('update-people/<int:pk>/', viewsPeople.update_people, name='update_people'), # Editar
+    path('delete-people/<int:pk>/', viewsPeople.delete_people, name='delete_people'), # Eliminar
+
+    # Usuarios
+    path('list-user/', viewsUser.list_user, name='list_user'), # Listar 
+    path('create-user/', viewsUser.create_user, name='create_user'), # Crear
+    path('update-user/<int:pk>/', viewsUser.update_user, name='update_user'), # Editar
+    path('delete-user/<int:pk>/', viewsUser.delete_user, name='delete_user'), # Eliminar
+
+    # Trae toda la información de las tablas relacionadas con el usuario 
+    path('get_all_dataUser/', viewsUserGetAllData.get_related_foreign_keys, name='get_all_models_data'), # Trae todos los datos de views User get_all_data
+
     # Categorías
     path('list-category/', viewsCategory.list_category, name='list_category'), # Listar
     path('create-category/', viewsCategory.create_category, name='create_category'), # Crear
@@ -33,6 +48,9 @@ urlpatterns = [
     path('create-type_prod/', viewsTypeProd.create_type_prod, name='create_type_prod'), # Crear
     path('update-type_prod/<int:pk>/', viewsTypeProd.update_type_prod, name='update_type_prod'), # Editar
     path('delete-type_prod/<int:pk>/', viewsTypeProd.delete_type_prod, name='delete_type_prod'), # Eliminar
+
+    # Trae toda la información relacionada con categoría y tipo de producto
+    path('get_all_tpcateg/', viewsTpCategory.get_all_tpcateg, name='get_all_tpcateg'),
 
     # Productos
     path('list-product/', viewsProduct.list_product, name='list_product'), # Listar
@@ -68,21 +86,6 @@ urlpatterns = [
 
     # Trae la información relacionada de la venta con detalle de la venta
     path('get-all-det_sales/', viewsGetAllDetSale.get_all_datasale, name='get_all_data_sales'), 
-
-    # Peoples
-    path('list-people/', viewsPeople.list_people, name='list_people'), # Listar 
-    path('create-people/', viewsPeople.create_people, name='create_people'), # Crear
-    path('update-people/<int:pk>/', viewsPeople.update_people, name='update_people'), # Editar
-    path('delete-people/<int:pk>/', viewsPeople.delete_people, name='delete_people'), # Eliminar
-
-    # Usuarios
-    path('list-user/', viewsUser.list_user, name='list_user'), # Listar 
-    path('create-user/', viewsUser.create_user, name='create_user'), # Crear
-    path('update-user/<int:pk>/', viewsUser.update_user, name='update_user'), # Editar
-    path('delete-user/<int:pk>/', viewsUser.delete_user, name='delete_user'), # Eliminar
-
-    # Trae toda la información de las tablas relacionadas con el usuario 
-    path('get_all_dataUser/', viewsUserGetAllData.get_related_foreign_keys, name='get_all_models_data'), # Trae todos los datos de views User get_all_data
 
     #  **RECUPERAR CONTRASEÑA**
     path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), #  

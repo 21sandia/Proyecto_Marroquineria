@@ -22,24 +22,20 @@ def get_all_datasale(request):
 
             # Eliminar los campos de las claves foráneas que ya no se necesitan
             det_sale_obj.pop('fk_id_sale')
-            response_data.append(det_sale_obj) # Agregar la sale modificada a la lista de respuesta
+            response_data.append(det_sale_obj) # Agregar la venta modificada a la lista de respuesta
 
-        response = {
-            'code': status.HTTP_200_OK,
-            'status': True,
-            'message': 'Consulta realizada Exitosamente',
-            'data': response_data
-        }
+        response = {'code': status.HTTP_200_OK,
+                    'status': True,
+                    'message': 'Consulta realizada Exitosamente',
+                    'data': response_data}
 
         # Retornar la respuesta con los datos serializados y modificados
         return Response(response)
     else:
-        response = {
-            'code': status.HTTP_200_OK,
-            'status': False,
-            'message': 'No hay información disponible',
-            'data': []
-        }
+        response = {'code': status.HTTP_200_OK,
+                    'status': False,
+                    'message': 'No hay información disponible',
+                    'data': []}
 
         return Response(response)
     

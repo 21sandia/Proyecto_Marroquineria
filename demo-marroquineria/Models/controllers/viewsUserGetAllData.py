@@ -15,6 +15,7 @@ def get_related_foreign_keys(request):
 
     # obtener Roles relacionados con User
     rol_data = Rol.objects.filter(users__isnull=False).distinct()
+    
     # serializa Datos de Rol
     rol_serializer = RolSerializer(rol_data, many=True)
     rol_data = rol_serializer.data
@@ -42,7 +43,8 @@ def get_related_foreign_keys(request):
     user_obj.pop('fk_id_state', None)
     user_obj.pop('fk_id_people', None)
 
-    return Response(data={'code': status.HTTP_200_OK, 'message': 'Data obtained successfully',
+    return Response(data={'code': status.HTTP_200_OK, 
+                          'message': 'Data obtained successfully',
                           'status': True, 'data': user_data})
 
 

@@ -12,19 +12,15 @@ def list_States(request):
     serializer = StateSerializer(queryset, many=True)
 
     if not serializer.data:
-        response_data = {
-            'code': status.HTTP_200_OK,
-            'message': 'No hay estados registrados',
-            'status': False
-        }
+        response_data = {'code': status.HTTP_200_OK,
+                         'message': 'No hay estados registrados',
+                         'status': False}
         return Response(response_data)
 
-    response_data = {
-        'code': status.HTTP_200_OK,
-        'message': 'Consulta Realizada Exitosamente',
-        'status': True,
-        'data': serializer.data
-    }
+    response_data = {'code': status.HTTP_200_OK,
+                     'message': 'Consulta Realizada Exitosamente',
+                     'status': True,
+                     'data': serializer.data}
     return Response(response_data)
 
 @api_view(['POST'])
@@ -37,16 +33,24 @@ def create_States(request):
         existing_states = States.objects.filter(name=name).first()
         # Si el estado ya existe, envía el mensaje
         if existing_states:
-            return Response(data={'code': status.HTTP_200_OK, 'message': 'El estado ya existe', 'status': False})
+            return Response(data={'code': status.HTTP_200_OK, 
+                                  'message': 'El estado ya existe', 
+                                  'status': False})
         # Si el estado no existe, lo guarda
         serializer.save()
-        return Response(data={'code': status.HTTP_200_OK, 'message': 'Estado Creado Exitosamente', 'status': True})
+        return Response(data={'code': status.HTTP_200_OK, 
+                              'message': 'Estado Creado Exitosamente', 
+                              'status': True})
     
     except requests.ConnectionError:
-        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
+        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
+                              'message': 'Error de red', 
+                              'status': False})
     
     except Exception as e:
-        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 'message': 'Error del servidor: '+str(e), 'status': False})
+        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                              'message': 'Error del servidor: '+str(e), 
+                              'status': False})
           
 
 @api_view(['PATCH'])
@@ -57,16 +61,24 @@ def update_States(request, pk):
         serializer = StateSerializer(states, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(data={'code': status.HTTP_200_OK, 'message': 'Estado Actualizado exitosamente', 'status': True})
+        return Response(data={'code': status.HTTP_200_OK, 
+                              'message': 'Estado Actualizado exitosamente', 
+                              'status': True})
 
     except States.DoesNotExist:
-        return Response(data={'code': status.HTTP_200_OK, 'message': 'No encontrado', 'status': False})
+        return Response(data={'code': status.HTTP_200_OK, 
+                              'message': 'No encontrado', 
+                              'status': False})
 
     except requests.ConnectionError:
-        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
+        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
+                              'message': 'Error de red', 
+                              'status': False})
 
     except Exception as e:
-        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 'message': 'Error del servidor', 'status': False})
+        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                              'message': 'Error del servidor', 
+                              'status': False})
     
 
 @api_view(['DELETE'])
@@ -75,15 +87,23 @@ def delete_States(request, pk):
         states = States.objects.get(pk=pk)
         states.delete()
 
-        return Response(data={'code': status.HTTP_200_OK, 'message': 'Se ha Eliminado exitosamente', 'status': True})
+        return Response(data={'code': status.HTTP_200_OK,
+                              'message': 'Se ha Eliminado exitosamente', 
+                              'status': True})
 
     except States.DoesNotExist:
-        return Response(data={'code': status.HTTP_200_OK, 'message': 'Estado No encontrado', 'status': False})
+        return Response(data={'code': status.HTTP_200_OK, 
+                              'message': 'Estado No encontrado', 
+                              'status': False})
 
     except requests.ConnectionError:
-        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 'message': 'Error de red', 'status': False})
+        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
+                              'message': 'Error de red', 
+                              'status': False})
 
     except Exception as e:
-        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 'message': 'No se puede eliminar este dato mientras esté en uso', 'status': False})
+        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                              'message': 'No se puede eliminar este dato mientras esté en uso', 
+                              'status': False})
 
 
