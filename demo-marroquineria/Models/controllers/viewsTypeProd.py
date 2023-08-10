@@ -75,6 +75,24 @@ def get_all_tpcateg(request):
 
         return Response(response)
 
+# ** Lista solo el tipo de producto **   
+@api_view(['GET'])
+def list_type_prod(request):
+    queryset = TypeProds.objects.all().order_by('name')
+    serializer = TypeProdSerializer(queryset, many=True)
+
+    if not serializer.data:
+        response_data = {'code': status.HTTP_200_OK,
+                         'message': 'No hay productos registrados',
+                         'status': False}
+        return Response(response_data)
+
+    response_data = {'code': status.HTTP_200_OK,
+                     'message': 'Consulta Realizada Exitosamente',
+                     'status': True,
+                     'data': serializer.data}
+    return Response(response_data)
+
 
 @api_view(['PATCH'])
 def update_type_prod(request, pk):
@@ -115,7 +133,7 @@ def delete_type_prod(request, pk):
                               'status': True})
 
     except TypeProds.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND, 
+        return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No se encontró', 
                               'status': False})
 
@@ -125,8 +143,8 @@ def delete_type_prod(request, pk):
                               'status': False})
 
     except Exception as e:
-        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                              'message': 'Error del servidor', 
+        return Response(data={'code': status.HTTP_200_OK, 
+                              'message': 'No se puede eliminar este dato mientras esté en uso', 
                               'status': False})
     
     

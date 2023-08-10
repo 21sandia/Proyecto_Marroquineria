@@ -6,23 +6,6 @@ from ..serializers import *
 import requests
 
 
-@api_view(['GET'])
-def list_people(request):
-    queryset = Peoples.objects.all().order_by('name')
-    serializer = PeopleSerializer(queryset, many=True)
-
-    if not serializer.data:
-        response_data = {'code': status.HTTP_200_OK,
-                         'message': 'No hay personas registradas',
-                         'status': False}
-        return Response(response_data)
-
-    response_data = {'code': status.HTTP_200_OK,
-                     'message': 'Consulta Realizada Exitosamente',
-                     'status': True,
-                     'data': serializer.data}
-    return Response(response_data)
-
 @api_view(['POST'])
 def create_people(request):
     try:
@@ -56,7 +39,26 @@ def create_people(request):
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Server Error: '+str(e), 
                               'status': False})
-    
+
+
+@api_view(['GET'])
+def list_people(request):
+    queryset = Peoples.objects.all().order_by('name')
+    serializer = PeopleSerializer(queryset, many=True)
+
+    if not serializer.data:
+        response_data = {'code': status.HTTP_200_OK,
+                         'message': 'No hay personas registradas',
+                         'status': False}
+        return Response(response_data)
+
+    response_data = {'code': status.HTTP_200_OK,
+                     'message': 'Consulta Realizada Exitosamente',
+                     'status': True,
+                     'data': serializer.data}
+    return Response(response_data)
+
+
 @api_view(['PATCH'])
 def update_people(request, pk):
     try:

@@ -108,8 +108,8 @@ def delete_rol(request, pk):
                               'status': False})
 
     except Exception as e:
-        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                              'message': 'Error del servidor', 
+        return Response(data={'code': status.HTTP_200_OK, 
+                              'message': 'No se puede eliminar este dato mientras esté en uso', 
                               'status': False})
 
 

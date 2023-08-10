@@ -56,7 +56,9 @@ def create_user(request):
                 'status': False
             })
 
-    return Response(data={'code': status.HTTP_200_OK, 'message': 'Creado Exitosamente', 'status': True})
+    return Response(data={'code': status.HTTP_200_OK, 
+                          'message': 'Creado Exitosamente', 
+                          'status': True})
 
 
 @api_view(['GET'])

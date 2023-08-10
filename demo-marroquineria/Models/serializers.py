@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Users, Peoples, Rol, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys
 
-
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(validators=[])
 
@@ -44,11 +43,13 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True) 
+    #image = serializers.ImageField(use_url=True) 
 
     class Meta:
         model = Products
-        fields = ['id', 'name', 'image', 'reference', 'description', 'quantity', 'price_shop', 'price_sale', 'fk_id_state', 'fk_id_type_prod']
+        fields = ['id', 'name', 'reference', 'image', 'description', 'quantity', 'price_shop', 'price_sale', 'fk_id_state', 'fk_id_type_prod']
+
+    
 
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,7 +64,7 @@ class TypeProdSerializer(serializers.ModelSerializer):
 class DetailProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailProds
-        fields = '__all__'
+        fields = ['date', 'color', 'size_p', 'material']
 
 class SaleSerializer(serializers.ModelSerializer):
     class Meta:

@@ -44,7 +44,7 @@ def get_related_foreign_keys(request):
     user_obj.pop('fk_id_people', None)
 
     return Response(data={'code': status.HTTP_200_OK, 
-                          'message': 'Data obtained successfully',
+                          'message': 'Datos obtenidos con éxito',
                           'status': True, 'data': user_data})
 
 
