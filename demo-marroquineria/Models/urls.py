@@ -37,7 +37,7 @@ urlpatterns = [
     # Listar People
     path('list-people/', viewsPeople.list_people, name='list_people'),
     # Crear People
-    path('create-people/', viewsPeople.create_people, name='create_people'), 
+    path('create-people/', viewsPeople.create_people_and_user, name='create_people'), 
     # Editar People
     path('update-people/<int:pk>/', viewsPeople.update_people, name='update_people'),
     # Eliminar People
@@ -48,7 +48,7 @@ urlpatterns = [
     # Listar Usuario
     path('list-user/', viewsUser.list_user, name='list_user'),
     # Crear Usuario
-    path('create-user/', viewsUser  .create_user, name='create_user'), 
+    #path('create-user/', viewsUser  .create_user, name='create_user'), 
     # Editar Usuario
     path('update-user/<int:pk>/', viewsUser.update_user, name='update_user'), 
     # Eliminar Usuario

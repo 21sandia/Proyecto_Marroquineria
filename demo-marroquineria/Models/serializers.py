@@ -2,18 +2,23 @@ from rest_framework import serializers
 from .models import Users, Peoples, Rol, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys
 
 class UserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(validators=[])
-
     class Meta:
         model = Users
-        fields = ('fk_id_state', 'fk_id_rol', 'fk_id_people', 'email', 'password')
+        fields = ('fk_id_state', 'fk_id_rol', 'fk_id_people', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
-    def create(self, validate_data):
-        password = validate_data.pop('password')
-        validate_data['is_active'] = True
-        user = self.Meta.model(**validate_data)
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        fk_id_people = validated_data.pop('fk_id_people')
+        validated_data['is_active'] = True
+
+        # Obtener la instancia de la persona relacionada
+        people = Peoples.objects.get(id=fk_id_people)
+
+        # Crear y guardar el nuevo usuario con la relación con la persona
+        user = self.Meta.model(**validated_data)
         user.set_password(password)
+        user.fk_id_people = people
         user.save()
 
         return user
@@ -22,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PeopleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Peoples
-        fields = '__all__'
+        fields = ('id', 'name', 'last_name', 'email', 'type_document', 'document', 'gender', 'date_birth', 'phone', 'address')
 
     
 class recup_ContrasenaSerializer(serializers.ModelSerializer):
@@ -34,7 +39,7 @@ class recup_ContrasenaSerializer(serializers.ModelSerializer):
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol
-        fields = '__all__'
+        fields = ('id', 'name')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -54,7 +59,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = States
-        fields = '__all__'
+        fields = ('id', 'name')
 
 class TypeProdSerializer(serializers.ModelSerializer):
     class Meta:
