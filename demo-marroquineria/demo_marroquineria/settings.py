@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from datetime import timedelta
 import os
 from pathlib import Path
 
@@ -44,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'Models',
-
+    
 ]
 
 REST_FRAMEWORK = {
@@ -54,11 +53,12 @@ REST_FRAMEWORK = {
     ]
 }
 
+from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-}
+"ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+"REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+} 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -99,11 +99,11 @@ WSGI_APPLICATION = 'demo_marroquineria.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ecommerc_v1',
+        'NAME': 'Ecommerce',
         'USER': 'postgres',
-        'PASSWORD': 'Admin',
-        'HOST': 'localhost',
-        'PORT': '5433',
+        'PASSWORD': 'admin',
+        'HOST':'localhost',
+        'PORT':'5432',
     }
 }
 
@@ -156,7 +156,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#AUTH_USER_MODEL = 'Models.User'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -164,7 +163,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 DEFAULT_FROM_EMAIL = 'Marroquineria <ecommerce.marquetp@gmail.com>'
-# Correo
+#Correo
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'ecommerce.marquetp@gmail.com'
@@ -174,3 +173,4 @@ EMAIL_USE_TLS = True
 
 
 FRONTEND_URL = 'http://127.0.0.1:8000/cambiar_contrasena'
+

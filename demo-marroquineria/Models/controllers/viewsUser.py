@@ -9,6 +9,7 @@ from ..models import *
 from ..serializers import *
 import requests
 
+
 def enviar_correo_confirmacion(user_name, user_email):
     # Asunto y cuerpo del correo electrónico
     asunto = 'Confirmación de registro y bienvenida'
@@ -24,7 +25,7 @@ def create_user(request):
     serializer.is_valid(raise_exception=True)
     validated_data = serializer.validated_data
 
-    if User.objects.filter(email=validated_data['email']).exists():
+    if Users.objects.filter(email=validated_data['email']).exists():
         return Response(
             data={
                 'code':status.HTTP_200_OK,
@@ -55,64 +56,69 @@ def create_user(request):
                 'status': False
             })
 
-    return Response(data={'code': status.HTTP_200_OK, 'message': 'Creado Exitosamente', 'status': True})
+    return Response(data={'code': status.HTTP_200_OK, 
+                          'message': 'Creado Exitosamente', 
+                          'status': True})
 
 
 @api_view(['GET'])
 def list_user(request):
-    queryset = User.objects.all().order_by('name')
+    queryset = Users.objects.all().order_by('name')
     serializer = UserSerializer(queryset, many=True)
 
     if not serializer.data:
-        response_data = {
-            'code': status.HTTP_200_OK,
-            'message': 'No hay usuarios registrados',
-            'status': True
-        }
+        response_data = {'code': status.HTTP_200_OK,
+                         'message': 'No hay usuarios registrados',
+                         'status': True}
         return Response(response_data)
 
-    response_data = {
-        'code': status.HTTP_200_OK,
-        'message': 'Consulta Realizada Exitosamente',
-        'status': True,
-        'data': serializer.data
-    }
+    response_data = {'code': status.HTTP_200_OK,
+                     'message': 'Consulta Realizada Exitosamente',
+                     'status': True,
+                     'data': serializer.data}
     return Response(response_data)
 
 
 @api_view(['PATCH'])
 def update_user(request, pk):
     try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(data={'code':status.HTTP_200_OK, 'message':'No Encontrado', 'status':True})
+        user = Users.objects.get(pk=pk)
+    except Users.DoesNotExist:
+        return Response(data={'code':status.HTTP_200_OK, 
+                              'message':'No Encontrado', 
+                              'status':True})
     
     try:
         serializer = UserSerializer(user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(data={'code':status.HTTP_200_OK, 'message':'Actualizado Exitosamente', 'status':True})
+        return Response(data={'code':status.HTTP_200_OK, 
+                              'message':'Actualizado Exitosamente', 
+                              'status':True})
     except Exception as e:
         # Any server error happened
         return Response(
-            data={
-                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                'message': f'Error del Servidor: {str(e)}',
-                'status': False
-            }
-        )
+            data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                  'message': f'Error del Servidor: {str(e)}',
+                  'status': False})
 
 
 @api_view(['DELETE'])
 def delete_user(request, pk):
     try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(data={'code': status.HTTP_200_OK, 'message':'Usuario no encontrado', 'status': False})
+        user = Users.objects.get(pk=pk)
+    except Users.DoesNotExist:
+        return Response(data={'code': status.HTTP_200_OK, 
+                              'message':'Usuario no encontrado', 
+                              'status': False})
     
     try:
         user.delete()
     except Exception as e:
-        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 'message':'Error al eliminar el usuario', 'status':False})
+        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                              'message':'Error al eliminar el usuario', 
+                              'status':False})
 
-    return Response(data={'code': status.HTTP_200_OK, 'message':'Eliminado Exitosamente', 'status': True})
+    return Response(data={'code': status.HTTP_200_OK, 
+                          'message':'Eliminado Exitosamente', 
+                          'status': True})
