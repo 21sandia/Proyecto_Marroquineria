@@ -5,20 +5,6 @@ from ..models import DetailProds
 from ..serializers import *
 import requests
 
-# @api_view(['POST'])
-# def product_create(request):
-#     serializer = ProductSerializer(data=request.data)
-#     if serializer.is_valid():
-#         product = serializer.save()
-#         detail_data = request.data.get('detailprods')
-#         if detail_data:
-#             detail_serializer = DetailProdSerializer(data=detail_data)
-#             if detail_serializer.is_valid():
-#                 detail_serializer.save(fk_id_product=product)
-#             else:
-#                 return Response(detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def product_create(request):
@@ -28,13 +14,13 @@ def product_create(request):
     # Verificar si ya existe un producto con la misma referencia
     existing_product_by_reference = Products.objects.filter(reference=reference).exists()
     if existing_product_by_reference:
-        return Response({"error": f"A product with reference '{reference}' already exists."},
+        return Response({"error": f"El producto con referencia '{reference}' ya existe."},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Verificar si ya existe un producto con el mismo nombre
     existing_product_by_name = Products.objects.filter(name=name).exists()
     if existing_product_by_name:
-        return Response({"error": f"A product with the name '{name}' already exists."},
+        return Response({"error": f"El producto con nombre '{name}' ya existe."},
                         status=status.HTTP_400_BAD_REQUEST)
 
     serializer = ProductSerializer(data=request.data)
@@ -162,3 +148,20 @@ def delete_product(request, pk):
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor', 
                               'status': False})
+
+
+
+# @api_view(['POST'])
+# def product_create(request):
+#     serializer = ProductSerializer(data=request.data)
+#     if serializer.is_valid():
+#         product = serializer.save()
+#         detail_data = request.data.get('detailprods')
+#         if detail_data:
+#             detail_serializer = DetailProdSerializer(data=detail_data)
+#             if detail_serializer.is_valid():
+#                 detail_serializer.save(fk_id_product=product)
+#             else:
+#                 return Response(detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
