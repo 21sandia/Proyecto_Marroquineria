@@ -40,6 +40,7 @@ def create_rol(request):
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor: '+str(e), 
                               'status': False})
+
     
 
 @api_view(['GET'])

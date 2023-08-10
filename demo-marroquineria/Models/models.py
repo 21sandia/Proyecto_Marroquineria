@@ -3,7 +3,6 @@ from django.db import models
 
 class Rol(models.Model):
     name = models.CharField(max_length=30)
-    groups = models.CharField(max_length=30)
 
     class Meta:
         db_table = 'rol'
