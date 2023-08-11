@@ -8,9 +8,12 @@ import requests
 
 @api_view(['POST']) 
 def product_create(request):  
-    reference = request.data.get('reference')  # Obtiene el valor del campo 'reference' de la solicitud
-    name = request.data.get('name')  # Obtiene el valor del campo 'name' de la solicitud
-    
+    reference = request.data.get('reference')
+    name = request.data.get('name')
+    state_id = request.data.get('fk_id_state')
+    type_id = request.data.get('fk_id_type_prod')
+    category_id = request.data.get('fk_id_category')
+
     # Verifica si ya existe un producto con la misma referencia en la base de datos
     existing_product_by_reference = Products.objects.filter(reference=reference).exists()
     if existing_product_by_reference:
@@ -24,39 +27,54 @@ def product_create(request):
         return Response({"code": status.HTTP_200_OK,
                          "status": False,
                          "message": f"Error: El producto con nombre '{name}' ya existe."})
+    
+     # Obtén los objetos relacionados (estado, tipo, categoría) utilizando los IDs proporcionados
+    state = States.objects.get(pk=state_id)
+    type_prod = TypeProds.objects.get(pk=type_id)
+    category = Categorys.objects.get(pk=category_id)
 
     # Crea una instancia del serializador ProductSerializer con los datos de la solicitud
-    serializer = ProductSerializer(data=request.data)
-    if serializer.is_valid():  # Verifica si los datos son válidos
-        product = serializer.save()  # Guarda el nuevo producto en la base de datos
+    product_serializer = ProductSerializer(data=request.data)
+    if product_serializer.is_valid():
+        product = product_serializer.save(
+            fk_id_state=state,
+            fk_id_type_prod=type_prod
+        )
 
-        detail_data = request.data.get('detailprods')  # Obtiene los datos del detalle del producto
+        detail_data = request.data.get('detailprods')
         if detail_data:
-            # Verifica si ya existe un detalle de producto para el producto creado
-            existing_detail = DetailProds.objects.filter(fk_id_product=product).exists()
-            if existing_detail:
-                return Response({"code": status.HTTP_200_OK,
-                                 "status": False,
-                                 "message": "Error: El detalle de producto para este producto ya existe."})
-
-            detail_data['fk_id_product'] = product.id  # Asigna el ID del producto al detalle
-            detail_serializer = DetailProdSerializer(data=detail_data)  # Crea un serializador para el detalle
+            # Asocia automáticamente el producto creado con el detalle del producto
+            detail_data['fk_id_product'] = product.id
+            detail_serializer = DetailProdSerializer(data=detail_data)
             if detail_serializer.is_valid():
-                detail_serializer.save()  # Guarda el detalle en la base de datos
+                detail_serializer.save()
+
+                return Response({
+                    "code": status.HTTP_201_CREATED,
+                    "status": True,
+                    "message": "Producto creado exitosamente."
+                })
             else:
-                return Response({"code": status.HTTP_400_BAD_REQUEST,
-                                 "status": False,
-                                 "message": "Error en los datos del detalle del producto",
-                                 "data": detail_serializer.errors})
+                product.delete()  # Elimina el producto si no se puede guardar el detalle
+                return Response({
+                    "code": status.HTTP_200_OK,
+                    "status": False,
+                    "message": "Error en los datos del detalle del producto",
+                    "data": detail_serializer.errors
+                })
 
-        return Response({"code": status.HTTP_200_OK,
-                         "status": True,
-                         "message": "Producto creado exitosamente."})
-    return Response({"code": status.HTTP_400_BAD_REQUEST,
-                     "status": False,})
+        return Response({
+            "code": status.HTTP_201_CREATED,
+            "status": True,
+            "message": "Producto creado exitosamente."
+        })
 
-
-
+    return Response({
+        "code": status.HTTP_400_BAD_REQUEST,
+        "status": False,
+        "message": "Error en los datos del producto",
+        "data": product_serializer.errors
+    })
 
 
 @api_view(['PATCH']) 

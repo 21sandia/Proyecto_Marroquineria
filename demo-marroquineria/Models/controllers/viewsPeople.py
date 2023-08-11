@@ -1,4 +1,5 @@
 from rest_framework import status
+from django.core.mail import send_mail
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from ..models import Peoples, Users
@@ -35,6 +36,16 @@ def create_people_and_user(request):
             password=data['password']
         )
 
+        # Envío de correo de confirmación y bienvenida
+        subject = 'Confirmación de registro y bienvenida'
+        message = f'¡Bienvenido(a) {people.name},\n \
+        Gracias por registrarte en nuestro sitio web. Tu cuenta ha sido creada exitosamente.\n\n \
+        Saludos,\n \
+        MarquetPlace'
+        from_email = 'noreply@example.com'
+        recipient_list = [people.email]
+        send_mail(subject, message, from_email, recipient_list)
+
         people_serializer = PeopleSerializer(people)  # Serializar los datos de People
 
         response_data ={
@@ -49,8 +60,6 @@ def create_people_and_user(request):
     except Exception as e:
         error_data = {'error': str(e)}
         return Response(error_data, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 @api_view(['GET'])

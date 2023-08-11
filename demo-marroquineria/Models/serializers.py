@@ -69,7 +69,7 @@ class TypeProdSerializer(serializers.ModelSerializer):
 class DetailProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailProds
-        fields = ['date', 'color', 'size_p', 'material']
+        fields = ['id','date', 'fk_id_product', 'color', 'size_p', 'material']
 
 class SaleSerializer(serializers.ModelSerializer):
     class Meta:
