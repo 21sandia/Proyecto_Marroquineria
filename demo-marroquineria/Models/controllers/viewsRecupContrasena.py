@@ -1,6 +1,6 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
@@ -56,7 +56,7 @@ def recuperar_contrasena(request):
 
 
 @api_view(['POST'])
-def change_password(request):
+def cambiar_contrasena(request):
     data = request.data
     uidb64 = data.get('uidb64')
     token = data.get('token')
@@ -72,7 +72,7 @@ def change_password(request):
         })
 
     try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
+        uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
     except (User.DoesNotExist, ValueError, OverflowError):
         return Response({
