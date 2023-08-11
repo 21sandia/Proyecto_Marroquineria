@@ -6,13 +6,12 @@ from ..serializers import *
 import requests
 
 
-@api_view(['POST']) 
-def product_create(request):  
+@api_view(['POST'])
+def product_create(request):
     reference = request.data.get('reference')
     name = request.data.get('name')
     state_id = request.data.get('fk_id_state')
     type_id = request.data.get('fk_id_type_prod')
-    category_id = request.data.get('fk_id_category')
 
     # Verifica si ya existe un producto con la misma referencia en la base de datos
     existing_product_by_reference = Products.objects.filter(reference=reference).exists()
@@ -27,11 +26,10 @@ def product_create(request):
         return Response({"code": status.HTTP_200_OK,
                          "status": False,
                          "message": f"Error: El producto con nombre '{name}' ya existe."})
-    
-     # Obtén los objetos relacionados (estado, tipo, categoría) utilizando los IDs proporcionados
+
+    # Obtén los objetos relacionados (estado, tipo) utilizando los IDs proporcionados
     state = States.objects.get(pk=state_id)
     type_prod = TypeProds.objects.get(pk=type_id)
-    category = Categorys.objects.get(pk=category_id)
 
     # Crea una instancia del serializador ProductSerializer con los datos de la solicitud
     product_serializer = ProductSerializer(data=request.data)

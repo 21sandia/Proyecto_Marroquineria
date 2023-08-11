@@ -10,7 +10,31 @@ import requests
 @api_view(['POST'])
 def create_people_and_user(request):
     data = request.data
+
     try:
+        # Verificar si ya existe una persona con el mismo documento o correo electrónico
+        existing_person_document = Peoples.objects.filter(document=data['document']).first()
+        if existing_person_document:
+            response_data = {
+                    'code': status.HTTP_200_OK,
+                    'status': True,
+                    'message': 'Ya existe una persona registrada con este numero de documento',
+                    'data': None
+                    }
+            return Response(data=response_data)
+
+        # Verificar si la clave 'email' está presente en los datos
+        if 'email' in data:
+            existing_person_email = Peoples.objects.filter(email=data['email']).first()
+            if existing_person_email:
+                response_data = {
+                    'code': status.HTTP_200_OK,
+                    'status': True,
+                    'message': 'Ya existe una persona registrada con este correo',
+                    'data': None
+                }
+                return Response(data=response_data) 
+        
         # Crear una instancia de People
         people = Peoples.objects.create(
             email=data['email'],

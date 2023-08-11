@@ -60,8 +60,7 @@ class ProductSerializer(serializers.ModelSerializer):
             validated_data['image'] = None
 
         return super().create(validated_data)
-
-    
+  
 
 class StateSerializer(serializers.ModelSerializer):
     class Meta:

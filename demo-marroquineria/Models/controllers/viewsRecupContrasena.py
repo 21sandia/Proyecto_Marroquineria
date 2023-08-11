@@ -15,10 +15,11 @@ User = get_user_model()
 
 @api_view(['POST'])
 def recuperar_contrasena(request):
-    email = request.data.get('email')
+    data = request.data
+    email = data.get('email')
 
     try:
-        user = Users.objects.get(email=email)
+        user = Users.objects.get(fk_id_people__email=email)
     except Users.DoesNotExist:
         return Response({
             'code': status.HTTP_404_NOT_FOUND,
@@ -37,12 +38,12 @@ def recuperar_contrasena(request):
     # Envío de correo para recuperación de contraseña
     subject = 'Recuperación de contraseña'
     message = f'Hola {user.fk_id_people.name},\n \
-        Has solicitado restablecer tu contraseña en nuestro sitio web. \
-        Para continuar, por favor haz clic en el siguiente enlace:\n\n \
-        {reset_url}\n\n \
-        Si no has solicitado esto, puedes ignorar este correo.\n\n \
-        Saludos,\n \
-        MarquetPlace'
+    Has solicitado restablecer tu contraseña en nuestro sitio web. \
+    Para continuar, por favor haz clic en el siguiente enlace:\n\n \
+    {reset_url}\n\n \
+    Si no has solicitado esto, puedes ignorar este correo.\n\n \
+    Saludos,\n \
+    MarquetPlace'
     from_email = 'noreply@example.com'
     recipient_list = [user.email]
     send_mail(subject, message, from_email, recipient_list)
@@ -62,6 +63,7 @@ def cambiar_contrasena(request):
     token = data.get('token')
     new_password = data.get('new_password')
     confirm_new_password = data.get('confirm_new_password')
+    email = data.get('email')
 
     if not uidb64 or not token or not new_password or not confirm_new_password:
         return Response({
@@ -73,7 +75,7 @@ def cambiar_contrasena(request):
 
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
+        user = User.objects.get(id=uid)  # Cambiar a User en lugar de Users
     except (User.DoesNotExist, ValueError, OverflowError):
         return Response({
             'code': status.HTTP_404_NOT_FOUND,
@@ -106,7 +108,7 @@ def cambiar_contrasena(request):
             'data': None
         })
 
-    user.password = make_password(new_password)
+    user.set_password(new_password)  # Usar set_password para actualizar la contraseña
     user.save()
 
     return Response({
@@ -115,5 +117,7 @@ def cambiar_contrasena(request):
         'message': 'La contraseña se ha cambiado exitosamente.',
         'data': None
     })
+
+
     
 
