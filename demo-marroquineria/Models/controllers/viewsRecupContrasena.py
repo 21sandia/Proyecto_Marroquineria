@@ -1,115 +1,123 @@
-import base64
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_bytes
-from django.core.mail import send_mail
-from demo_marroquineria import settings
 from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.urls import reverse
+from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from ..models import Users
 
-@api_view(['POST'])
-def recuperar_contrasena(request):
-    # Trae el correo de los datos de la solicitud
-    email = request.data.get('email')
-
-    try:
-        # Intentar obtener al usuario en base al correo electrónico proporcionado
-        user = get_user_model().objects.get(email=email)
-    except get_user_model().DoesNotExist:
-        # Si el usuario no se encuentra, devolver una respuesta de error
-        response_data = {'code': status.HTTP_200_OK,
-                         'message': 'Usuario no existente',
-                         'status': False}
-        return Response(data=response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # Generar un token de restablecimiento de contraseña
-    token = default_token_generator.make_token(user)
-    # Codificar el ID del usuario en base64
-    uid_base64 = base64.urlsafe_b64encode(force_bytes(user.pk)).decode()
-    # Construir la URL para restablecer la contraseña con el ID del usuario codificado
-    reset_password_url = f'{settings.FRONTEND_URL}/{uid_base64}/'
-
-    # Cuepo del mensaje del correo
-    asunto = 'Recuperación de contraseña'
-    mensaje = f'Estimado(a) {user.name},\n\n' \
-              'Se ha solicitado una recuperación de contraseña para tu cuenta en nuestro sitio web Marquet Place.\n\n' \
-              'Por favor, haz clic en el siguiente enlace para restablecer tu contraseña:\n\n' \
-              f'{reset_password_url}\n\n' \
-              'Si no solicitaste esta recuperación de contraseña, puedes ignorar este correo.\n\n' \
-              'Saludos,\n' \
-              'Marquet Place'
-
-    # Envía el correo de restablecimiento de la contraseña al usuario
-    send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
-
-    # Devuelve una respuesta de éxito indicando que se ha enviado el correo
-    return Response(
-        data={'code': status.HTTP_200_OK,
-              'message': 'Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña',
-              'status': True},
-        status=status.HTTP_200_OK)
 
 User = get_user_model()
 
-# Funcion para cambiar la contraseña
 @api_view(['POST'])
-def cambiar_contrasena(request, uidb64, token):
-    # Obtiene la nueva contraseña y la confirma
-    new_password = request.data.get('new_password')
-    confirm_password = request.data.get('confirm_password')
-
-    # Verifica si las contraseñas fueron proporcionadas
-    if not new_password or not confirm_password:
-        return Response(
-            data={'code': 'HTTP_400_BAD_REQUEST', 
-                  'message': 'Se requiere nueva contraseña y confirmación de contraseña', 
-                  'status': False}, 
-            status=status.HTTP_400_BAD_REQUEST)
+def recuperar_contrasena(request):
+    data = request.data
+    email = data.get('email')
 
     try:
-        # Decodificación del ID del user codificado en base64
-        uid = urlsafe_base64_decode(uidb64).decode()
-        # Intenta obtener al usuario en base al ID del usuario decodificado
-        user = get_user_model().objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
-        # Si falla la decodificación o no se encuentra al usuario, devuelve una respuesta de error
-        user = None
+        user = Users.objects.get(fk_id_people__email=email)
+    except Users.DoesNotExist:
+        return Response({
+            'code': status.HTTP_404_NOT_FOUND,
+            'status': False,
+            'message': 'No se encontró un usuario con este correo electrónico.',
+            'data': None
+        })
 
-    # Verificar si el usuario existe y si el token proporcionado es válido para ese usuario
-    if user is not None and default_token_generator.check_token(user, token):
-        # Verifica si las contraseñas coinciden
-        if new_password != confirm_password:
-            return Response(
-                data={'code': 'HTTP_400_BAD_REQUEST', 
-                      'message': 'Las contraseñas no coinciden', 
-                      'status': False}, 
-                status=status.HTTP_400_BAD_REQUEST)
+    # Generar token de recuperación de contraseña
+    token = default_token_generator.make_token(user)
 
-        # Si las contraseñas coinciden, la establece y la guarda
-        user.set_password(new_password)
-        user.save()
+    # Crear enlace para restablecer la contraseña
+    uid = urlsafe_base64_encode(force_bytes(user.id))
+    reset_url = reverse('reset-password', kwargs={'uidb64': uid, 'token': token})
 
-        # Cuerpo del mensaje de contraseña restablecida
-        subject = 'Contraseña Restablecida Exitosamente'
-        message = f'Hola {user.name},\n\nTu contraseña ha sido restablecida exitosamente.\n \
-        La nueva contraseña es: {new_password}\n\nSaludos,\n Marquet Place'
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [user.email]
-        # Envía el correo de contraseña restablecida exitosamente
-        send_mail(subject, message, from_email, recipient_list)
+    # Envío de correo para recuperación de contraseña
+    subject = 'Recuperación de contraseña'
+    message = f'Hola {user.fk_id_people.name},\n \
+    Has solicitado restablecer tu contraseña en nuestro sitio web. \
+    Para continuar, por favor haz clic en el siguiente enlace:\n\n \
+    {reset_url}\n\n \
+    Si no has solicitado esto, puedes ignorar este correo.\n\n \
+    Saludos,\n \
+    MarquetPlace'
+    from_email = 'noreply@example.com'
+    recipient_list = [user.email]
+    send_mail(subject, message, from_email, recipient_list)
 
-        return Response(
-            data={'code':'200_OK', 
-                  'message': 'Contraseña restablecida exitosamente', 
-                  'status':True}, 
-            status=status.HTTP_200_OK)
+    return Response({
+        'code': status.HTTP_200_OK,
+        'status': True,
+        'message': 'Se ha enviado un correo electrónico con instrucciones para restablecer tu contraseña.',
+        'data': None
+    })
 
-    # Si el usuario o el token no son válidos, devuelve una respuesta de error
-    return Response(
-        data={'code':'HTTP_500_INTERNAL_SERVER_ERROR', 
-              'message': 'El enlace de restablecimiento de contraseña es inválido', 
-              'status':False}, 
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def cambiar_contrasena(request):
+    data = request.data
+    uidb64 = data.get('uidb64')
+    token = data.get('token')
+    new_password = data.get('new_password')
+    confirm_new_password = data.get('confirm_new_password')
+    email = data.get('email')
+
+    if not uidb64 or not token or not new_password or not confirm_new_password:
+        return Response({
+            'code': status.HTTP_400_BAD_REQUEST,
+            'status': False,
+            'message': 'Faltan parámetros requeridos.',
+            'data': None
+        })
+
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(id=uid)  # Cambiar a User en lugar de Users
+    except (User.DoesNotExist, ValueError, OverflowError):
+        return Response({
+            'code': status.HTTP_404_NOT_FOUND,
+            'status': False,
+            'message': 'No se encontró un usuario válido.',
+            'data': None
+        })
+
+    if not default_token_generator.check_token(user, token):
+        return Response({
+            'code': status.HTTP_400_BAD_REQUEST,
+            'status': False,
+            'message': 'Token no válido.',
+            'data': None
+        })
+
+    if new_password != confirm_new_password:
+        return Response({
+            'code': status.HTTP_400_BAD_REQUEST,
+            'status': False,
+            'message': 'Las contraseñas no coinciden.',
+            'data': None
+        })
+
+    if len(new_password) < 8:
+        return Response({
+            'code': status.HTTP_400_BAD_REQUEST,
+            'status': False,
+            'message': 'La contraseña debe tener al menos 8 caracteres.',
+            'data': None
+        })
+
+    user.set_password(new_password)  # Usar set_password para actualizar la contraseña
+    user.save()
+
+    return Response({
+        'code': status.HTTP_200_OK,
+        'status': True,
+        'message': 'La contraseña se ha cambiado exitosamente.',
+        'data': None
+    })
+
+
     
+
