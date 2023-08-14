@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from django.contrib.auth.hashers import make_password
 
 
 class Rol(models.Model):
@@ -35,9 +37,17 @@ class Users(models.Model):
     fk_id_rol = models.ForeignKey(Rol, models.DO_NOTHING, db_column='fk_id_rol')
     fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')
     password = models.CharField(max_length=100)
+    last_login = models.DateTimeField(null=True, blank=True, default=timezone.now)
 
     class Meta:
         db_table = 'users'
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
+        self.save()
+
+    def get_email_field_name(self):
+        return 'fk_id_people__email'
 
 
 class Categorys(models.Model):

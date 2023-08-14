@@ -37,7 +37,7 @@ urlpatterns = [
     # Listar People
     path('list-people/', viewsPeople.list_people, name='list_people'),
     # Crear People
-    path('create-people/', viewsPeople.create_people, name='create_people'), 
+    path('create-people/', viewsPeople.create_people_and_user, name='create_people'), 
     # Editar People
     path('update-people/<int:pk>/', viewsPeople.update_people, name='update_people'),
     # Eliminar People
@@ -48,7 +48,7 @@ urlpatterns = [
     # Listar Usuario
     path('list-user/', viewsUser.list_user, name='list_user'),
     # Crear Usuario
-    path('create-user/', viewsUser  .create_user, name='create_user'), 
+    #path('create-user/', viewsUser  .create_user, name='create_user'), 
     # Editar Usuario
     path('update-user/<int:pk>/', viewsUser.update_user, name='update_user'), 
     # Eliminar Usuario
@@ -101,7 +101,7 @@ urlpatterns = [
     # lista el Producto con Detalle Producto y Estado
     path('list-product/', viewsProductDetail.product_details, name='product-details'),
     # Edita el Producto con el Detalle de Producto
-    path('update-product/<int:pk>/', viewsProductDetail.edit_product, name='edit-product'),
+    path('update-product/<int:product_id>/', viewsProductDetail.edit_product, name='edit-product'),
     # Elimina el Producto con el Detalle de producto
     path('delete-product/<int:pk>/', viewsProductDetail.delete_product, name='delete_product'),
 

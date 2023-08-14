@@ -53,11 +53,9 @@ def get_all_models_data(request): # FUNCIONA
     
 
 
-# ** Lista los datos de todo el producto en un solo EndPoint **
 @api_view(['GET'])
-def get_all_models_prod_detailp(request): # FUNCIONA
+def get_all_models_prod_detailp(request):
     try:
-        # Obtener los detalles de producto y cargar las relaciones con select_related
         detail_prod_data = DetailProds.objects.select_related(
             'fk_id_product__fk_id_state',
             'fk_id_product__fk_id_type_prod__fk_id_category',
@@ -71,20 +69,10 @@ def get_all_models_prod_detailp(request): # FUNCIONA
                 state_obj = product_obj.fk_id_state
                 category_obj = product_obj.fk_id_type_prod.fk_id_category
 
-                detail_prod_data = DetailProdSerializer(detail_prod_obj).data
-                detail_prod_data['state_data'] = {
-                    'id': state_obj.id,
-                    'name': state_obj.name
-                }
-                detail_prod_data['category_data'] = {
-                    'id': category_obj.id,
-                    'name': category_obj.name
-                }
-                detail_prod_data['type_prod_data'] = {
-                    'id': product_obj.fk_id_type_prod.id,
-                    'name': product_obj.fk_id_type_prod.name
-                }
-                detail_prod_data['product_data'] = {
+                type_prod_obj = product_obj.fk_id_type_prod
+
+                detail_data = DetailProdSerializer(detail_prod_obj).data
+                product_data = {
                     'id': product_obj.id,
                     'name': product_obj.name,
                     'image_url': product_obj.image.url if product_obj.image else None,
@@ -93,9 +81,22 @@ def get_all_models_prod_detailp(request): # FUNCIONA
                     'quantity': product_obj.quantity,
                     'price_shop': str(product_obj.price_shop),
                     'price_sale': str(product_obj.price_sale),
+                    'state_data': {
+                        'id': state_obj.id,
+                        'name': state_obj.name
+                    },
+                    'category_data': {
+                        'id': category_obj.id,
+                        'name': category_obj.name
+                    },
+                    'type_prod_data': {
+                        'id': type_prod_obj.id,
+                        'name': type_prod_obj.name
+                    }
                 }
 
-                response_data.append(detail_prod_data)
+                detail_data['product_data'] = product_data
+                response_data.append(detail_data)
 
             response = {
                 'code': status.HTTP_200_OK,
@@ -103,8 +104,6 @@ def get_all_models_prod_detailp(request): # FUNCIONA
                 'message': 'Consulta realizada Exitosamente',
                 'data': response_data
             }
-
-            return Response(response)
         else:
             response = {
                 'code': status.HTTP_200_OK,
@@ -113,7 +112,7 @@ def get_all_models_prod_detailp(request): # FUNCIONA
                 'data': []
             }
 
-            return Response(response)
+        return Response(response)
     except DetailProds.DoesNotExist:
         response = {
             'code': status.HTTP_404_NOT_FOUND,
