@@ -1,6 +1,7 @@
 from rest_framework import status
 from django.core.mail import send_mail
 from rest_framework.decorators import api_view
+from django.contrib.auth.hashers import make_password
 from rest_framework.response import Response
 from ..models import Peoples, Users
 from ..serializers import *
@@ -53,11 +54,12 @@ def create_people_and_user(request):
         state, _ = States.objects.get_or_create(name=data['state_name'])
 
         # Crear una instancia de User asociada a People, Rol y Estado
+        hashed_password = make_password(data['password'])  # Hashear la contraseña
         user = Users.objects.create(
             fk_id_state=state,
             fk_id_rol=rol,
             fk_id_people=people,
-            password=data['password']
+            password=hashed_password
         )
 
         # Envío de correo de confirmación y bienvenida

@@ -36,7 +36,7 @@ def create_category(request):
                               'status': False})
 @api_view(['GET'])
 def list_category(request):
-    queryset = Categorys.objects.all().order_by('name')
+    queryset = Categorys.objects.all().order_by('id')
     serializer = CategorySerializer(queryset, many=True)
 
     if not serializer.data:

@@ -1,39 +1,13 @@
-from rest_framework.decorators import api_view
+'''from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import DetailSales
 from ..serializers import *
 
 
-@api_view(['POST'])
-def create_detail_sale(request):
-    data = request.data
-
-    existing_details = []
-    for detail_data in data:
-        existing_detail = DetailSales.objects.filter(**detail_data).first()
-        if existing_detail:
-            existing_details.append(existing_detail)
-
-    if existing_details:
-        serializer = DetailSaleSerializer(existing_details, many=True)
-        return Response(data={'code': status.HTTP_200_OK, 
-                              'message': 'Algunos objetos ya existen.', 
-                              'status': False, 
-                              'data': serializer.data})
-
-    serializer = DetailSaleSerializer(data=data, many=True)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response(data={'code': status.HTTP_200_OK, 
-                          'message': 'Creado Exitosamente', 
-                          'status': True, 
-                          'data': serializer.data})
-
-
 # ** Lista los datos de detalle venta con venta en un EndPoint **
 @api_view(['GET'])
-def get_all_datasale(request):
+def sale_all_data(request):
     # Obtener los productos y sus foreign keys relacionadas usando prefetch_related
     det_sale_data = DetailSales.objects.prefetch_related('fk_id_sale').all()
 
@@ -68,6 +42,32 @@ def get_all_datasale(request):
         return Response(response)
     
 
+@api_view(['POST'])
+def create_detail_sale(request):
+    data = request.data
+
+    existing_details = []
+    for detail_data in data:
+        existing_detail = DetailSales.objects.filter(**detail_data).first()
+        if existing_detail:
+            existing_details.append(existing_detail)
+
+    if existing_details:
+        serializer = DetailSaleSerializer(existing_details, many=True)
+        return Response(data={'code': status.HTTP_200_OK, 
+                              'message': 'Algunos objetos ya existen.', 
+                              'status': False, 
+                              'data': serializer.data})
+
+    serializer = DetailSaleSerializer(data=data, many=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(data={'code': status.HTTP_200_OK, 
+                          'message': 'Creado Exitosamente', 
+                          'status': True, 
+                          'data': serializer.data})
+    
+
 @api_view(['PATCH'])
 def update_detail_sale(request, pk):
     try:
@@ -97,3 +97,4 @@ def delete_detail_sale(request, pk):
     return Response(data={'code': status.HTTP_200_OK, 
                           'message': 'Eliminado Exitosamente', 
                           'status': True})
+'''

@@ -33,7 +33,7 @@ def recuperar_contrasena(request):
 
     # Crear enlace para restablecer la contraseña
     uid = urlsafe_base64_encode(force_bytes(user.id))
-    reset_url = reverse('reset-password', kwargs={'uidb64': uid, 'token': token})
+    reset_url = reverse('recuperar_contrasena', kwargs={'uidb64': uid, 'token': token})
 
     # Envío de correo para recuperación de contraseña
     subject = 'Recuperación de contraseña'

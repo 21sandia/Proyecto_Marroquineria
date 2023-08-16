@@ -6,7 +6,7 @@ from ..serializers import *
 
 # ** Lista los datos de estado, categoría, tipo de producto y producto en un solo EndPoint **
 @api_view(['GET'])
-def get_all_models_data(request): # FUNCIONA
+def get_Product(request): # FUNCIONA
     # Obtener los productos y sus foreign keys relacionadas usando prefetch_related
     product_data = Products.objects.prefetch_related('fk_id_state', 'fk_id_type_prod__fk_id_category').all()
 
@@ -54,13 +54,25 @@ def get_all_models_data(request): # FUNCIONA
 
 
 @api_view(['GET'])
-def get_all_models_prod_detailp(request):
+def get_all_Product(request):
     try:
+        # Obtener el parámetro de consulta "product_id" si está presente
+        product_id = request.query_params.get('product_id')
+
         detail_prod_data = DetailProds.objects.select_related(
             'fk_id_product__fk_id_state',
             'fk_id_product__fk_id_type_prod__fk_id_category',
         ).all()
 
+        # Si se proporciona un "product_id", aplicar el filtro por ID del producto
+        if product_id:
+            detail_prod_data = detail_prod_data.filter(fk_id_product_id=product_id)
+
+        # Obtener la lista de detalles de productos resultantes
+        detail_prod_data = detail_prod_data.all()
+
+        response_data = []
+        
         if detail_prod_data:
             response_data = []
 
@@ -122,7 +134,6 @@ def get_all_models_prod_detailp(request):
         }
 
         return Response(response)
-
 
 
 

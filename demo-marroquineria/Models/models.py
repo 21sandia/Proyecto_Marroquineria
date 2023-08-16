@@ -72,17 +72,33 @@ class Products(models.Model):
     image = models.ImageField(upload_to='media/', blank=True,  null=True)
     reference = models.CharField(max_length=60)
     description = models.CharField(max_length=1000)
-    quantity = models.IntegerField(default=0)
+    quantity = models.IntegerField(blank=True, null=True)
     price_shop = models.DecimalField(max_digits=10, decimal_places=2)
     price_sale = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
+        managed = False
         db_table = 'products'
 
 
+class Materials(models.Model):
+    name = models.CharField(max_length=30)
+
+    class Meta:
+        db_table = 'materials'
+
+
+class Measures(models.Model):
+    name = models.CharField(max_length=30)
+
+    class Meta:
+        db_table = 'measures'
+
 
 class DetailProds(models.Model):
-    fk_id_product = models.OneToOneField(Products, on_delete= models.CASCADE, db_column='fk_id_product')
+    fk_id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='fk_id_product')
+    fk_id_measures = models.ForeignKey(Measures, models.DO_NOTHING, db_column='fk_id_measures')
+    fk_id_materials = models.ForeignKey(Materials, models.DO_NOTHING, db_column='fk_id_materials')
     date = models.DateField(auto_now_add=True)
     color = models.CharField(max_length=30)
     size_p = models.CharField(max_length=50)
@@ -111,4 +127,3 @@ class DetailSales(models.Model):
 
     class Meta:
         db_table = 'detail_sales'
-
