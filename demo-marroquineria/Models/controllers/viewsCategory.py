@@ -18,7 +18,9 @@ def create_category(request):
         if existing_category:
             return Response(data={'code': status.HTTP_200_OK, 
                                   'message': 'Esta categoría ya existe', 
-                                  'status': False})
+                                  'status': False,
+                                  'data':[name]
+                                  })
 
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 

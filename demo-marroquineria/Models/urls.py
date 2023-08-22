@@ -3,11 +3,12 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsProductDetail, viewsUser
-from Models.controllers import viewsSale, viewsDetailSale, viewsUserGetAllData, viewsMeasures, viewsMaterial
+from Models.controllers import viewsSale, viewsUserGetAllData, viewsMeasures, viewsMaterial
 from Models.controllers import viewsRecupContrasena
 from .views import iniciar_sesion, cerrar_sesion
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import reverse
 
 urlpatterns = [
 
@@ -63,7 +64,7 @@ urlpatterns = [
 
     #  **RECUPERAR CONTRASEÑA**
     #path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), 
-    path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'),
+    path('recuperar_contrasena/<str:uidb64>/<str:token>/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'),
     path('cambiar_contrasena/<str:uidb64>/<str:token>/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), 
 
     # **Token**
@@ -114,18 +115,19 @@ urlpatterns = [
     # Eliminar Material
     path('delete-material/<int:pk>/', viewsMaterial.delete_material, name='delete-material'),
 
-
     # ** Productos **
- 
     # Listar todos los modelos relacionados con Producto
     path('get-Product/', viewsProduct.get_Product, name='Estado-categ-tipo-producto'), 
     # Lista todo el producto completo con el Detalle Producto
     path('get-all-Product/', viewsProduct.get_all_Product, name='Estado-categ-tipo-producto-detalleProducto'),
-    # Lista un producto en especifico
-    path('get-filter-product/', viewsProduct.get_filter_product, name='get-filter-product'),
+    # http://localhost:8000/get_all_Product/?category_id=1&sort_by=price_sale  **Filtrar por la categoría con ID 1 y ordenar por precio de venta de forma ascendente**
+    # http://localhost:8000/get_all_Product/?category_id=1&type_prod_id=2   **Filtrar por categoría y tipo de producto**
+    # http://localhost:8000/get_all_Product/?min_price=50&max_price=100   **Filtrar por rango de precio mínimo y máximo**
+    # http://localhost:8000/get_all_Product/?category_id=1&sort_by=-price_sale   **Filtrar por categoría, ordenar por precio de venta en orden descendente**
+    # http://localhost:8000/get_all_Product/?type_prod_id=2&sort_by=name    **Filtrar por tipo de producto, ordenar por nombre de producto en orden ascendente**
+
 
     # ** Producto con Detalle Producto **
-
     # Crea el Producto con el Detalle de Producto
     path('create-product/', viewsProductDetail.product_create, name='crear_producto_detalle_product'),
     # lista el Producto con Detalle Producto y Estado
@@ -139,11 +141,11 @@ urlpatterns = [
     # Crea la venta con el detalle de venta
     path('create-sale-detail/', viewsSale.create_sale_detail, name='create-sale-detail'),
     # Lista la venta con el detalle de venta
-    path('list-sale-detail/', viewsSale.list_sale_detail, name='list-sale-detail'),
+    path('list_sale_detail/', viewsSale.list_sale_detail, name='list_sale_detail'),
     # Edita la venta con el detalle de venta
-    path('edit-sale-detail/', viewsSale.edit_sale_detail, name='edit-sale-detail'),
+    path('edit-sale-detail/<int:pk>/', viewsSale.edit_sale_detail, name='edit_sale_detail'),
     # Elimina la venta con el detalle de venta
-    path('delete-sale-detail/', viewsSale.delete_sale_detail, name='delete-sale-detail'),
+    path('delete-sale-detail/<int:pk>/', viewsSale.delete_sale_detail, name='delete_sale_detail'),
     
     
 ]

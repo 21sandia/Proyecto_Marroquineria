@@ -92,7 +92,7 @@ class MaterialSerializer(serializers.ModelSerializer):
 class DetailProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailProds
-        fields = ['id','date', 'fk_id_product', 'color', 'size_p', 'material']
+        fields = ['id','date','fk_id_product', 'color', 'fk_id_measures', 'fk_id_materials']
 
 
 class SaleSerializer(serializers.ModelSerializer):

@@ -1,7 +1,8 @@
 from rest_framework import status
 from django.core.mail import send_mail
-from rest_framework.decorators import api_view
 from django.contrib.auth.hashers import make_password
+from django.db import transaction
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from ..models import Peoples, Users
 from ..serializers import *
@@ -61,6 +62,8 @@ def create_people_and_user(request):
             fk_id_people=people,
             password=hashed_password
         )
+
+        user.save()
 
         # Envío de correo de confirmación y bienvenida
         subject = 'Confirmación de registro y bienvenida'

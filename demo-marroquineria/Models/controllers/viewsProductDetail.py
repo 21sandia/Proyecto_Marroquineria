@@ -8,36 +8,31 @@ import requests
 
 @api_view(['POST'])
 def product_create(request):
-    # Inicializamos una lista vacía para almacenar mensajes de alerta
     alerts = []
 
-    # Serializadores para producto y detalle de producto
     product_serializer = ProductSerializer(data=request.data)
     detail_serializer = DetailProdSerializer(data=request.data)
 
     # Validar y deserializar datos de producto
     if product_serializer.is_valid():
-        # Verificar si ya existe un producto con el mismo nombre
+        # valida si un roducto ya esta existe con ese nombre
         if Products.objects.filter(name=request.data['name']).exists():
             alerts.append('A product with the same name already exists')
             return Response({
-                    "code": status.HTTP_200_OK,
+                    "code": status.HTTP_404_NOT_FOUND,
                     "status": False,
-                    "message": "Ya hay un producto con este nombre",
-                    'data': []
+                    "message": "Ya hay un producto con este nombre"
                 })
         
-        # Verificar si ya existe un producto con la misma referencia
+        # valida si un roducto ya esta existe con esa referencia
         if Products.objects.filter(reference=request.data['reference']).exists():
             alerts.append('A product with the same reference already exists')
             return Response({
-                    "code": status.HTTP_200_OK,
+                    "code": status.HTTP_404_NOT_FOUND,
                     "status": False,
-                    "message": "Ya hay un producto con esta referencia",
-                    'data': []
+                    "message": "Ya hay un producto con esta referencia"
                 })
         
-        # Guardar el producto y obtener su ID
         product = product_serializer.save()
         # Agregar fk_id_product a la descripción
         request.data['fk_id_product'] = product.id
@@ -46,57 +41,20 @@ def product_create(request):
 
     # Validar y deserializar datos de detalle del producto
     if detail_serializer.is_valid():
-        price_shop = detail_serializer.validated_data['price_shop']
-        price_sale = detail_serializer.validated_data['price_sale']
-        
-        # Verificar que el precio de venta sea mayor que el precio de compra
-        if price_shop <= price_sale:
-            return Response({
-                "code": status.HTTP_200_OK,
-                "status": False,
-                "message": "El precio de venta debe ser mayor que el precio de compra.",
-                'data': []
-            })
-        
-        # Validar y deserializar datos de medidas y materiales
-        measures_serializer = MeasureSerializer(data=request.data)
-        materials_serializer = MaterialSerializer(data=request.data)
-
-        if measures_serializer.is_valid() and materials_serializer.is_valid():
-            measures_serializer.save()
-            materials_serializer.save()
-        else:
-            # Si hay errores en la validación, eliminar el producto creado
-            product.delete()
-            
-            return Response({
-                    "code": status.HTTP_200_OK,
-                    "status": False,
-                    "message": "Error en la creación de medidas o materiales.",
-                    'data': []
-                })
-        
-        # Guardar el detalle del producto
         detail_serializer.save()
     else:
         # Si hay errores en la validación, eliminar el producto creado
         product.delete()
-        
-        return Response({"code": status.HTTP_200_OK,
-                         "status": False,
-                         "message": "Error en la validación del detalle del producto.",
-                         'data': []
-                        })
+        return Response(detail_serializer.errors, status=400)
 
-    # Verificar si se activaron alertas
+    # Check if any alerts were triggered
     if alerts:
         return Response({'alerts': alerts}, status=200)
 
     return Response({
-                    "code": status.HTTP_200_OK,
+                    "code": status.HTTP_201_CREATED,
                     "status": True,
-                    "message": "Producto creado exitosamente.",
-                    'data': []
+                    "message": "Producto y detalle creados exitosamente."
                 })
 
 
@@ -121,8 +79,6 @@ def edit_product(request, product_id):
     product_data = request.data.copy()
     detail_data = {
         "color": product_data.pop("color", ""),
-        "size_p": product_data.pop("size_p", ""),
-        "material": product_data.pop("material", ""),
         "fk_id_measures": product_data.pop("fk_id_measures"),
         "fk_id_materials": product_data.pop("fk_id_materials")
     }

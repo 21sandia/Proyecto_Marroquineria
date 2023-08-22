@@ -18,28 +18,26 @@ def create_measures(request):
             return Response(data={'code': status.HTTP_200_OK, 
                                   'message': 'La medida ya existe', 
                                   'status': False,
-                                  'data': []
+                                  'data': [name]
                                   })
 
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Creado Exitosamente', 
                               'status': True,
-                              'data': []
+                              'data': [name]
                               })
     
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
                               'message': 'Error de red', 
-                              'status': False,
-                              'data': []
+                              'status': False
                               })
     
     except Exception as e:
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor: '+str(e), 
-                              'status': False,
-                              'data': []
+                              'status': False
                               })
 
     

@@ -24,34 +24,42 @@ def create_rol(request):
         if existing_rol:
             return Response(data={'code': status.HTTP_200_OK, 
                                   'message': 'El rol ya existe', 
-                                  'status': False})
+                                  'status': False
+                                  })
 
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Creado Exitosamente', 
-                              'status': True})
+                              'status': True,
+                              'data':[name]
+                              })
     
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
                               'message': 'Error de red', 
-                              'status': False})
+                              'status': False,
+                              'data':[]
+                              })
     
     except Exception as e:
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor: '+str(e), 
-                              'status': False})
+                              'status': False,
+                              'data':[]
+                              })
 
     
 
 @api_view(['GET'])
 def list_rol(request):
-    queryset = Rol.objects.all().order_by('name')
+    queryset = Rol.objects.all().order_by('id')
     serializer = RolSerializer(queryset, many=True)
 
     if not serializer.data:
         response_data = {'code': status.HTTP_200_OK,
                          'message': 'No hay roles registrados',
-                         'status': False}
+                         'status': False,
+                         'data':[]}
         return Response(response_data)
 
     response_data = {'code': status.HTTP_200_OK,

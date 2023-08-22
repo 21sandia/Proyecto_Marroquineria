@@ -18,35 +18,33 @@ def create_material(request):
             return Response(data={'code': status.HTTP_200_OK, 
                                   'message': 'El material ya existe', 
                                   'status': False,
-                                  'data': []
+                                  'data': [name]
                                   })
 
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Creado Exitosamente', 
                               'status': True,
-                              'data': []
+                              'data': [name]
                               })
     
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
                               'message': 'Error de red', 
-                              'status': False,
-                              'data': []
+                              'status': False
                               })
     
     except Exception as e:
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor: '+str(e), 
-                              'status': False,
-                              'data': []
+                              'status': False
                               })
 
     
 
 @api_view(['GET'])
 def list_material(request):
-    queryset = Materials.objects.all().order_by('name')
+    queryset = Materials.objects.all().order_by('id')
     serializer = MaterialSerializer(queryset, many=True)
 
     if not serializer.data:

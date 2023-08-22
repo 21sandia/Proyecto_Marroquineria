@@ -55,85 +55,86 @@ def get_Product(request): # FUNCIONA
 
 @api_view(['GET'])
 def get_all_Product(request):
-    try:
-        # Obtener el parámetro de consulta "product_id" si está presente
-        product_id = request.query_params.get('product_id')
+    data = []
+    detail_prods = DetailProds.objects.all()
 
-        detail_prod_data = DetailProds.objects.select_related(
-            'fk_id_product__fk_id_state',
-            'fk_id_product__fk_id_type_prod__fk_id_category',
-        ).all()
+    # Obtener parámetros de filtrado y ordenación de la solicitud
+    product_id = request.GET.get('product_id')
+    category_id = request.GET.get('category_id')
+    type_prod_id = request.GET.get('type_prod_id')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    sort_by = request.GET.get('sort_by', '-date')
 
-        # Si se proporciona un "product_id", aplicar el filtro por ID del producto
-        if product_id:
-            detail_prod_data = detail_prod_data.filter(fk_id_product_id=product_id)
+    # Aplicar filtrado según ID del producto, categoría y/o tipo de producto si se proporcionan
+    if product_id:
+        detail_prods = detail_prods.filter(fk_id_product_id=product_id)
+    if category_id:
+        detail_prods = detail_prods.filter(fk_id_product__fk_id_type_prod__fk_id_category_id=category_id)
+    if type_prod_id:
+        detail_prods = detail_prods.filter(fk_id_product__fk_id_type_prod_id=type_prod_id)
+    
+    # Filtrar por rango de precio si se proporciona
+    if min_price:
+        detail_prods = detail_prods.filter(fk_id_product__price_sale__gte=min_price)
+    if max_price:
+        detail_prods = detail_prods.filter(fk_id_product__price_sale__lte=max_price)
+    
+    # Ordenar los resultados
+    detail_prods = detail_prods.order_by(sort_by)
 
-        # Obtener la lista de detalles de productos resultantes
-        detail_prod_data = detail_prod_data.all()
+    for detail_prod in detail_prods:
+        product = detail_prod.fk_id_product
+        type_prod = product.fk_id_type_prod
+        category = type_prod.fk_id_category
+        state = product.fk_id_state
+        measure = detail_prod.fk_id_measures if hasattr(detail_prod, 'fk_id_measures') else None
+        material = detail_prod.fk_id_materials if hasattr(detail_prod, 'fk_id_materials') else None
 
-        response_data = []
-        
-        if detail_prod_data:
-            response_data = []
-
-            for detail_prod_obj in detail_prod_data:
-                product_obj = detail_prod_obj.fk_id_product
-                state_obj = product_obj.fk_id_state
-                category_obj = product_obj.fk_id_type_prod.fk_id_category
-
-                type_prod_obj = product_obj.fk_id_type_prod
-
-                detail_data = DetailProdSerializer(detail_prod_obj).data
-                product_data = {
-                    'id': product_obj.id,
-                    'name': product_obj.name,
-                    'image_url': product_obj.image.url if product_obj.image else None,
-                    'reference': product_obj.reference,
-                    'description': product_obj.description,
-                    'quantity': product_obj.quantity,
-                    'price_shop': str(product_obj.price_shop),
-                    'price_sale': str(product_obj.price_sale),
-                    'state_data': {
-                        'id': state_obj.id,
-                        'name': state_obj.name
-                    },
-                    'category_data': {
-                        'id': category_obj.id,
-                        'name': category_obj.name
-                    },
-                    'type_prod_data': {
-                        'id': type_prod_obj.id,
-                        'name': type_prod_obj.name
-                    }
-                }
-
-                detail_data['product_data'] = product_data
-                response_data.append(detail_data)
-
-            response = {
-                'code': status.HTTP_200_OK,
-                'status': True,
-                'message': 'Consulta realizada Exitosamente',
-                'data': response_data
+        data.append({
+            "id": detail_prod.id,
+            "date": detail_prod.date,
+            "fk_id_product": product.id,
+            "color": detail_prod.color,
+            "product_data": {
+                "id": product.id,
+                "name": product.name,
+                "image_url": product.image.url if product.image else None,
+                "reference": product.reference,
+                "description": product.description,
+                "quantity": product.quantity,
+                "price_shop": str(product.price_shop),
+                "price_sale": str(product.price_sale),
+                "state_data": {
+                    "id": state.id,
+                    "name": state.name
+                },
+                "category_data": {
+                    "id": category.id,
+                    "name": category.name
+                },
+                "type_prod_data": {
+                    "id": type_prod.id,
+                    "name": type_prod.name
+                },
+                "materials": {
+                    "id": material.id,
+                    "name": material.name
+                } if material else None,
+                "measures": {
+                    "id": measure.id,
+                    "name": measure.name
+                } if measure else None
             }
-        else:
-            response = {
-                'code': status.HTTP_200_OK,
-                'status': False,
-                'message': 'No hay información disponible',
-                'data': []
-            }
+        })
 
-        return Response(response)
-    except DetailProds.DoesNotExist:
-        response = {
-            'code': status.HTTP_404_NOT_FOUND,
-            'status': False,
-            'message': 'No se encontraron detalles de productos',
-            'data': []
-        }
+    return Response({
+        'code': 200,
+        'status': True,
+        'message': 'Consulta realizada Exitosamente',
+        'data': data,
+    })
 
-        return Response(response)
 
 
 

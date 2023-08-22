@@ -37,7 +37,7 @@ class Users(models.Model):
     fk_id_rol = models.ForeignKey(Rol, models.DO_NOTHING, db_column='fk_id_rol')
     fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')
     password = models.CharField(max_length=100)
-    last_login = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    last_login = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = 'users'
@@ -101,8 +101,6 @@ class DetailProds(models.Model):
     fk_id_materials = models.ForeignKey(Materials, models.DO_NOTHING, db_column='fk_id_materials')
     date = models.DateField(auto_now_add=True)
     color = models.CharField(max_length=30)
-    size_p = models.CharField(max_length=50)
-    material = models.CharField(max_length=40)
 
     class Meta:
         db_table = 'detail_prods'
