@@ -1,12 +1,12 @@
-from django.shortcuts import render
-from django.contrib.auth.hashers import check_password
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework import status
- 
 from .models import *
 from .serializers import *
 
@@ -21,6 +21,34 @@ def rol_list(request):
             rol_serializer.save()
             return JsonResponse(rol_serializer.data, status=status.HTTP_201_CREATED) 
         return JsonResponse(rol_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# @api_view(['POST'])
+# @authentication_classes([SessionAuthentication, BasicAuthentication])  # Requiere autenticación básica o basada en sesión
+# @permission_classes([IsAuthenticated])  # Requiere que el usuario esté autenticado
+# def iniciar_sesion(request):
+#     data = request.data
+#     email = data.get('email')
+#     password = data.get('password')
+
+#     user = authenticate(request, email=email, password=password)
+
+#     if user is not None:
+#         # Usuario autenticado correctamente
+#         # Realiza acciones adicionales si es necesario
+#         return Response({
+#             'code': status.HTTP_200_OK,
+#             'status': True,
+#             'message': 'Inicio de sesión exitoso.',
+#             'data': None
+#         })
+#     else:
+#         return Response({
+#             'code': status.HTTP_401_UNAUTHORIZED,
+#             'status': False,
+#             'message': 'Credenciales inválidas. No se pudo iniciar sesión.',
+#             'data': None
+#         })
 
 # ** login **
 @api_view(['POST'])
@@ -109,3 +137,5 @@ def cerrar_sesion(request):
             'message': 'Error al cerrar la sesión',
             'status': False
         })
+
+

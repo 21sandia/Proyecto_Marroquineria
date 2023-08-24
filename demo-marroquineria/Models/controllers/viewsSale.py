@@ -9,8 +9,6 @@ from ..serializers import *
 import requests
 
 
-
-# **Crea la venta junto con el detalle de venta**
 @api_view(['POST'])
 def create_sale_detail(request):
     # Obtener los datos de la solicitud
@@ -59,13 +57,12 @@ def create_sale_detail(request):
     for product_data in products:
         product_id = product_data.get('product_id')
         quantity = product_data.get('quantity')
-        price_unit = product_data.get('price_unit')
 
         # Verificar campos obligatorios en los detalles del producto
-        if not product_id or not quantity or price_unit is None:
+        if not product_id or not quantity:
             return Response({
                 "code": status.HTTP_200_OK,
-                "message": "Campos obligatorios faltantes en los detalles del producto: product_id, quantity, price_unit.",
+                "message": "Campos obligatorios faltantes en los detalles del producto: product_id, quantity.",
                 "status": False
             })
 
@@ -79,15 +76,17 @@ def create_sale_detail(request):
                 "status": False
             })
 
-        total_product = price_unit * quantity
-        total_sale += total_product
+        # Calcular el subtotal del producto
+        subtotal_product = product.price_sale * quantity
+        total_sale += subtotal_product
 
+        # Crear datos para el detalle del producto
         detail_data = {
             'fk_id_sale': sale,
             'fk_id_prod': product,
             'quantity': quantity,
-            'price_unit': price_unit,
-            'total_product': total_product,
+            'price_unit': product.price_sale,
+            'total_product': subtotal_product,
         }
         detail_data_list.append(detail_data)
 
@@ -103,17 +102,19 @@ def create_sale_detail(request):
         return Response(sale_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # Envía el correo electrónico de notificación
-    subject = 'Comprobante de venta'
-    message = f'Se ha creado una nueva venta con número de factura: {sale.id}.\n\n'
+    subject = 'Comprobante de compra'
+    message = f'Querido(a) {people.name}, te informamos que tu compra con número de factura: {sale.id} ha sido captado con exito,a continuación encontrarás un detalle general de la compra.\n\n'
     message += 'Detalles de la compra:\n'
-    for product_data in products:
-        product_id = product_data.get('product_id')
-        quantity = product_data.get('quantity')
-        price_unit = product_data.get('price_unit')
-        total_product = price_unit * quantity
-        message += f'Producto: {product_id}, Cantidad: {quantity}, Precio unitario: {price_unit}, Total producto: {total_product}\n'
+    for detail in detail_data_list:
+        product = detail['fk_id_prod']
+        quantity = detail['quantity']
+        subtotal_product = detail['total_product']
+        message += f'Producto: {product.name}, Cantidad: {quantity}, Precio unitario: {product.price_sale}, Subtotal: {subtotal_product}\n'
+    
+    message += f'\nTotal de la compra: {total_sale}\n'
+    
     from_email = 'ecommerce.marquetp@gmail.com' 
-    recipient_list = [people.email]  # Cambia esto por la dirección de correo del cliente
+    recipient_list = [people.email] 
 
     send_mail(subject, message, from_email, recipient_list)
 
@@ -123,7 +124,6 @@ def create_sale_detail(request):
         "status": True,
         "data": sale_serializer.data
     })
- 
 
 
 # **Lista los datos de venta junto con detalle venta**

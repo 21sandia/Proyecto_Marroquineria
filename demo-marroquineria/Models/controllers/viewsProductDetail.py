@@ -87,14 +87,17 @@ def edit_product(request, product_id):
     detail_serializer = DetailProdSerializer(detail, data=detail_data, partial=True)
 
     if product_serializer.is_valid() and detail_serializer.is_valid():
-        if 'name' in product_data and Products.objects.filter(name=product_data['name']).exclude(pk=product_id).exists():
+        existing_product_name = Products.objects.filter(name=product_data.get('name')).exclude(pk=product_id).exists()
+        existing_product_reference = Products.objects.filter(reference=product_data.get('reference')).exclude(pk=product_id).exists()
+
+        if 'name' in product_data and existing_product_name:
             return Response({"code": status.HTTP_200_OK,
                             "status": False,
                             "message": "Ya existe un producto con este nombre",
                             'data': []
                             })
 
-        if 'reference' in product_data and Products.objects.filter(reference=product_data['reference']).exclude(pk=product_id).exists():
+        if 'reference' in product_data and existing_product_reference:
             return Response({"code": status.HTTP_200_OK,
                             "status": False,
                             "message": "Ya existe un producto con esta referencia",
@@ -105,7 +108,7 @@ def edit_product(request, product_id):
         detail_serializer.save()
 
         return Response({"code": status.HTTP_200_OK,
-                        "status": False,
+                        "status": True,
                         "message": "Producto actualizado exitosamente",
                         'data': []
                         })

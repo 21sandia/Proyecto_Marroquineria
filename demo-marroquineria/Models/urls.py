@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshVie
 
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsProductDetail, viewsUser
 from Models.controllers import viewsSale, viewsUserGetAllData, viewsMeasures, viewsMaterial
-from Models.controllers import viewsRecupContrasena
+from Models.controllers import viewsRecupContrasena 
 from .views import iniciar_sesion, cerrar_sesion
 from django.conf import settings
 from django.conf.urls.static import static
@@ -13,9 +13,18 @@ from django.urls import reverse
 urlpatterns = [
 
     # **Iniciar Sesion**
-    path('iniciar-sesion/', iniciar_sesion, name='iniciar-sesion'),
+    path('iniciar_sesion/', iniciar_sesion, name='iniciar-sesion'),
     # **Cerrar Sesion**
     path('cerrar-sesion/', cerrar_sesion, name='cerrar-sesion'),
+
+    #  **RECUPERAR CONTRASEÑA**
+    #path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), 
+    path('recuperar_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'),
+    path('cambiar_contrasena/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), 
+
+    # **Token**
+    path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
+    path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # ** Estados **
 
@@ -61,15 +70,6 @@ urlpatterns = [
 
     # Trae toda la información de las tablas relacionadas con el usuario 
     path('get_all_dataUser/', viewsUserGetAllData.get_related_foreign_keys, name='get_all_models_data'),
-
-    #  **RECUPERAR CONTRASEÑA**
-    #path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), 
-    path('recuperar_contrasena/<str:uidb64>/<str:token>/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'),
-    path('cambiar_contrasena/<str:uidb64>/<str:token>/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), 
-
-    # **Token**
-    path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
-    path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # ** Categorías **
 

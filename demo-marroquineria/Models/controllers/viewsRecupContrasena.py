@@ -1,17 +1,16 @@
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.models import User
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 from django.urls import reverse
 from django.core.mail import send_mail
-from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import Users
-
-
-User = get_user_model()
 
 @api_view(['POST'])
 def recuperar_contrasena(request):
@@ -32,8 +31,8 @@ def recuperar_contrasena(request):
     token = default_token_generator.make_token(user)
 
     # Crear enlace para restablecer la contraseña
-    uid = urlsafe_base64_encode(force_bytes(user.id))
-    reset_url = reverse('recuperar_contrasena', kwargs={'uidb64': uid, 'token': token})
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    reset_url = reverse('cambiar_contrasena') + f'?uidb64={uid}&token={token}'
 
     # Envío de correo para recuperación de contraseña
     subject = 'Recuperación de contraseña'
@@ -45,7 +44,7 @@ def recuperar_contrasena(request):
     Saludos,\n \
     MarquetPlace'
     from_email = 'noreply@example.com'
-    recipient_list = [user.email]
+    recipient_list = [user.fk_id_people.email]
     send_mail(subject, message, from_email, recipient_list)
 
     return Response({
@@ -56,45 +55,26 @@ def recuperar_contrasena(request):
     })
 
 
+#  ** Cambiar Contraseña **
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication])  # Usar la autenticación de sesión de Django
+@permission_classes([IsAuthenticated])  # Solo usuarios autenticados pueden acceder
 def cambiar_contrasena(request):
     data = request.data
-    uidb64 = data.get('uidb64')
-    token = data.get('token')
     new_password = data.get('new_password')
     confirm_new_password = data.get('confirm_new_password')
-    email = data.get('email')
 
-    if not uidb64 or not token or not new_password or not confirm_new_password:
+    if not new_password or not confirm_new_password:
         return Response({
-            'code': status.HTTP_400_BAD_REQUEST,
+            'code': status.HTTP_200_OK,
             'status': False,
             'message': 'Faltan parámetros requeridos.',
             'data': None
         })
 
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(id=uid)  # Cambiar a User en lugar de Users
-    except (User.DoesNotExist, ValueError, OverflowError):
-        return Response({
-            'code': status.HTTP_404_NOT_FOUND,
-            'status': False,
-            'message': 'No se encontró un usuario válido.',
-            'data': None
-        })
-
-    if not default_token_generator.check_token(user, token):
-        return Response({
-            'code': status.HTTP_400_BAD_REQUEST,
-            'status': False,
-            'message': 'Token no válido.',
-            'data': None
-        })
-
     if new_password != confirm_new_password:
         return Response({
-            'code': status.HTTP_400_BAD_REQUEST,
+            'code': status.HTTP_200_OK,
             'status': False,
             'message': 'Las contraseñas no coinciden.',
             'data': None
@@ -102,13 +82,17 @@ def cambiar_contrasena(request):
 
     if len(new_password) < 8:
         return Response({
-            'code': status.HTTP_400_BAD_REQUEST,
+            'code': status.HTTP_200_OK,
             'status': False,
             'message': 'La contraseña debe tener al menos 8 caracteres.',
             'data': None
         })
 
-    user.set_password(new_password)  # Usar set_password para actualizar la contraseña
+    # Aquí obtén el usuario autenticado (reemplaza esta línea con la forma adecuada de obtener el usuario autenticado)
+    user = request.user
+
+    # Actualizar la contraseña del usuario
+    user.set_password(new_password)
     user.save()
 
     return Response({
@@ -117,7 +101,4 @@ def cambiar_contrasena(request):
         'message': 'La contraseña se ha cambiado exitosamente.',
         'data': None
     })
-
-
-    
 
