@@ -224,7 +224,6 @@ def update_people(request, pk):
                               'status': False})
 
 
-
 @api_view(['DELETE'])
 def delete_people(request, pk):
     try:
