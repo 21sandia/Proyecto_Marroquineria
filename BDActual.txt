@@ -8,22 +8,17 @@ CREATE TABLE states(
 	name varchar(30)
 );
 
-CREATE TABLE categorys (
-	id serial PRIMARY KEY,
-	name varchar(30)
-);
-
 CREATE TABLE peoples(
-    id serial PRIMARY KEY,
+    	id serial PRIMARY KEY,
 	email varchar(50),
 	name varchar(30),
 	last_name varchar(30),
 	type_document varchar(30),
-    document int,
+    	document int,
 	gender varchar(30),
-    date_birth date,
-    phone varchar(10),
-    address varchar(30)
+    	date_birth date,
+    	phone varchar(10),
+    	address varchar(30)
 );
 
 CREATE TABLE users (
@@ -35,6 +30,11 @@ CREATE TABLE users (
 	FOREIGN KEY (fk_id_rol) REFERENCES rol(id),
 	FOREIGN KEY (fk_id_state) REFERENCES states(id),
 	FOREIGN KEY (fk_id_people) REFERENCES peoples(id)
+);
+
+CREATE TABLE categorys (
+	id serial PRIMARY KEY,
+	name varchar(30)
 );
 
 CREATE TABLE type_prods (
@@ -59,14 +59,28 @@ CREATE TABLE products(
 	FOREIGN KEY (fk_id_type_prod) REFERENCES type_prods(id)
 );
 
+CREATE TABLE measures(
+	id serial PRIMARY KEY,
+	name varchar(30)
+);
+
+CREATE TABLE materials(
+	id serial PRIMARY KEY,
+	name varchar(30)
+);
+
 CREATE TABLE detail_prods(
 	id serial PRIMARY KEY,
 	fk_id_product int,
+	fk_id_measures int,
+	fk_id_materials int,
 	date date NOT NULL DEFAULT CURRENT_DATE,
 	color varchar(30),
 	size_p varchar(50),
 	material varchar(40),
-	FOREIGN KEY (fk_id_product) REFERENCES products(id)
+	FOREIGN KEY (fk_id_product) REFERENCES products(id),
+	FOREIGN KEY (fk_id_measures) REFERENCES measures(id),
+	FOREIGN KEY (fk_id_materials) REFERENCES materials(id)
 );
 
 CREATE TABLE sales(

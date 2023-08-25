@@ -27,11 +27,9 @@ class Peoples(models.Model):
     date_birth = models.DateField()
     phone = models.CharField(max_length=10)
     address = models.CharField(max_length=30)
-    is_venvedor = models.()
-    is_repartidor = models.()
-    is_cliente = models. 
-    ()
-
+    is_empleado = models.BooleanField(default=False)
+    is_cliente = models.BooleanField(default=False)
+    
     class Meta:
         db_table = 'peoples'
 
