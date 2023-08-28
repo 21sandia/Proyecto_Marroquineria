@@ -37,6 +37,7 @@ def create_type_prod(request):
                               'status': False})
 
 
+
 # ** Lista los datos de categoría y Tipo de producto en un solo EndPoint **
 @api_view(['GET'])
 def get_all_tpcateg(request):
@@ -78,7 +79,7 @@ def get_all_tpcateg(request):
 # ** Lista solo el tipo de producto **   
 @api_view(['GET'])
 def list_type_prod(request):
-    queryset = TypeProds.objects.all().order_by('name')
+    queryset = TypeProds.objects.all().order_by('id')
     serializer = TypeProdSerializer(queryset, many=True)
 
     if not serializer.data:

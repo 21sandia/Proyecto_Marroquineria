@@ -1,0 +1,105 @@
+CREATE TABLE rol(
+	id serial PRIMARY KEY,
+	name varchar(30)
+);
+
+CREATE TABLE states(
+	id serial PRIMARY KEY,
+	name varchar(30)
+);
+
+CREATE TABLE peoples(
+    	id serial PRIMARY KEY,
+	email varchar(50),
+	name varchar(30),
+	last_name varchar(30),
+	type_document varchar(30),
+    	document int,
+	gender varchar(30),
+    	date_birth date,
+    	phone varchar(10),
+    	address varchar(30)
+);
+
+CREATE TABLE users (
+	id serial PRIMARY KEY,
+	fk_id_state int, 
+	fk_id_rol int,
+	fk_id_people int,
+	password varchar(100),
+	FOREIGN KEY (fk_id_rol) REFERENCES rol(id),
+	FOREIGN KEY (fk_id_state) REFERENCES states(id),
+	FOREIGN KEY (fk_id_people) REFERENCES peoples(id)
+);
+
+CREATE TABLE categorys (
+	id serial PRIMARY KEY,
+	name varchar(30)
+);
+
+CREATE TABLE type_prods (
+	id serial PRIMARY KEY,
+	fk_id_category int,
+	name varchar(30),
+	FOREIGN KEY (fk_id_category) REFERENCES categorys(id)
+);
+
+CREATE TABLE products(
+	id serial PRIMARY KEY,
+	fk_id_state int,
+	fk_id_type_prod int,
+	name varchar(30),
+	image varchar(500),
+	reference varchar(60),
+	description varchar(1000),
+	quantity int,
+	price_shop numeric(10,2),
+	price_sale numeric(10,2),
+	FOREIGN KEY (fk_id_state) REFERENCES states(id),
+	FOREIGN KEY (fk_id_type_prod) REFERENCES type_prods(id)
+);
+
+CREATE TABLE measures(
+	id serial PRIMARY KEY,
+	name varchar(30)
+);
+
+CREATE TABLE materials(
+	id serial PRIMARY KEY,
+	name varchar(30)
+);
+
+CREATE TABLE detail_prods(
+	id serial PRIMARY KEY,
+	fk_id_product int,
+	fk_id_measures int,
+	fk_id_materials int,
+	date date NOT NULL DEFAULT CURRENT_DATE,
+	color varchar(30),
+	size_p varchar(50),
+	material varchar(40),
+	FOREIGN KEY (fk_id_product) REFERENCES products(id),
+	FOREIGN KEY (fk_id_measures) REFERENCES measures(id),
+	FOREIGN KEY (fk_id_materials) REFERENCES materials(id)
+);
+
+CREATE TABLE sales(
+	id serial PRIMARY KEY,
+	fk_id_state int,
+	fk_id_people int,
+	date date NOT NULL DEFAULT CURRENT_DATE,
+	total_sale numeric(10, 2),
+	FOREIGN KEY (fk_id_state) REFERENCES states(id),
+	FOREIGN KEY (fk_id_people) REFERENCES peoples(id)
+);
+
+CREATE TABLE detail_sales (
+	id serial PRIMARY KEY,
+	fk_id_sale int,
+	fk_id_prod int,
+	quantity int,
+	price_unit NUMERIC(10, 2),
+	total_product NUMERIC(10, 2),
+	FOREIGN KEY (fk_id_sale) REFERENCES sales(id),
+	FOREIGN KEY (fk_id_prod) REFERENCES products(id)
+);

@@ -1,5 +1,18 @@
 from rest_framework import serializers
-from .models import Users, Peoples, Rol, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys
+from .models import Users, Peoples, Rol, Measures, Materials, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys
+
+
+class StateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = States
+        fields = ('id', 'name')
+
+
+class RolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rol
+        fields = ('id', 'name')
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,51 +49,46 @@ class recup_ContrasenaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class RolSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rol
-        fields = ('id', 'name')
-
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categorys
         fields = '__all__'
 
-class ProductSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True, required=False) 
-
-    class Meta:
-        model = Products
-        fields = ['id', 'name', 'reference', 'image', 'description', 'quantity', 'price_shop', 'price_sale', 'fk_id_state', 'fk_id_type_prod']
-
-    def create(self, validated_data):
-        # Si 'image' no está presente en los datos validados, establece su valor como None
-        if 'image' not in validated_data:
-            validated_data['image'] = None
-
-        return super().create(validated_data)
-  
-
-class StateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = States
-        fields = ('id', 'name')
 
 class TypeProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = TypeProds
         fields = '__all__'
 
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields = ['id', 'name', 'reference', 'image', 'description', 'quantity', 'price_shop', 'price_sale', 'fk_id_state', 'fk_id_type_prod']
+
+    
 class DetailProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailProds
-        fields = ['id','date', 'fk_id_product', 'color', 'size_p', 'material']
+        fields = ['id','date','fk_id_product', 'color', 'fk_id_measures', 'fk_id_materials']
+    
+
+class MeasureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Measures
+        fields = '__all__'
+
+
+class MaterialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Materials
+        fields = '__all__'
 
 class SaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sales
         fields = '__all__'
+
 
 class DetailSaleSerializer(serializers.ModelSerializer):
     class Meta:

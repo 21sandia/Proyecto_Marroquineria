@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.hashers import make_password
 
 
 class Rol(models.Model):
@@ -26,7 +27,9 @@ class Peoples(models.Model):
     date_birth = models.DateField()
     phone = models.CharField(max_length=10)
     address = models.CharField(max_length=30)
-
+    is_empleado = models.BooleanField(default=False)
+    is_cliente = models.BooleanField(default=False)
+    
     class Meta:
         db_table = 'peoples'
 
@@ -36,10 +39,14 @@ class Users(models.Model):
     fk_id_rol = models.ForeignKey(Rol, models.DO_NOTHING, db_column='fk_id_rol')
     fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')
     password = models.CharField(max_length=100)
-    last_login = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    last_login = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = 'users'
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
+        self.save()
 
     def get_email_field_name(self):
         return 'fk_id_people__email'
@@ -67,21 +74,36 @@ class Products(models.Model):
     image = models.ImageField(upload_to='media/', blank=True,  null=True)
     reference = models.CharField(max_length=60)
     description = models.CharField(max_length=1000)
-    quantity = models.IntegerField(default=0)
+    quantity = models.IntegerField(blank=True, null=True)
     price_shop = models.DecimalField(max_digits=10, decimal_places=2)
     price_sale = models.DecimalField(max_digits=10, decimal_places=2)
+    
 
     class Meta:
+        managed = False
         db_table = 'products'
 
 
+class Materials(models.Model):
+    name = models.CharField(max_length=30)
+
+    class Meta:
+        db_table = 'materials'
+
+
+class Measures(models.Model):
+    name = models.CharField(max_length=30)
+
+    class Meta:
+        db_table = 'measures'
+
 
 class DetailProds(models.Model):
-    fk_id_product = models.OneToOneField(Products, on_delete= models.CASCADE, db_column='fk_id_product')
+    fk_id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='fk_id_product')
+    fk_id_measures = models.ForeignKey(Measures, models.DO_NOTHING, db_column='fk_id_measures')
+    fk_id_materials = models.ForeignKey(Materials, models.DO_NOTHING, db_column='fk_id_materials')
     date = models.DateField(auto_now_add=True)
     color = models.CharField(max_length=30)
-    size_p = models.CharField(max_length=50)
-    material = models.CharField(max_length=40)
 
     class Meta:
         db_table = 'detail_prods'
@@ -106,4 +128,3 @@ class DetailSales(models.Model):
 
     class Meta:
         db_table = 'detail_sales'
-

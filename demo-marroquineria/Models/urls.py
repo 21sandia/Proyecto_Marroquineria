@@ -1,14 +1,31 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
-
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsProductDetail, viewsUser
-from Models.controllers import viewsSale, viewsDetailSale, viewsUserGetAllData
-from Models.controllers import viewsRecupContrasena
+from Models.controllers import viewsSale, viewsUserGetAllData, viewsMeasures, viewsMaterial
+from Models.controllers import viewsRecupContrasena 
+from .views import iniciar_sesion, cerrar_sesion
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import reverse
 
 urlpatterns = [
+
+    # **Iniciar Sesion**
+    path('iniciar-sesion/', iniciar_sesion, name='iniciar_sesion'),
+    # **Cerrar Sesion**
+    path('cerrar-sesion/', cerrar_sesion, name='cerrar-sesion'),
+
+    #  **RECUPERAR CONTRASEÑA**
+    #path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), 
+    path('recuperar_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'),
+    path('cambiar_contrasena/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), 
+
+    # **Token**
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
+    # path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # ** Estados **
 
@@ -46,9 +63,7 @@ urlpatterns = [
     # ** Usuarios **
 
     # Listar Usuario
-    path('list-user/', viewsUser.list_user, name='list_user'),
-    # Crear Usuario
-    #path('create-user/', viewsUser  .create_user, name='create_user'), 
+    path('list-user/', viewsUser.list_user, name='list_user'), 
     # Editar Usuario
     path('update-user/<int:pk>/', viewsUser.update_user, name='update_user'), 
     # Eliminar Usuario
@@ -81,59 +96,58 @@ urlpatterns = [
     # Eliminar tipo de producto
     path('delete-type_prod/<int:pk>/', viewsTypeProd.delete_type_prod, name='delete_type_prod'), 
 
-    # Trae toda la información relacionada con categoría y tipo de producto
-    #path('get_all_tpcateg/', viewsTpCategory.get_all_tpcateg, name='get_all_tpcateg'),
+    # ** Medidas **
+    # Listar Medidas
+    path('list-measures/', viewsMeasures.list_measures, name='list-measures'), 
+    # Crear Medidas
+    path('create-measures/', viewsMeasures.create_measures, name='create-measures'),
+    # Editar Medidas
+    path('update-measures/<int:pk>/', viewsMeasures.update_measures, name='update-measures'), 
+    # Eliminar Medidas
+    path('delete-measures/<int:pk>/', viewsMeasures.delete_measures, name='delete-measures'),
+
+    # ** Material **
+    # Listar Material
+    path('list-material/', viewsMaterial.list_material, name='list-material'), 
+    # Crear Material
+    path('create-material/', viewsMaterial.create_material, name='create_material'),
+    # Editar Material
+    path('update-material/<int:pk>/', viewsMaterial.update_material, name='update-material'), 
+    # Eliminar Material
+    path('delete-material/<int:pk>/', viewsMaterial.delete_material, name='delete-material'),
 
     # ** Productos **
- 
     # Listar todos los modelos relacionados con Producto
-    path('get-Product/', viewsProduct.get_all_models_data, name='Estado-categ-tipo-producto'), 
-     # Lista todo el producto completo con el Detalle Producto
-    path('get-all-Product/', viewsProduct.get_all_models_prod_detailp, name='Estado-categ-tipo-producto-detalleProducto'),
-    
-    
+    path('get-Product/', viewsProduct.get_Product, name='Estado-categ-tipo-producto'), 
+    # Lista todo el producto completo con el Detalle Producto
+    path('get-all-Product/', viewsProduct.get_all_Product, name='Estado-categ-tipo-producto-detalleProducto'),
+    # http://localhost:8000/get_all_Product/?category_id=1&sort_by=price_sale  **Filtrar por la categoría con ID 1 y ordenar por precio de venta de forma ascendente**
+    # http://localhost:8000/get_all_Product/?category_id=1&type_prod_id=2   **Filtrar por categoría y tipo de producto**
+    # http://localhost:8000/get_all_Product/?min_price=50&max_price=100   **Filtrar por rango de precio mínimo y máximo**
+    # http://localhost:8000/get_all_Product/?category_id=1&sort_by=-price_sale   **Filtrar por categoría, ordenar por precio de venta en orden descendente**
+    # http://localhost:8000/get_all_Product/?type_prod_id=2&sort_by=name    **Filtrar por tipo de producto, ordenar por nombre de producto en orden ascendente**
 
 
     # ** Producto con Detalle Producto **
-
     # Crea el Producto con el Detalle de Producto
     path('create-product/', viewsProductDetail.product_create, name='crear_producto_detalle_product'),
     # lista el Producto con Detalle Producto y Estado
     path('list-product/', viewsProductDetail.product_details, name='product-details'),
     # Edita el Producto con el Detalle de Producto
-    path('update-product/<int:pk>/', viewsProductDetail.edit_product, name='edit-product'),
+    path('update-product/<int:product_id>/', viewsProductDetail.edit_product, name='edit-product'),
     # Elimina el Producto con el Detalle de producto
     path('delete-product/<int:pk>/', viewsProductDetail.delete_product, name='delete_product'),
 
+    # ** Venta con Detalle Venta **
+    # Crea la venta con el detalle de venta
+    path('create-sale-detail/', viewsSale.create_sale_detail, name='create-sale-detail'),
+    # Lista la venta con el detalle de venta
+    path('list_sale_detail/', viewsSale.list_sale_detail, name='list_sale_detail'),
+    # Edita la venta con el detalle de venta
+    path('edit-sale-detail/<int:pk>/', viewsSale.edit_sale_detail, name='edit_sale_detail'),
+    # Elimina la venta con el detalle de venta
+    path('delete-sale-detail/<int:pk>/', viewsSale.delete_sale_detail, name='delete_sale_detail'),
     
-    # Trae toda la información de las tablas relacionadas con el producto
-    #path('get-all-data_prod/', viewsGetAllDataProd.get_all_models_data, name='get_all_data'), 
-
-    # Trae la información relacionada del producto con detalle de producto
-    #path('get-all-detal_prod/', viewsGetAllDetaProd.get_all_datap, name='get_all_data'), 
-
-    # ventas
-    path('list-sales/', viewsSale.list_sale, name='list_sale'), # Listar 
-    path('create-sales/', viewsSale.create_sale, name='create_sale'), # Crear
-    path('update-sales/<int:pk>/', viewsSale.update_sale, name='update_sale'), # Editar
-    path('delete-sales/<int:pk>/', viewsSale.delete_sale, name='delete_sale'), # Eliminar
-    
-    # Detalle ventas
-    path('get-all-det_sales/', viewsDetailSale.get_all_datasale, name='get_all_data_sales'), # Listar en un EndPoint
-    path('create-detail_sales/', viewsDetailSale.create_detail_sale, name='create_detail_sale'), # Crear
-    path('update-detail_sales/<int:pk>/', viewsDetailSale.update_detail_sale, name='update_detail_sale'), # Editar
-    path('delete-detail_sales/<int:pk>/', viewsDetailSale.delete_detail_sale, name='delete_detail_sale'), # Eliminar
-
-    # Trae la información relacionada de la venta con detalle de la venta
-    #path('get-all-det_sales/', viewsGetAllDetSale.get_all_datasale, name='get_all_data_sales'), 
-
-    #  **RECUPERAR CONTRASEÑA**
-    path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), #  
-    path('cambiar_contrasena/<str:uidb64>/<str:token>/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), #  
-
-    # **Token**
-    path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
-    path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
 ]
 
