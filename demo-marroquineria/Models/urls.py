@@ -109,6 +109,7 @@ urlpatterns = [
     # Trae toda la información de las tablas relacionadas con el producto
     #path('get-all-data_prod/', viewsGetAllDataProd.get_all_models_data, name='get_all_data'), 
 
+<<<<<<< Updated upstream
     # Trae la información relacionada del producto con detalle de producto
     #path('get-all-detal_prod/', viewsGetAllDetaProd.get_all_datap, name='get_all_data'), 
 
@@ -135,6 +136,35 @@ urlpatterns = [
     path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
     path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
+=======
+    # **Reportes estadisticos de ventas **
+    path('sales/statistics/', viewsReports.sales_statistics, name='sales_statistics'),
+    # Para un informe de ventas diario para todo el año 2023
+    # ?start_date=2023-01-01&end_date=2023-12-31&report_type=daily
+
+    # Para un informe de ventas semanal para el primer trimestre de 2023
+    # ?start_date=2023-01-01&end_date=2023-03-31&report_type=weekly
+
+    # Para un informe de ventas mensual para todo el año 2023
+    # ?start_date=2023-01-01&end_date=2023-12-31&report_type=monthly
+
+    # Para un informe de ventas anual desde 2020 hasta 2023
+    # ?start_date=2020-01-01&end_date=2023-12-31&report_type=yearly
+
+    # Para un informe de ventas que incluya todos los tipos de informes (diario, semanal, mensual y anual) para el primer semestre de 2023
+    # ?start_date=2023-01-01&end_date=2023-06-30&report_type=all
+
+
+    # **Reportes de ventas de productos **
+    # week/top/   ** Informe de los 5 productos más vendidos por semana.
+    # month/bottom/    ** Informe de los 5 productos menos vendidos por mes.
+    # year/product_id=1/   ** Informe de ventas de un producto específico por año.
+    # range/start_year=2022/start_month=12/end_year=2023/end_month=1/report_type=top/   ** Informe de ventas por rango de fechas y tipo de informe.
+
+
+
+
+>>>>>>> Stashed changes
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

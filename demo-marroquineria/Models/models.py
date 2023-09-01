@@ -82,8 +82,15 @@ class Products(models.Model):
 
 
 class DetailProds(models.Model):
+<<<<<<< Updated upstream
     fk_id_product = models.OneToOneField(Products, on_delete= models.CASCADE, db_column='fk_id_product')
     date = models.DateField(auto_now_add=True)
+=======
+    fk_id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='fk_id_product')
+    fk_id_measures = models.ForeignKey(Measures, models.DO_NOTHING, db_column='fk_id_measures')
+    fk_id_materials = models.ForeignKey(Materials, models.DO_NOTHING, db_column='fk_id_materials')
+    date = models.DateTimeField(auto_now_add=True)
+>>>>>>> Stashed changes
     color = models.CharField(max_length=30)
     size_p = models.CharField(max_length=50)
     material = models.CharField(max_length=40)
@@ -95,7 +102,7 @@ class DetailProds(models.Model):
 class Sales(models.Model):
     fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state')
     fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     total_sale = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -112,3 +119,12 @@ class DetailSales(models.Model):
     class Meta:
         db_table = 'detail_sales'
 
+<<<<<<< Updated upstream
+=======
+
+class ProductSale(models.Model):
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    sale = models.ForeignKey(Sales, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    date = models.DateTimeField(auto_now_add=True)
+>>>>>>> Stashed changes

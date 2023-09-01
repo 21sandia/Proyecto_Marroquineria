@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -12,6 +13,24 @@ from ..models import Users
 
 
 User = get_user_model()
+=======
+from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import User
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_str
+from django.urls import reverse
+from ..models import Users
+
+>>>>>>> Stashed changes
 
 @api_view(['POST'])
 def recuperar_contrasena(request):
@@ -58,6 +77,7 @@ def recuperar_contrasena(request):
 
 @api_view(['POST'])
 def cambiar_contrasena(request):
+<<<<<<< Updated upstream
     data = request.data
     uidb64 = data.get('uidb64')
     token = data.get('token')
@@ -66,13 +86,47 @@ def cambiar_contrasena(request):
     email = data.get('email')
 
     if not uidb64 or not token or not new_password or not confirm_new_password:
+=======
+    uidb64 = request.GET.get('uidb64')
+    token = request.GET.get('token')
+
+    try:
+        uid = force_str(urlsafe_base64_encode(uidb64))
+        user = Users.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, Users.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        password = request.data.get('password')
+        password_confirm = request.data.get('password_confirm')
+
+        if password != password_confirm:
+            return Response({
+                'code': status.HTTP_400_BAD_REQUEST,
+                'status': False,
+                'message': 'Las contraseñas no coinciden',
+                'data': None
+            })
+
+        user.set_password(password)
+        user.save()
+
+        return Response({
+            'code': status.HTTP_200_OK,
+            'status': True,
+            'message': 'Contraseña cambiada con éxito',
+            'data': None
+        })
+    else:
+>>>>>>> Stashed changes
         return Response({
             'code': status.HTTP_400_BAD_REQUEST,
             'status': False,
-            'message': 'Faltan parámetros requeridos.',
+            'message': 'El token de recuperación de contraseña no es válido',
             'data': None
         })
 
+<<<<<<< Updated upstream
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(id=uid)  # Cambiar a User en lugar de Users
@@ -121,3 +175,6 @@ def cambiar_contrasena(request):
 
     
 
+=======
+
+>>>>>>> Stashed changes

@@ -29,6 +29,16 @@ class PeopleSerializer(serializers.ModelSerializer):
         model = Peoples
         fields = ('id', 'name', 'last_name', 'email', 'type_document', 'document', 'gender', 'date_birth', 'phone', 'address')
 
+
+class CambiarContrasenaSerializer(serializers.Serializer):
+    password = serializers.CharField(required=True)
+    password_confirm = serializers.CharField(required=True)
+
+    def validate(self, data):
+        if data['password'] != data['password_confirm']:
+            raise serializers.ValidationError("Las contraseñas no coinciden")
+        return data
+
     
 class recup_ContrasenaSerializer(serializers.ModelSerializer):
     class Meta:

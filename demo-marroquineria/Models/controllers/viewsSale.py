@@ -36,6 +36,7 @@ def create_sale(request):
                                   'message': 'La venta ya existe', 
                                   'status': False})
 
+<<<<<<< Updated upstream
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Creada Exitosamente', 
@@ -50,6 +51,85 @@ def create_sale(request):
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor: '+str(e), 
                               'status': False})
+=======
+    people = None
+    if people_id:
+        try:
+            people = Peoples.objects.get(id=people_id)
+        except Peoples.DoesNotExist:
+            return Response({
+                "code": status.HTTP_200_OK,
+                "message": "Persona no encontrada.",
+                "status": False
+            })
+
+    # Crear una nueva venta
+    sale_data = {
+        'fk_id_state': state.id if state else None,
+        'fk_id_people': people.id if people else None,
+        'total_sale': 0,
+    }
+    sale_serializer = SaleSerializer(data=sale_data)
+    if sale_serializer.is_valid():
+        sale = sale_serializer.save()
+    else:
+        return Response(sale_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    total_sale = 0
+    detail_data_list = []
+
+    for product_data in products:
+        product_id = product_data.get('product_id')
+        quantity = product_data.get('quantity')
+
+        # Verificar campos obligatorios en los detalles del producto
+        if not product_id or not quantity:
+            return Response({
+                "code": status.HTTP_200_OK,
+                "message": "Campos obligatorios faltantes en los detalles del producto: product_id, quantity.",
+                "status": False
+            })
+
+        try:
+            # Buscar el producto asociado
+            product = Products.objects.get(id=product_id)
+        except Products.DoesNotExist:
+            return Response({
+                "code": status.HTTP_200_OK,
+                "message": "El producto no existe.",
+                "status": False
+            })
+
+        # Calcular el subtotal del producto
+        subtotal_product = product.price_sale * quantity
+        total_sale += subtotal_product
+
+        # Crear datos para el detalle del producto
+        detail_data = {
+            'fk_id_sale': sale,
+            'fk_id_prod': product,
+            'quantity': quantity,
+            'price_unit': product.price_sale,
+            'total_product': subtotal_product,
+        }
+        detail_data_list.append(detail_data)
+
+    # Crear detalles de venta en masa
+    DetailSales.objects.bulk_create([DetailSales(**data) for data in detail_data_list])
+
+    # Crear una ProductSale para cada producto vendido
+    for detail_data in detail_data_list:
+        product = detail_data['fk_id_prod']
+        ProductSale.objects.create(product=product, sale=sale, quantity=detail_data['quantity'])
+
+    # Actualizar el total de la venta
+    sale.total_sale = total_sale
+    sale_serializer = SaleSerializer(instance=sale, data={'total_sale': total_sale}, partial=True)
+    if sale_serializer.is_valid():
+        sale_serializer.save()
+    else:
+        return Response(sale_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+>>>>>>> Stashed changes
     
 @api_view(['PATCH'])
 def update_sale(request, pk):
