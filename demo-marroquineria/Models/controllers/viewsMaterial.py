@@ -1,65 +1,56 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Rol
+from ..models import *
 from ..serializers import *
 import requests
 
 
-def crear_roles_iniciales():
-    roles_iniciales = ["Administrador", "Vendedor", "Repartidor", "Cliente"]
-
-    for rol_nombre in roles_iniciales:
-        Rol.objects.get_or_create(name=rol_nombre)
-
-
 @api_view(['POST'])
-def create_rol(request):
+def create_material(request):
     try:
-        serializer = RolSerializer(data=request.data)
+        serializer = MaterialSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         name = serializer.validated_data['name']
-        existing_rol = Rol.objects.filter(name=name).first()
-        if existing_rol:
+        existing_material = Materials.objects.filter(name=name).first()
+        if existing_material:
             return Response(data={'code': status.HTTP_200_OK, 
-                                  'message': 'El rol ya existe', 
-                                  'status': False
+                                  'message': 'El material ya existe', 
+                                  'status': False,
+                                  'data': [name]
                                   })
 
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Creado Exitosamente', 
                               'status': True,
-                              'data':[name]
+                              'data': [name]
                               })
     
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
                               'message': 'Error de red', 
-                              'status': False,
-                              'data':[]
+                              'status': False
                               })
     
     except Exception as e:
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor: '+str(e), 
-                              'status': False,
-                              'data':[]
+                              'status': False
                               })
 
     
 
 @api_view(['GET'])
-def list_rol(request):
-    queryset = Rol.objects.all().order_by('id')
-    serializer = RolSerializer(queryset, many=True)
+def list_material(request):
+    queryset = Materials.objects.all().order_by('id')
+    serializer = MaterialSerializer(queryset, many=True)
 
     if not serializer.data:
         response_data = {'code': status.HTTP_200_OK,
-                         'message': 'No hay roles registrados',
-                         'status': False,
-                         'data':[]}
+                         'message': 'No hay materiales registrados',
+                         'status': False}
         return Response(response_data)
 
     response_data = {'code': status.HTTP_200_OK,
@@ -70,55 +61,70 @@ def list_rol(request):
 
     
 @api_view(['PATCH'])
-def update_rol(request, pk):
+def update_material(request, pk):
     try:
-        rol = Rol.objects.get(pk=pk)
+        material = Materials.objects.get(pk=pk)
 
-        serializer = RolSerializer(rol, data=request.data, partial=True)
+        serializer = MaterialSerializer(material, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 
-                              'message': 'Actualizado Exitosamente', 
-                              'status': True})
+                              'message': 'Material actualizado Exitosamente', 
+                              'status': True,
+                              'data': []
+                              })
 
-    except Rol.DoesNotExist:
+    except Materials.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 
-                              'message': 'Rol No encontrado', 
-                              'status': False})
+                              'message': 'Material No encontrado', 
+                              'status': False,
+                              'data': []
+                              })
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
                               'message': 'Error de red', 
-                              'status': False})
+                              'status': False,
+                              'data': []
+                              })
 
     except Exception as e:
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor: ' + str(e), 
-                              'status': False})
+                              'status': False,
+                              'data': []
+                              })
 
 @api_view(['DELETE'])
-def delete_rol(request, pk):
+def delete_material(request, pk):
     try:
-        rol = Rol.objects.get(pk=pk)
-        rol.delete()
+        material = Materials.objects.get(pk=pk)
+        material.delete()
 
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Eliminado exitosamente', 
-                              'status': True})
+                              'status': True,
+                              'data': []
+                              })
 
-    except Rol.DoesNotExist:
+    except Materials.DoesNotExist:
         return Response(data={'code': status.HTTP_404_NOT_FOUND, 
-                              'message': 'Rol No encontrado', 
-                              'status': False})
+                              'message': 'Material No encontrado', 
+                              'status': False,
+                              'data': []
+                              })
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
                               'message': 'Error de red', 
-                              'status': False})
+                              'status': False,
+                              'data': []
+                              })
 
     except Exception as e:
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No se puede eliminar este dato mientras esté en uso', 
-                              'status': False})
+                              'status': False,
+                              'data': []})
 
 

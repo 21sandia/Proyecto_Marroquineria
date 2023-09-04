@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "corsheaders",
-    'rest_framework_simplejwt',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'django_filters',
     'Models',
     
@@ -99,7 +100,7 @@ WSGI_APPLICATION = 'demo_marroquineria.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Ecommerce',
+        'NAME': 'EcommerceM',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST':'localhost',

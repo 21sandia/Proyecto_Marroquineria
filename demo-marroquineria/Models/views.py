@@ -1,12 +1,12 @@
-from django.shortcuts import render
-
+from rest_framework.decorators import api_view
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
 from django.http.response import JsonResponse
+from django.contrib.auth.hashers import check_password
 from rest_framework.parsers import JSONParser 
 from rest_framework import status
- 
 from .models import *
 from .serializers import *
-from rest_framework.decorators import api_view
 
 
 @api_view(['GET', 'POST', 'DELETE'])
@@ -14,13 +14,11 @@ def rol_list(request):
 
     if request.method == 'POST':
         rol_data = JSONParser().parse(request)
-        rol_serializer = RoleSerializer(data=rol_data)
+        rol_serializer = RolSerializer(data=rol_data)
         if rol_serializer.is_valid():
             rol_serializer.save()
             return JsonResponse(rol_serializer.data, status=status.HTTP_201_CREATED) 
         return JsonResponse(rol_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-<<<<<<< Updated upstream
-=======
 
 
 # ** login **
@@ -29,6 +27,7 @@ def iniciar_sesion(request):
     email = request.data.get('email')
     password = request.data.get('password')
 
+    # Verificar que los campos no estén vacíos
     if not email or not password:
         return Response({
             'code': status.HTTP_200_OK,
@@ -37,6 +36,7 @@ def iniciar_sesion(request):
             'data': None
         })
 
+    # Obtener el usuario a través del email
     try:
         user = Users.objects.get(fk_id_people__email=email)
     except Users.DoesNotExist:
@@ -46,6 +46,7 @@ def iniciar_sesion(request):
             'status': False
         })
 
+    # Verificar la contraseña
     if not check_password(password, user.password):
         return Response({
             'code': status.HTTP_200_OK,
@@ -53,10 +54,13 @@ def iniciar_sesion(request):
             'status': False
         })
 
-    if user.fk_id_state.name == 'Activo':
+    # Verificar si el usuario está autenticado
+    if user.fk_id_state.name:
+        # Obtener el nombre del rol del usuario
         rol = user.fk_id_rol.name
 
         if rol in ['Administrador', 'Empleado', 'Proveedor', 'Cliente']:
+            # Generar los tokens de acceso y de actualización
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
 
@@ -68,11 +72,13 @@ def iniciar_sesion(request):
                 'status': True
             })
 
+    # Credenciales inválidas o usuario no autenticado o rol no permitido
     return Response({
         'code': status.HTTP_200_OK,
         'message': 'Credenciales inválidas, usuario no autenticado o rol no permitido',
         'status': False
     })
+
 
 
 # **CERRAR SESION**
@@ -83,25 +89,25 @@ def cerrar_sesion(request):
     if not refresh_token:
         return Response({
             'code': status.HTTP_400_BAD_REQUEST,
-            'status': False,
-            'message': 'El token de actualización es requerido',
-            'data': None
+            'message': 'El token de actualización (refresh token) es requerido para cerrar sesión.',
+            'status': False
         })
 
     try:
         token = RefreshToken(refresh_token)
         token.blacklist()
+
         return Response({
             'code': status.HTTP_200_OK,
-            'message': 'Sesión cerrada exitosamente',
+            'message': 'Cierre de sesión exitoso',
             'status': True
         })
+
     except Exception as e:
         return Response({
             'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-            'message': 'Error al cerrar la sesión',
+            'message': 'Error al cerrar sesión.',
             'status': False
         })
 
 
->>>>>>> Stashed changes

@@ -8,7 +8,7 @@ import requests
 
 @api_view(['GET'])
 def list_States(request):
-    queryset = States.objects.all().order_by('name')
+    queryset = States.objects.all().order_by('id')
     serializer = StateSerializer(queryset, many=True)
 
     if not serializer.data:

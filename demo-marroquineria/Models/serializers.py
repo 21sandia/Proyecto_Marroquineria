@@ -1,5 +1,18 @@
 from rest_framework import serializers
-from .models import Users, Peoples, Rol, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys
+from .models import Users, Peoples, Rol, Measures, Materials, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys
+
+
+class StateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = States
+        fields = ('id', 'name')
+
+
+class RolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rol
+        fields = ('id', 'name')
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,17 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PeopleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Peoples
-        fields = ('id', 'name', 'last_name', 'email', 'type_document', 'document', 'gender', 'date_birth', 'phone', 'address')
-
-
-class CambiarContrasenaSerializer(serializers.Serializer):
-    password = serializers.CharField(required=True)
-    password_confirm = serializers.CharField(required=True)
-
-    def validate(self, data):
-        if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError("Las contraseñas no coinciden")
-        return data
+        fields = ('id', 'name', 'last_name', 'email', 'type_document', 'document', 'gender', 'date_birth', 'phone', 'address', 'empleado', 'proveedor', 'cliente')
 
     
 class recup_ContrasenaSerializer(serializers.ModelSerializer):
@@ -46,16 +49,17 @@ class recup_ContrasenaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class RolSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rol
-        fields = ('id', 'name')
-
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categorys
         fields = '__all__'
+
+
+class TypeProdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TypeProds
+        fields = '__all__'
+
 
 class ProductSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True, required=False, default='/media/null.jpg')
@@ -72,20 +76,23 @@ class ProductSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
 
+class MeasureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Measures
+        fields = '__all__'
+
+
+class MaterialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Materials
+        fields = '__all__'
+
+    
+
 class DetailProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailProds
-        fields = ['id','date', 'fk_id_product', 'color', 'size_p', 'material']
-
-class StateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = States
-        fields = ('id', 'name')
-
-class TypeProdSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TypeProds
-        fields = '__all__'
+        fields = ['id','date','fk_id_product', 'color', 'fk_id_measures', 'fk_id_materials']
 
 
 class SaleSerializer(serializers.ModelSerializer):
@@ -93,11 +100,19 @@ class SaleSerializer(serializers.ModelSerializer):
         model = Sales
         fields = '__all__'
 
+
 class DetailSaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailSales
         fields = '__all__'
 
+
+class SalesReportSerializer(serializers.Serializer):
+    total_sales = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+class ProductReportSerializer(serializers.Serializer):
+    fk_id_prod = serializers.IntegerField()
+    sold_count = serializers.IntegerField()
 
 
 

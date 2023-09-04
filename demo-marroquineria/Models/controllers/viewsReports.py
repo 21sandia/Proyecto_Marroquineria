@@ -1,15 +1,13 @@
-from django.http import JsonResponse
-from django.db.models import Sum
-from django.db.models import Q
-from rest_framework import status
+import datetime
+import pandas as pd
+import matplotlib.pyplot as plt
+from django.db.models import Count
+from django.db.models import Q, Sum 
+from django.db.models.functions import TruncMonth, TruncYear, TruncWeek
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import pandas as pd
-import datetime
-import matplotlib.pyplot as plt
+from rest_framework import status
 from ..models import Sales, DetailSales, Products
-
-
 
 
 @api_view(['GET'])
@@ -21,12 +19,18 @@ def sales_statistics(request):
 
     # Convertir las fechas en objetos datetime si se proporcionan
     if start_date_str:
-        start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        if len(start_date_str) == 4:  # Solo año
+            start_date = datetime.datetime.strptime(start_date_str, '%Y').date()
+        else:  # Año-mes-día completo
+            start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d').date()
     else:
         start_date = None
 
     if end_date_str:
-        end_date = datetime.datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        if len(end_date_str) == 4:  # Solo año
+            end_date = datetime.datetime.strptime(end_date_str, '%Y').date()
+        else:  # Año-mes-día completo
+            end_date = datetime.datetime.strptime(end_date_str, '%Y-%m-%d').date()
     else:
         end_date = None
 
@@ -35,9 +39,10 @@ def sales_statistics(request):
     if start_date:
         sales_query &= Q(date__gte=start_date)
     if end_date:
-        sales_query &= Q(date__lt=end_date + datetime.timedelta(days=1))
+        sales_query &= Q(date__lte=end_date)
 
     sales = Sales.objects.filter(sales_query)
+
 
     if not sales:
         return Response({"code": status.HTTP_200_OK,
@@ -62,34 +67,9 @@ def sales_statistics(request):
     # Convertir la columna 'date' a formato datetime
     df['date'] = pd.to_datetime(df['date'])
 
-    # Generar gráficos (ventas por día) si se solicita
-    if report_type == 'daily' or report_type == 'all':
-        df['day'] = df['date'].dt.to_period('D')
-        daily_sales = df.groupby('day')['total_sale'].sum()
-        daily_sales.plot(kind='bar')
-        plt.xlabel('Día')
-        plt.ylabel('Total Ventas')
-        plt.title('Ventas por Día')
-        plt.xticks(rotation=45)
-        plt.savefig('daily_sales.png')  # Guardar el gráfico como imagen
-        plt.close()  # Cerrar el gráfico para liberar memoria
-
-    # Generar gráficos (ventas por semana) si se solicita
-    if report_type == 'weekly' or report_type == 'all':
-        df['week'] = df['date'].dt.to_period('W')
-        weekly_sales = df.groupby('week')['total_sale'].sum()
-        weekly_sales.plot(kind='bar')
-        plt.xlabel('Semana')
-        plt.ylabel('Total Ventas')
-        plt.title('Ventas por Semana')
-        plt.xticks(rotation=45)
-        plt.savefig('weekly_sales.png')  # Guardar el gráfico como imagen
-        plt.close()  # Cerrar el gráfico para liberar memoria
-
-
     # Generar gráficos (ventas por mes) si se solicita
     if report_type == 'monthly' or report_type == 'both':
-        df['month'] = df['date'].dt.to_period('M')
+        df['month'] = df['date'].dt.month
         monthly_sales = df.groupby('month')['total_sale'].sum()
         monthly_sales.plot(kind='bar')
         plt.xlabel('Mes')
@@ -101,7 +81,7 @@ def sales_statistics(request):
 
     # Generar gráficos (ventas por año) si se solicita
     if report_type == 'yearly' or report_type == 'both':
-        df['year'] = df['date'].dt.to_period('Y')
+        df['year'] = df['date'].dt.year
         yearly_sales = df.groupby('year')['total_sale'].sum()
         yearly_sales.plot(kind='bar')
         plt.xlabel('Año')
@@ -111,15 +91,7 @@ def sales_statistics(request):
         plt.savefig('yearly_sales.png')  # Guardar el gráfico como imagen
         plt.close()  # Cerrar el gráfico para liberar memoria
 
-    # Generar un índice completo de días
-    full_day_index = pd.period_range(start=start_date, end=end_date, freq='D')
-
-    # Reindexar las ventas diarias con el índice completo
-    daily_sales = daily_sales.reindex(full_day_index, fill_value=0)
-
-    # Ahora puedes trazar las ventas diarias como antes
-    daily_sales.plot(kind='bar')
-
+    
     # Generar reporte en formato JSON
     report_data = {
         "total_sales": df['sale_id'].nunique(),
@@ -190,5 +162,4 @@ def sales_report(request, interval, report_type, start_year=None, start_month=No
     return Response({'code': status.HTTP_200_OK,
                     'status': True,
                     'message': 'El informe se ha generado exitosamente',
-                    'data': sales_data})  
-
+                    'data': sales_data})
