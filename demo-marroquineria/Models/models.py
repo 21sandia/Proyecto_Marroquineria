@@ -27,19 +27,20 @@ class Peoples(models.Model):
     date_birth = models.DateField()
     phone = models.CharField(max_length=10)
     address = models.CharField(max_length=30)
-    is_empleado = models.BooleanField(default=False)
-    is_cliente = models.BooleanField(default=False)
+    empleado = models.BooleanField(default=False)
+    proveedor = models.BooleanField(default=False)
+    cliente = models.BooleanField(default=False)
     
     class Meta:
         db_table = 'peoples'
 
 
 class Users(models.Model):
-    fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state')
-    fk_id_rol = models.ForeignKey(Rol, models.DO_NOTHING, db_column='fk_id_rol')
+    fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state', null=True, blank=True)
+    fk_id_rol = models.ForeignKey(Rol, models.DO_NOTHING, db_column='fk_id_rol', null=True, blank=True)
     fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')
     password = models.CharField(max_length=100)
-    last_login = models.DateTimeField(default=timezone.now)
+    last_login = models.DateTimeField(null=True, blank=True, default=timezone.now)
 
     class Meta:
         db_table = 'users'

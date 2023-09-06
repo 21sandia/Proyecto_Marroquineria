@@ -8,20 +8,62 @@ from ..models import Peoples, Users
 from ..serializers import *
 import requests
 
+@api_view(['POST'])
+def obtener_empleados(request):
+    # Obtener empleados según el estado proporcionado
+    if estado == 'activo':
+        estado = States.objects.get(pk=3)  # ID del estado activo
+    elif estado == 'inactivo':
+        estado = States.objects.get(pk=4)  # ID del estado inactivo
+    else:
+        return []
+
+    empleados = Peoples.objects.filter(empleado=True, fk_id_state=estado)
+
+    return empleados
+
+
+def obtener_proveedores(estado):
+    # Obtener proveedores según el estado proporcionado
+    if estado == 'activo':
+        estado = States.objects.get(pk=3)  # ID del estado activo
+    elif estado == 'inactivo':
+        estado = States.objects.get(pk=4)  # ID del estado inactivo
+    else:
+        return []
+
+    proveedores = Peoples.objects.filter(proveedor=True, fk_id_state=estado)
+
+    return proveedores
+
+
+def obtener_clientes(estado):
+    # Obtener clientes según el estado proporcionado
+    if estado == 'activo':
+        estado = States.objects.get(pk=3)  # ID del estado activo
+    elif estado == 'inactivo':
+        estado = States.objects.get(pk=4)  # ID del estado inactivo
+    else:
+        return []
+
+    clientes = Peoples.objects.filter(clientes=True, fk_id_state=estado)
+
+    return clientes 
+
 
 @api_view(['POST'])
 def create_people_and_user(request):
     data = request.data
 
-        # Verificar si ya existe una persona con el mismo documento o correo electrónico
+    # Verificar si ya existe una persona con el mismo documento o correo electrónico
     existing_person_document = Peoples.objects.filter(document=data['document']).first()
     if existing_person_document:
         response_data = {
-                'code': status.HTTP_200_OK,
-                'status': True,
-                'message': 'Ya existe una persona registrada con este numero de documento',
-                'data': None
-                }
+            'code': status.HTTP_200_OK,
+            'status': True,
+            'message': 'Ya existe una persona registrada con este número de documento',
+            'data': None
+        }
         return Response(data=response_data)
 
     # Verificar si la clave 'email' está presente en los datos
@@ -34,55 +76,58 @@ def create_people_and_user(request):
                 'message': 'Ya existe una persona registrada con este correo',
                 'data': None
             }
-            return Response(data=response_data) 
-    
-        # Crear una instancia de People
+            return Response(data=response_data)
+
+    # Validar longitud y formato del número de documento
+    if len(data['document']) > 10 or data['document'].startswith("0"):
+        response_data = {
+            'code': status.HTTP_200_OK,
+            'status': True,
+            'message': 'El número de documento no es válido.',
+            'data': None
+        }
+        return Response(data=response_data)
+
     # Crear una instancia de People
     people = Peoples.objects.create(
         email=data['email'],
         name=data['name'],
         last_name=data['last_name'],
-        type_document=data['type_document'],
+        type_document=data.get('type_document', None),
         document=data['document'],
-        gender=data['gender'],
-        date_birth=data['date_birth'],
+        gender=data.get('gender', None),
+        date_birth=data.get('date_birth', None),
         phone=data['phone'],
-        address=data['address'],
-        is_empleado=data.get('is_empleado', False),
-        is_cliente=data.get('is_cliente', False)
+        address=data.get('address', None),
+        empleado=data.get('empleado', False),
+        proveedor=data.get('proveedor', False),
+        cliente=data.get('cliente', False)
     )
 
+    # Obtener la contraseña manualmente del campo 'password' en los datos
+    password = data.get('password', str(data['document']))
+
     # Crear una instancia de User asociada a People, Rol y Estado si es empleado
-    if people.is_empleado:
+    if people.empleado:
         rol, _ = Rol.objects.get_or_create(name='Empleado')
-        state = States.objects.get(pk=3)  # ID del estado activo
-
-        hashed_password = str(people.document)  # Usar el número de documento como contraseña
-        user = Users.objects.create(
-            fk_id_state=state,
-            fk_id_rol=rol,
-            fk_id_people=people,
-            password=make_password(hashed_password)
-        )
-
-    # Asignar estado y rol si es cliente
-    if people.is_cliente:
-        state = States.objects.get(pk=4)  # ID del estado inactivo
+        state = States.objects.get(pk=2)  # ID del estado activo
+    elif people.proveedor:
+        rol, _ = Rol.objects.get_or_create(name='Proveedor')
+        state = States.objects.get(pk=2)  # ID del estado activo
+    elif people.cliente:
         rol, _ = Rol.objects.get_or_create(name='Cliente')
-
-        people.fk_id_state = state  # Asignar estado inactivo
-        people.save()  # Guardar cambios en People
-
-        # Crear una instancia de User asociada a People, Rol y Estado
-        hashed_password = str(data['document'])  # Contraseña igual al número de documento
-        user = Users.objects.create(
-            fk_id_state=state,
-            fk_id_rol=rol,
-            fk_id_people=people,
-            password=make_password(hashed_password)
-        )
+        state = States.objects.get(pk=3)  # ID del estado inactivo 
+    # Si ninguno de los roles está configurado como True, no se asigna un rol ni un estado
     else:
-        user = None  # No se crea usuario ni se asignan roles si no es cliente
+        rol = None
+        state = None
+
+    Users.objects.create(
+        fk_id_state=state,
+        fk_id_rol=rol,
+        fk_id_people=people,
+        password=make_password(password)
+    )
 
     # Envío de correo de confirmación y bienvenida
     subject = 'Confirmación de registro y bienvenida'
@@ -104,7 +149,6 @@ def create_people_and_user(request):
     }
 
     return Response(response_data)
-
 
 
 @api_view(['GET'])
@@ -133,14 +177,14 @@ def list_people(request):
 
             if 'fk_id_rol' in user_data:
                 user_data['fk_id_rol'] = {
-                    'id': user.fk_id_rol.id,
-                    'name': user.fk_id_rol.name
+                    'id': user.fk_id_rol.id if user.fk_id_rol else None,
+                    'name': user.fk_id_rol.name if user.fk_id_rol else None
                 }
 
             if 'fk_id_state' in user_data:
                 user_data['fk_id_state'] = {
-                    'id': user.fk_id_state.id,
-                    'name': user.fk_id_state.name
+                    'id': user.fk_id_state.id if user.fk_id_state else None,
+                    'name': user.fk_id_state.name if user.fk_id_state else None
                 }
 
             del user_data['fk_id_people']
@@ -251,4 +295,3 @@ def delete_people(request, pk):
             'data': None
         }
     return Response(responde_data)
-

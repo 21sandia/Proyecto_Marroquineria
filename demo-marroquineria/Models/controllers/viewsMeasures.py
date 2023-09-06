@@ -44,7 +44,7 @@ def create_measures(request):
 
 @api_view(['GET'])
 def list_measures(request):
-    queryset = Measures.objects.all().order_by('name')
+    queryset = Measures.objects.all().order_by('id')
     serializer = MeasureSerializer(queryset, many=True)
 
     if not serializer.data:

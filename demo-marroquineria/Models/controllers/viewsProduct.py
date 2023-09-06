@@ -56,7 +56,7 @@ def get_Product(request): # FUNCIONA
 @api_view(['GET'])
 def get_all_Product(request):
     data = []
-    detail_prods = DetailProds.objects.all()
+    detail_prods = DetailProds.objects.all().order_by('id')
 
     # Obtener parámetros de filtrado y ordenación de la solicitud
     product_id = request.GET.get('product_id')
@@ -83,6 +83,13 @@ def get_all_Product(request):
     # Ordenar los resultados
     detail_prods = detail_prods.order_by(sort_by)
 
+    if not detail_prods.exists():
+        return Response({'code': 200,
+                         'status': True,
+                         'message': 'No hay productos registrados',
+                         'data': []
+                        })
+
     for detail_prod in detail_prods:
         product = detail_prod.fk_id_product
         type_prod = product.fk_id_type_prod
@@ -90,6 +97,12 @@ def get_all_Product(request):
         state = product.fk_id_state
         measure = detail_prod.fk_id_measures if hasattr(detail_prod, 'fk_id_measures') else None
         material = detail_prod.fk_id_materials if hasattr(detail_prod, 'fk_id_materials') else None
+
+        # Verificar si la cantidad es cero y mostrar el estado "no disponible"
+        if product.quantity == 0:
+            product_status = "No disponible"
+        else:
+            product_status = str(product.quantity)
 
         data.append({
             "id": detail_prod.id,
@@ -102,7 +115,7 @@ def get_all_Product(request):
                 "image_url": product.image.url if product.image else None,
                 "reference": product.reference,
                 "description": product.description,
-                "quantity": product.quantity,
+                "quantity": product_status,  # Mostrar estado "no disponible" si la cantidad es cero
                 "price_shop": str(product.price_shop),
                 "price_sale": str(product.price_sale),
                 "state_data": {
@@ -132,8 +145,9 @@ def get_all_Product(request):
         'code': 200,
         'status': True,
         'message': 'Consulta realizada Exitosamente',
-        'data': data,
-    })
+        'data': data
+        })
+
 
 
 

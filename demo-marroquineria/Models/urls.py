@@ -3,9 +3,10 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsProductDetail, viewsUser
-from Models.controllers import viewsSale, viewsUserGetAllData, viewsMeasures, viewsMaterial
+from Models.controllers import viewsSale, viewsUserAllData, viewsMeasures, viewsMaterial
 from Models.controllers import viewsRecupContrasena 
-from .views import iniciar_sesion, cerrar_sesion
+from Models.controllers import viewsReports
+from Models import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import reverse
@@ -13,14 +14,15 @@ from django.urls import reverse
 urlpatterns = [
 
     # **Iniciar Sesion**
-    path('iniciar_sesion/', iniciar_sesion, name='iniciar-sesion'),
+    path('login/', views.login, name='login'),
     # **Cerrar Sesion**
-    path('cerrar-sesion/', cerrar_sesion, name='cerrar-sesion'),
+    path('log_out/', views.log_out, name='log_out'),
 
     #  **RECUPERAR CONTRASEÑA**
-    #path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), 
-    path('recuperar_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'),
-    path('cambiar_contrasena/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), 
+    path('recover_password/', viewsRecupContrasena.recover_password, name='recover_password'),
+
+    # **Cambiar la contraseña**
+    path('change_password/<str:uidb64>/<str:token>/', viewsRecupContrasena.change_password, name='change_password'), 
 
     # **Token**
     path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
@@ -69,7 +71,7 @@ urlpatterns = [
     path('delete-user/<int:pk>/', viewsUser.delete_user, name='delete_user'), 
 
     # Trae toda la información de las tablas relacionadas con el usuario 
-    path('get_all_dataUser/', viewsUserGetAllData.get_related_foreign_keys, name='get_all_models_data'),
+    path('all_data_user/', viewsUserAllData.all_data_user, name='all_data_user'),
 
     # ** Categorías **
 
@@ -147,7 +149,14 @@ urlpatterns = [
     # Elimina la venta con el detalle de venta
     path('delete-sale-detail/<int:pk>/', viewsSale.delete_sale_detail, name='delete_sale_detail'),
     
-    
+    # Reports
+    path('sales_report/mensual?anio=2023&mes=09', viewsReports.sales_report, name='sales_report'),  # Informe Mensual
+    path('sales_report/reportes/quincenal?anio=2023&quincena=2', viewsReports.sales_report, name='sales_report'),  # Informe Quincenal
+    path('sales_report/semanal?anio=2023&semana=35', viewsReports.sales_report, name='sales_report'),   # Informe Semanal
+    path('sales_report/diario?fecha=2023-09-15', viewsReports.sales_report, name='sales_report'),  # Informe Diario
+    # path('report/top_products/<start_date>/<end_date>/', viewsReports.top_products_report, name='report/top_products'),
+    # path('report/bottom_products/<start_date>/<end_date>/', viewsReports.bottom_products_report, name='report/bottom_products'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -40,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PeopleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Peoples
-        fields = ('id', 'name', 'last_name', 'email', 'type_document', 'document', 'gender', 'date_birth', 'phone', 'address')
+        fields = ('id', 'name', 'last_name', 'email', 'type_document', 'document', 'gender', 'date_birth', 'phone', 'address', 'empleado', 'proveedor', 'cliente')
 
     
 class recup_ContrasenaSerializer(serializers.ModelSerializer):
@@ -106,6 +106,13 @@ class DetailSaleSerializer(serializers.ModelSerializer):
         model = DetailSales
         fields = '__all__'
 
+
+class SalesReportSerializer(serializers.Serializer):
+    total_sales = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+class ProductReportSerializer(serializers.Serializer):
+    fk_id_prod = serializers.IntegerField()
+    sold_count = serializers.IntegerField()
 
 
 

@@ -57,7 +57,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-"ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+"ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
 "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 } 
 
@@ -131,9 +131,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'es-Es'
+LANGUAGE_CODE = 'es-co'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 
@@ -173,5 +173,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 
-FRONTEND_URL = 'http://127.0.0.1:8000/cambiar_contrasena'
+FRONTEND_URL = 'http://127.0.0.1:8000/change_password'
 
