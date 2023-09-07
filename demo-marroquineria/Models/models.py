@@ -109,6 +109,28 @@ class DetailProds(models.Model):
         db_table = 'detail_prods'
 
 
+class Cart(models.Model):
+    fk_id_user = models.ForeignKey(Users, models.DO_NOTHING, db_column='fk_id_user')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'cart'
+        managed = False
+
+
+
+class CartItem(models.Model):
+    fk_id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='fk_id_product')
+    fk_id_cart = models.ForeignKey(Cart, models.DO_NOTHING, db_column='fk_id_cart')
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        db_table = 'cart_item'
+        managed = False
+
+
 class Sales(models.Model):
     fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state')
     fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')

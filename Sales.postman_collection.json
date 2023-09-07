@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "1c9d02b7-29d5-47dc-8297-14eb3b3c6e6d",
 		"name": "Sales",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "28516984",
 		"_collection_link": "https://winter-meteor-329547.postman.co/workspace/EcommerceM~7d204772-fb05-4bdc-8bcd-f6474eb33fcf/collection/28516984-1c9d02b7-29d5-47dc-8297-14eb3b3c6e6d?action=share&source=collection_link&creator=28516984"
 	},
@@ -27,7 +27,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list-state/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-state/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-state",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -45,14 +59,28 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Cancelada\"\r\n}",
+							"raw": "{\r\n    \"name\": \"No disponible\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-state/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-state/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-state",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -76,7 +104,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/update-state/5/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-state/5/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-state",
+								"5",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -94,7 +137,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-state/5/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-state/5/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-state",
+								"5",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -120,7 +178,56 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list-user/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-user/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all_data_user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/all_data_user/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"all_data_user",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -145,7 +252,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-user/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-user/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-user",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -169,7 +290,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/update-user/4/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-user/4/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-user",
+								"4",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -187,7 +323,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-user/4/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-user/4/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-user",
+								"4",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -213,7 +364,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list-rol/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-rol/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-rol",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -231,7 +396,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-rol/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-rol/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-rol",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -255,7 +434,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/update-rol/3/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-rol/3/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-rol",
+								"3",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -273,7 +467,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-rol/2/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-rol/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-rol",
+								"2",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -292,14 +501,28 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 15,\r\n    \"name\": \"Electrodomesticos\"\r\n        }",
+							"raw": "{\r\n    \"id\": 15,\r\n    \"name\": \"Ropa\"\r\n        }",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list-category/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-category/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-category",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -316,14 +539,28 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\r\n        \"Zapatos\"\r\n}",
+							"raw": "{\r\n    \"name\":\r\n        \"Computadores\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-category/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-category/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-category",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -347,7 +584,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/update-category/3/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-category/3/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-category",
+								"3",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -365,7 +617,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-category/3/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-category/3/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-category",
+								"3",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -391,7 +658,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/get_all_tpcateg/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/get_all_tpcateg/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"get_all_tpcateg",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -412,7 +693,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list-type_prod/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-type_prod/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-type_prod",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -429,14 +724,28 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Licuadoras\",\r\n    \"fk_id_category\": 1\r\n}",
+							"raw": "{\r\n    \"name\": \"Camisas Arequipe\",\r\n    \"fk_id_category\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-type_prod/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-type_prod/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-type_prod",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -455,7 +764,22 @@
 							"mode": "raw",
 							"raw": "{\r\n    \"name\": \"Formal\",\r\n    \"fk_id_category\": 1\r\n}"
 						},
-						"url": "http://127.0.0.1:8000/update-type_prod/2/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-type_prod/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-type_prod",
+								"2",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -473,7 +797,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-type_prod/5/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-type_prod/5/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-type_prod",
+								"5",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -499,7 +838,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/get-Product/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/get-Product/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"get-Product",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -520,7 +873,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/get-all-Product/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/get-all-Product/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"get-all-Product",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -537,16 +904,30 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Producto4 Prueba4\",\r\n    \"reference\": \"2221\",\r\n    \"description\": \"Descripción de la prueba4\",\r\n    \"quantity\": 12,\r\n    \"price_shop\": \"120.00\",\r\n    \"price_sale\": \"190.00\",\r\n    \"fk_id_state\": 1,\r\n    \"fk_id_type_prod\": 3,\r\n    \"color\": \"Gris\",\r\n    \"fk_id_measures\": \"3\",\r\n    \"fk_id_materials\": 4\r\n}\r\n\r\n\r\n\r\n"
+							"raw": "{\r\n    \"name\": \"Portatiles Asus\",\r\n    \"reference\": \"11111\",\r\n    \"description\": \"Descripción producto3\",\r\n    \"quantity\": 120,\r\n    \"price_shop\": \"180.00\",\r\n    \"price_sale\": \"360.00\",\r\n    \"fk_id_state\": 1,\r\n    \"fk_id_type_prod\": 3,\r\n    \"color\": \"Morado\",\r\n    \"fk_id_measures\": \"1\",\r\n    \"fk_id_materials\":\"1\"\r\n}\r\n\r\n\r\n\r\n"
 						},
-						"url": "http://127.0.0.1:8000/create-product/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-product/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-product",
+								""
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "update-products",
 					"request": {
-						"method": "PATCH",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -555,10 +936,55 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"fk_id_state\": 1,\r\n    \"fk_id_type_prod\": 1,\r\n    \"name\": \"Celular 5G\",\r\n    \"image\": \"path/to/image.jpg\",\r\n    \"reference\": \"1111\",\r\n    \"description\": \"Celular Samsung A34 128GB\",\r\n    \"quantity\": 50,\r\n    \"price_shop\": 1100000.00,\r\n    \"price_sale\": 1700000.00,\r\n    \"color\": \"Negro\",\r\n    \"fk_id_measures\": 1,\r\n    \"fk_id_materials\": 1\r\n}"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/User/Pictures/Logo Fabrica.png"
+								},
+								{
+									"key": "color",
+									"value": "update l3",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "fk_id_measures",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "fk_id_materials",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Producto_update52",
+									"type": "text",
+									"disabled": true
+								}
+							]
 						},
-						"url": "http://127.0.0.1:8000/update-product/36/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-product/13/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-product",
+								"13",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -576,7 +1002,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-product/34/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-product/20/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-product",
+								"20",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -602,7 +1043,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list-measures/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-measures/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-measures",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -613,14 +1068,28 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Medium\"\r\n}",
+							"raw": "{\r\n    \"name\": \"12cm * 20 cm\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-measures/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-measures/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-measures",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -638,7 +1107,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/update-measures/4/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-measures/4/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-measures",
+								"4",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -656,7 +1140,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-measures/2/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-measures/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-measures",
+								"2",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -682,7 +1181,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list-material/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-material/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-material",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -693,14 +1206,28 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Licra\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Acero Inoxidable\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-material/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-material/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-material",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -718,7 +1245,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/update-material/1/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-material/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-material",
+								"1",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -736,15 +1278,26 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-material/3/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-material/3/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-material",
+								"3",
+								""
+							]
+						}
 					},
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "Detail_products",
-			"item": []
 		},
 		{
 			"name": "People",
@@ -766,7 +1319,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list-people/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-people/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-people",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -784,14 +1351,28 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"alexmillan1607@gmail.com\",\r\n    \"name\": \"Mariana\",\r\n    \"last_name\": \"Valero\",\r\n    \"type_document\": \"Cedula\",\r\n    \"document\": 1012403939,\r\n    \"gender\": \"Femenino\",\r\n    \"date_birth\": \"2003-05-21\",\r\n    \"phone\": \"3024559885\",\r\n    \"address\": \"Calle 123\",\r\n    \"rol_name\": \"Administrador\",  \r\n    \"state_name\": 1,      \r\n    \"password\": \"mariana123\"\r\n}\r\n",
+							"raw": "{\r\n  \"email\": \"prueba2@yopmail.com\",\r\n  \"name\": \"Alejandra\",\r\n  \"last_name\": \"Millan\",\r\n  \"type_document\": \"cedula\",\r\n  \"document\": \"1146232393\",\r\n  \"gender\": \"Femenino\",\r\n  \"date_birth\": \"2000-01-03\",\r\n  \"phone\": \"3024559885\",\r\n  \"address\": \"Dirección 123 \",\r\n  \"empleado\": false,\r\n  \"proveedor\": false,   // O false si no es empleado\r\n  \"cliente\": false,\r\n  \"password\": \"123456asda\"    // O true si es cliente\r\n}\r\n\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-people/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-people/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-people",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -808,14 +1389,29 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 2,\r\n    \"email\": \"alexmillan1607@gmail.com\",\r\n    \"name\": \"Prueba\",\r\n    \"last_name\": \"Prueba\",\r\n    \"type_document\": \"Cedula\",\r\n    \"document\": 1012403936,\r\n    \"gender\": \"Femenino\",\r\n    \"date_birth\": \"1998-10-16\",\r\n    \"phone\": \"3024559885\",\r\n    \"address\": \"Avenida prueba 123\"\r\n}",
+							"raw": "{\r\n  \"is_empleado\": true,  // Cambiar a no empleado\r\n  \"is_cliente\": false  // Cambiar a cliente\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/update-people//"
+						"url": {
+							"raw": "http://127.0.0.1:8000/update-people/14/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update-people",
+								"14",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -833,14 +1429,29 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-people/4/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-people/6/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-people",
+								"6",
+								""
+							]
+						}
 					},
 					"response": []
 				}
 			]
 		},
 		{
-			"name": "Contraseña",
+			"name": "Password",
 			"item": [
 				{
 					"name": "Recuperar Contraseña",
@@ -855,38 +1466,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"alexmillan1607@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"email\": \"prueba@yopmail.com\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/recuperar_contrasena/"
-					},
-					"response": []
-				},
-				{
-					"name": "Cambiar_contrasena",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": {}
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"new_password\": \"alexandra1\",\r\n    \"confirm_new_password\": \"alexandra1\"\r\n}"
-						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/cambiar_contrasena/?uidb64=NA&token=bte5e6-30b56eea584f6d92ce8e39365ad762f3",
+							"raw": "http://127.0.0.1:8000/recover_password/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -896,18 +1484,51 @@
 							],
 							"port": "8000",
 							"path": [
-								"cambiar_contrasena",
+								"recover_password",
 								""
-							],
-							"query": [
-								{
-									"key": "uidb64",
-									"value": "NA"
-								},
-								{
-									"key": "token",
-									"value": "bte5e6-30b56eea584f6d92ce8e39365ad762f3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar_contrasena",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "access_token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk0MDExOTA3LCJpYXQiOjE2OTQwMTAxMDcsImp0aSI6ImRhZTQ3MDU1ZTAxNzQxYTc4NjhiNWVkZWZmYjc0MTY0IiwidXNlcl9pZCI6Mn0.RGf0OCaQl7I-AoZs963HmsyYwU1BzBbN814jAoC7q2Y",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"new_password\": \"contrasena\",\r\n    \"confirm_password\": \"contrasena\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/change_password/Mg==/bu42he-a24c5bbaf8a1af85976ef2cca01fb964/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"change_password",
+								"Mg==",
+								"bu42he-a24c5bbaf8a1af85976ef2cca01fb964",
+								""
 							]
 						}
 					},
@@ -916,7 +1537,7 @@
 			]
 		},
 		{
-			"name": "Ventas",
+			"name": "Sale",
 			"item": [
 				{
 					"name": "Detalle Venta All",
@@ -935,7 +1556,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/list_sale_detail/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/list_sale_detail/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list_sale_detail",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -946,14 +1581,28 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"fk_id_state\": 1,\r\n  \"fk_id_people\": 5,\r\n  \"products\": [\r\n    {\r\n      \"product_id\": 11,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_id\": 12,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_id\": 13,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
+							"raw": "{\r\n  \"fk_id_state\": 1,\r\n  \"fk_id_people\": 7,\r\n  \"products\": [\r\n    {\r\n      \"product_id\": 9,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_id\": 9,\r\n      \"quantity\": 3\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/create-sale-detail/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-sale-detail/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-sale-detail",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -971,7 +1620,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/edit-sale-detail/3/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/edit-sale-detail/3/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"edit-sale-detail",
+								"3",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -989,7 +1653,77 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/delete-sale-detail/3/"
+						"url": {
+							"raw": "http://127.0.0.1:8000/delete-sale-detail/13/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"delete-sale-detail",
+								"13",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Reports Sales",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/sales/statistics/?start_date=2021-01-01&end_date=2023-08-31&report_type=both",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"sales",
+								"statistics",
+								""
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2021-01-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2023-08-31"
+								},
+								{
+									"key": "report_type",
+									"value": "both"
+								}
+							]
+						}
 					},
 					"response": []
 				}
@@ -1009,7 +1743,21 @@
 						}
 					}
 				},
-				"url": "http://127.0.0.1:8000/api-token/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/api-token/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api-token",
+						""
+					]
+				}
 			},
 			"response": []
 		},
@@ -1030,34 +1778,37 @@
 						}
 					}
 				},
-				"url": "http://127.0.0.1:8000/get_all_dataUser/"
-			},
-			"response": []
-		},
-		{
-			"name": "Category Type Product All",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "http://127.0.0.1:8000/get_all_tpcateg/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/get_all_dataUser/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"get_all_dataUser",
+						""
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Iniciar_sesion",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -1068,9 +1819,55 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"alexmillan1607@gmail.com\",\r\n    \"password\": \"contrasena1\"\r\n}"
+					"raw": "{\r\n  \"email\": \"prueba@yopmail.com\",\r\n  \"password\": \"contrasena\"\r\n}"
 				},
-				"url": "http://127.0.0.1:8000/iniciar-sesion/"
+				"url": {
+					"raw": "http://127.0.0.1:8000/login/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cerrar-sesion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"refresh_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY5NDExNzkzNiwiaWF0IjoxNjk0MDMxNTM2LCJqdGkiOiI2N2YyYjFiYTQ2Mzg0MjU1YjdmZTFjNWY5YWVhMmMzMyIsInVzZXJfaWQiOjJ9.bw3eDu6ls-_PppycGf9yP6ERhy10DbkbL9yM7kUvKV0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/log_out/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"log_out",
+						""
+					]
+				}
 			},
 			"response": []
 		}

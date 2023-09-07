@@ -18,7 +18,10 @@ CREATE TABLE peoples(
 	gender varchar(30),
     	date_birth date,
     	phone varchar(10),
-    	address varchar(30)
+    	address varchar(30),
+	empleado boolean,
+    	proveedor boolean,
+    	cliente boolean
 );
 
 CREATE TABLE users (
@@ -27,6 +30,7 @@ CREATE TABLE users (
 	fk_id_rol int,
 	fk_id_people int,
 	password varchar(100),
+	last_login timestamp,
 	FOREIGN KEY (fk_id_rol) REFERENCES rol(id),
 	FOREIGN KEY (fk_id_state) REFERENCES states(id),
 	FOREIGN KEY (fk_id_people) REFERENCES peoples(id)

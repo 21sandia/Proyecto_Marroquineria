@@ -8,7 +8,6 @@ from reportlab.lib.units import cm
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
-from reportlab.lib import styles
 from io import BytesIO
 from ..models import *
 from ..serializers import *

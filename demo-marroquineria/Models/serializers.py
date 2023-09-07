@@ -88,7 +88,6 @@ class MaterialSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     
-
 class DetailProdSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailProds
@@ -107,12 +106,6 @@ class DetailSaleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SalesReportSerializer(serializers.Serializer):
-    total_sales = serializers.DecimalField(max_digits=10, decimal_places=2)
-
-class ProductReportSerializer(serializers.Serializer):
-    fk_id_prod = serializers.IntegerField()
-    sold_count = serializers.IntegerField()
 
 
 

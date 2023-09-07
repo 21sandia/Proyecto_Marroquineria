@@ -1,7 +1,6 @@
 from rest_framework import status
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
-from django.db import transaction
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from ..models import Peoples, Users

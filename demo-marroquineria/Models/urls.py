@@ -150,12 +150,9 @@ urlpatterns = [
     path('delete-sale-detail/<int:pk>/', viewsSale.delete_sale_detail, name='delete_sale_detail'),
     
     # Reports
-    path('sales_report/mensual?anio=2023&mes=09', viewsReports.sales_report, name='sales_report'),  # Informe Mensual
-    path('sales_report/reportes/quincenal?anio=2023&quincena=2', viewsReports.sales_report, name='sales_report'),  # Informe Quincenal
-    path('sales_report/semanal?anio=2023&semana=35', viewsReports.sales_report, name='sales_report'),   # Informe Semanal
-    path('sales_report/diario?fecha=2023-09-15', viewsReports.sales_report, name='sales_report'),  # Informe Diario
-    # path('report/top_products/<start_date>/<end_date>/', viewsReports.top_products_report, name='report/top_products'),
-    # path('report/bottom_products/<start_date>/<end_date>/', viewsReports.bottom_products_report, name='report/bottom_products'),
+    path('sales_report/', viewsReports.sales_report, name='sales_report'),  
+    path('generate_product_sales_report/', viewsReports.generate_product_sales_report, name='generate_product_sales_report'), 
+    
 
 ]
 
