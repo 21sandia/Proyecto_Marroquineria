@@ -19,17 +19,18 @@ class States(models.Model):
 
 class Peoples(models.Model):
     email = models.CharField(max_length=50)
-    name = models.CharField(max_length=30)
+    is_guest = models.BooleanField(default=False)
+    name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30)
     type_document = models.CharField(max_length=30)
-    document = models.IntegerField()
+    document = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=30)
     date_birth = models.DateField()
     phone = models.CharField(max_length=10)
     address = models.CharField(max_length=30)
-    empleado = models.BooleanField(default=False)
-    proveedor = models.BooleanField(default=False)
-    cliente = models.BooleanField(default=False)
+    employee = models.BooleanField(default=False)
+    supplier = models.BooleanField(default=False)
+    customer = models.BooleanField(default=False)
     
     class Meta:
         db_table = 'peoples'
@@ -133,7 +134,7 @@ class CartItem(models.Model):
 
 class Sales(models.Model):
     fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state')
-    fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')
+    fk_id_people = models.ForeignKey(Peoples, on_delete=models.SET_NULL, null=True, db_column='fk_id_people')
     date = models.DateField(auto_now_add=True)
     total_sale = models.DecimalField(max_digits=10, decimal_places=2)
 

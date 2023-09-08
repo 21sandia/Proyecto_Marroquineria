@@ -3,7 +3,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsProductDetail, viewsUser
-from Models.controllers import viewsSale, viewsUserAllData, viewsMeasures, viewsMaterial
+from Models.controllers import viewsSale, viewsUserAllData, viewsMeasures, viewsMaterial, viewsCartItem
 from Models.controllers import viewsRecupContrasena 
 from Models.controllers import viewsReports
 from Models import views
@@ -54,6 +54,7 @@ urlpatterns = [
 
     # Listar People
     path('list-people/', viewsPeople.list_people, name='list_people'),
+
     # Crear People
     path('create-people/', viewsPeople.create_people_and_user, name='create_people'), 
     # Editar People
@@ -138,6 +139,12 @@ urlpatterns = [
     path('update-product/<int:product_id>/', viewsProductDetail.edit_product, name='edit-product'),
     # Elimina el Producto con el Detalle de producto
     path('delete-product/<int:pk>/', viewsProductDetail.delete_product, name='delete_product'),
+
+    # ** Carrito y Cart_item **
+    path('create_cart/', viewsCartItem.create_cart, name='create_cart'),
+    path('add_to_cart/<int:pk>/', viewsCartItem.add_to_cart, name='add_to_cart'),
+    path('list_cart/', viewsCartItem.list_cart, name='list_cart'),
+    path('delete_cart/', viewsCartItem.delete_cart, name='delete_cart'),
 
     # ** Venta con Detalle Venta **
     # Crea la venta con el detalle de venta

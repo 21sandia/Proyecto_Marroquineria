@@ -308,7 +308,7 @@ def delete_sale_detail(request, pk):
                               'status': True})
 
     except Sales.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND, 
+        return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No encontrado', 
                               'status': False})
 
@@ -319,27 +319,3 @@ def delete_sale_detail(request, pk):
 
 
 
-# @api_view(['DELETE'])
-# def delete_sale(request, pk):
-#     try:
-#         sale = Sales.objects.get(pk=pk)
-#         sale.delete()
-
-#         return Response(data={'code': status.HTTP_200_OK, 
-#                               'message': 'Eliminada exitosamente', 
-#                               'status': True})
-
-#     except Sales.DoesNotExist:
-#         return Response(data={'code': status.HTTP_404_NOT_FOUND, 
-#                               'message': 'No encontrada', 
-#                               'status': False})
-
-#     except requests.ConnectionError:
-#         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
-#                               'message': 'Error de red', 
-#                               'status': False})
-
-#     except Exception as e:
-#         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
-#                               'message': 'Error del servidor', 
-#                               'status': False})

@@ -18,8 +18,10 @@ def create_sale_detail(request):
     # Obtener los datos de la solicitud
     state_id = request.data.get('fk_id_state')
     people_id = request.data.get('fk_id_people')
+    name = request.data.get('name')
+    document = request.data.get('document')
     products = request.data.get('products', [])
-
+    
     # Verificar si se proporcionaron valores para los campos state_id y people_id
     state = None
     if state_id:
@@ -27,10 +29,9 @@ def create_sale_detail(request):
             state = States.objects.get(id=state_id)  # Obtener el estado correspondiente
         except States.DoesNotExist:
             return Response({
-                "code": status.HTTP_404_NOT_FOUND,
+                "code": status.HTTP_200_OK,
                 "message": "Estado no encontrado.",
-                "status": False
-            })
+                "status": False})
 
     people = None
     if people_id:
@@ -38,68 +39,58 @@ def create_sale_detail(request):
             people = Peoples.objects.get(id=people_id)  # Obtener la persona correspondiente
         except Peoples.DoesNotExist:
             return Response({
-                "code": status.HTTP_404_NOT_FOUND,
+                "code": status.HTTP_200_OK,
                 "message": "Persona no encontrada.",
                 "status": False
             })
+    else:
+        # Create a new People object for unregistered user
+        people = Peoples.objects.create(is_guest=True, name=name, document=document)
 
     total_sale = 0
     detail_data_list = []
-
     for product_data in products:
         product_id = product_data.get('product_id')
         quantity = product_data.get('quantity')
-        
         try:
             # Buscar el producto asociado
             product = Products.objects.get(id=product_id)  # Obtener el producto correspondiente
         except Products.DoesNotExist:
             return Response({
-                "code": status.HTTP_404_NOT_FOUND,
+                "code": status.HTTP_200_OK,
                 "message": f"El producto con el id {product_id} no existe.",
-                "status": False
-            })
-
+                "status": False})
         # Verificar campos obligatorios en los detalles del producto
         if not product_id or not quantity:
             return Response({
-                "code": status.HTTP_400_BAD_REQUEST,
+                "code": status.HTTP_200_OK,
                 "message": "Campos obligatorios faltantes en los detalles del producto: product_id, quantity.",
-                "status": False
-            })
-
+                "status": False})
         # Verificar si hay suficiente stock
         if quantity > product.quantity:
             return Response({
-                "code": status.HTTP_400_BAD_REQUEST,
+                "code": status.HTTP_200_OK,
                 "message": f"No hay suficiente stock para el producto {product.name}.",
-                "status": False
-            })
-
+                "status": False})
         # Actualizar la cantidad de productos
         product.quantity -= quantity  # Restar la cantidad vendida del stock del producto
         product.save()  # Guardar los cambios en el producto
-
         # Calcular el subtotal del producto
         subtotal_product = product.price_sale * quantity  # Calcular el subtotal del producto
         total_sale += subtotal_product  # Sumar el subtotal al total de la venta
-
         # Crear datos para el detalle del producto
         detail_data = {
             'fk_id_sale': None,  # Se establecerá después de crear la venta
             'fk_id_prod': product,
             'quantity': quantity,
             'price_unit': product.price_sale,
-            'total_product': subtotal_product,
-        }
+            'total_product': subtotal_product,}
         detail_data_list.append(detail_data)  # Agregar los detalles del producto a la lista
-
     # Crear una nueva venta
     sale_data = {
         'fk_id_state': state.id if state else None,
         'fk_id_people': people.id if people else None,
-        'total_sale': total_sale,
-    }
+        'total_sale': total_sale,}
     sale_serializer = SaleSerializer(data=sale_data)  # Crear una instancia del serializador de ventas
     if sale_serializer.is_valid():
         sale = sale_serializer.save()  # Guardar la venta en la base de datos
@@ -152,12 +143,10 @@ def create_sale_detail(request):
         email.attach('comprobante.pdf', buffer.read(), 'application/pdf')
         email.send()
 
-        return Response({
-            "code": status.HTTP_200_OK,
-            "message": "Venta creada exitosamente. Se ha enviado un correo de notificación con el comprobante PDF adjunto.",
-            "status": True,
-            "data": sale_serializer.data
-        })
+        return Response({"code": status.HTTP_200_OK,
+                         "message": "Venta creada exitosamente. Se ha enviado un correo de notificación con el comprobante PDF adjunto.",
+                         "status": True,
+                         "data": sale_serializer.data})
     else:
         return Response(sale_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -210,8 +199,7 @@ def list_sale_detail(request):
         return Response({
             "code": status.HTTP_200_OK,
             "message": "No hay ventas registradas.",
-            "status": True
-        })
+            "status": True})
 
     response_data = []
 
@@ -232,8 +220,7 @@ def list_sale_detail(request):
         "code": status.HTTP_200_OK,
         "message": "Consulta realizada exitosamente.",
         "status": True,
-        "data": response_data  # Agrega el contenido de la respuesta aquí
-    })
+        "data": response_data})
 
 
 # **Edita la venta junto con el detalle de venta**
@@ -249,29 +236,26 @@ def edit_sale_detail(request, pk):
         sale = Sales.objects.get(pk=pk)
     except Sales.DoesNotExist:
         return Response({
-            "code": status.HTTP_404_NOT_FOUND,
+            "code": status.HTTP_200_OK,
             "message": "Venta no encontrada.",
-            "status": True
-        })
+            "status": True})
 
     # Validar si el estado y la persona existen
     try:
         state = States.objects.get(id=state_id)
     except States.DoesNotExist:
         return Response({
-            "code": status.HTTP_400_BAD_REQUEST,
+            "code": status.HTTP_200_OK,
             "message": "Estado no encontrado.",
-            "status": True
-        })
+            "status": True})
 
     try:
         people = Peoples.objects.get(id=people_id)
     except Peoples.DoesNotExist:
         return Response({
-            "code": status.HTTP_400_BAD_REQUEST,
+            "code": status.HTTP_200_OK,
             "message": "Persona no encontrada.",
-            "status": True
-        })
+            "status": True})
 
     # Actualizar la entidad de venta
     sale.fk_id_state = state
@@ -290,10 +274,9 @@ def edit_sale_detail(request, pk):
             product = Products.objects.get(id=product_id)
         except Products.DoesNotExist:
             return Response({
-                "code": status.HTTP_400_BAD_REQUEST,
+                "code": status.HTTP_200_OK,
                 "message": "Producto no encontrado.",
-                "status": True
-            })
+                "status": True})
 
         price_unit = product.price_sale
         total_product = price_unit * quantity
@@ -331,8 +314,7 @@ def edit_sale_detail(request, pk):
         "code": status.HTTP_200_OK,
         "message": "Venta actualizada exitosamente.",
         "status": True,
-        "data": sale_serializer.data
-    })
+        "data": sale_serializer.data})
 
 
 @api_view(['DELETE'])
@@ -363,7 +345,7 @@ def delete_sale_detail(request, pk):
                               'status': True})
 
     except Sales.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND, 
+        return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No encontrado', 
                               'status': True})
 

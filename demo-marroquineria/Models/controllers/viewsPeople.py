@@ -7,52 +7,62 @@ from ..models import Peoples, Users
 from ..serializers import *
 import requests
 
-@api_view(['POST'])
-def obtener_empleados(request):
+@api_view(['GET'])
+def obtener_employee(request):
     # Obtener empleados según el estado proporcionado
     if estado == 'activo':
-        estado = States.objects.get(pk=3)  # ID del estado activo
+        estado = States.objects.get(pk=2)  # ID del estado activo
     elif estado == 'inactivo':
-        estado = States.objects.get(pk=4)  # ID del estado inactivo
+        estado = States.objects.get(pk=3)  # ID del estado inactivo
     else:
         return []
 
-    empleados = Peoples.objects.filter(empleado=True, fk_id_state=estado)
+    employees = Peoples.objects.filter(employee=True, fk_id_state=estado)
 
-    return empleados
+    return employees
 
-
-def obtener_proveedores(estado):
+@api_view(['GET'])
+def obtener_supplier(estado):
     # Obtener proveedores según el estado proporcionado
     if estado == 'activo':
-        estado = States.objects.get(pk=3)  # ID del estado activo
+        estado = States.objects.get(pk=2)  # ID del estado activo
     elif estado == 'inactivo':
-        estado = States.objects.get(pk=4)  # ID del estado inactivo
+        estado = States.objects.get(pk=3)  # ID del estado inactivo
     else:
         return []
 
-    proveedores = Peoples.objects.filter(proveedor=True, fk_id_state=estado)
+    suppliers = Peoples.objects.filter(supplier=True, fk_id_state=estado)
 
-    return proveedores
+    return suppliers
 
-
-def obtener_clientes(estado):
+@api_view(['GET'])
+def obtener_customer(request, estado):
     # Obtener clientes según el estado proporcionado
     if estado == 'activo':
-        estado = States.objects.get(pk=3)  # ID del estado activo
+        estado = States.objects.get(pk=2)  # ID del estado activo
     elif estado == 'inactivo':
-        estado = States.objects.get(pk=4)  # ID del estado inactivo
+        estado = States.objects.get(pk=3)  # ID del estado inactivo
     else:
         return []
 
-    clientes = Peoples.objects.filter(clientes=True, fk_id_state=estado)
+    customers = Peoples.objects.filter(customer=True, fk_id_state=estado)
 
-    return clientes 
+    return customers
 
 
 @api_view(['POST'])
 def create_people_and_user(request):
     data = request.data
+
+    # Verificar si la contraseña está presente en los datos
+    if 'password' not in data or not data['password']:
+        response_data = {
+            'code': status.HTTP_200_OK,
+            'status': False,
+            'message': 'La contraseña es requerida.',
+            'data': None
+        }
+        return Response(data=response_data)
 
     # Verificar si ya existe una persona con el mismo documento o correo electrónico
     existing_person_document = Peoples.objects.filter(document=data['document']).first()
@@ -98,24 +108,24 @@ def create_people_and_user(request):
         date_birth=data.get('date_birth', None),
         phone=data['phone'],
         address=data.get('address', None),
-        empleado=data.get('empleado', False),
-        proveedor=data.get('proveedor', False),
-        cliente=data.get('cliente', False)
+        employee=data.get('employee', False),
+        supplier=data.get('supplier', False),
+        customer=data.get('customer', False)
     )
 
     # Obtener la contraseña manualmente del campo 'password' en los datos
-    password = data.get('password', str(data['document']))
+    password = data['password']
 
     # Crear una instancia de User asociada a People, Rol y Estado si es empleado
-    if people.empleado:
-        rol, _ = Rol.objects.get_or_create(name='Empleado')
+    if people.employee:
+        rol, _ = Rol.objects.get_or_create(name='Employee')
         state = States.objects.get(pk=2)  # ID del estado activo
-    elif people.proveedor:
-        rol, _ = Rol.objects.get_or_create(name='Proveedor')
+    elif people.supplier:
+        rol, _ = Rol.objects.get_or_create(name='Supplier')
         state = States.objects.get(pk=2)  # ID del estado activo
-    elif people.cliente:
-        rol, _ = Rol.objects.get_or_create(name='Cliente')
-        state = States.objects.get(pk=3)  # ID del estado inactivo 
+    elif people.customer:
+        rol, _ = Rol.objects.get_or_create(name='Customer')
+        state = States.objects.get(pk=2)  # ID del estado inactivo
     # Si ninguno de los roles está configurado como True, no se asigna un rol ni un estado
     else:
         rol = None
@@ -140,19 +150,31 @@ def create_people_and_user(request):
 
     people_serializer = PeopleSerializer(people)  # Serializar los datos de People
 
-    response_data ={
+    response_data = {
         'code': status.HTTP_200_OK,
         'status': True,
         'message': 'El registro se ha realizado exitosamente',
         'data': people_serializer.data  # Agregar los datos serializados a la respuesta
     }
-
     return Response(response_data)
 
 
 @api_view(['GET'])
 def list_people(request):
-    people_queryset = Peoples.objects.all().order_by('id')
+
+    filters= {}
+    query_params = [
+        'document',
+        'email',
+        'phone',
+        'rol'
+    ]
+    for parem in query_params:
+        value = request.query_params.get(parem)
+        if value:
+            filters[f'{parem}__icontains'] = value
+
+    people_queryset = Peoples.objects.filter(**filters).order_by('id')
     people_serializer = PeopleSerializer(people_queryset, many=True)
 
     if not people_serializer.data:
@@ -205,36 +227,42 @@ def update_people(request, pk):
         # Verificar si ya existe una persona con el mismo documento o correo electrónico
         existing_person_document = Peoples.objects.exclude(pk=pk).filter(document=new_document).first()
         if existing_person_document:
-            return Response(data={'code': status.HTTP_400_BAD_REQUEST,
+            return Response(data={'code': status.HTTP_200_OK,
                                   'message': 'Ya existe una persona registrada con este número de documento',
                                   'status': False})
 
         existing_person_email = Peoples.objects.exclude(pk=pk).filter(email=new_email).first()
         if existing_person_email:
-            return Response(data={'code': status.HTTP_400_BAD_REQUEST,
+            return Response(data={'code': status.HTTP_200_OK,
                                   'message': 'Ya existe una persona registrada con este correo electrónico',
                                   'status': False})
 
-        # Extraer los valores actuales de is_empleado e is_cliente
-        is_empleado = request.data.get('is_empleado', people.is_empleado)
-        is_cliente = request.data.get('is_cliente', people.is_cliente)
+        # Extraer los valores actuales de empleado, cliente y proveedor
+        employee = request.data.get('employee', people.employee)
+        customer = request.data.get('customer', people.customer)
+        supplier = request.data.get('supplier', people.supplier)
 
-        # Actualizar estado y rol si es cliente o empleado
-        state = States.objects.get(pk=4)  # Estado inactivo por defecto
-        rol_name = 'Cliente'  # Rol cliente por defecto
+        # Actualizar estado y rol según el estado de empleado, cliente y proveedor
+        state = States.objects.get(pk=3)  # Estado inactivo por defecto
+        rol_name = 'Customer'  # Rol cliente por defecto
 
-        if is_empleado:
-            state = States.objects.get(pk=3)  # Estado activo para empleado
-            rol_name = 'Empleado'  # Rol empleado
+        if employee:
+            state = States.objects.get(pk=2)  # Estado activo para empleado
+            rol_name = 'Employee'  # Rol empleado
 
-        if is_cliente:
-            state = States.objects.get(pk=4)  # Estado inactivo para cliente
+        if supplier:
+            state = States.objects.get(pk=2)  # Estado activo para proveedor
+            rol_name = 'Supplier'  # Rol proveedor
+
+        if customer:
+            state = States.objects.get(pk=3)  # Estado inactivo para cliente
 
         rol, _ = Rol.objects.get_or_create(name=rol_name)
 
         people.fk_id_state = state
-        people.is_empleado = is_empleado
-        people.is_cliente = is_cliente
+        people.employee = employee
+        people.customer = customer
+        people.supplier = supplier  # Actualizar proveedor
         people.save()
 
         user = Users.objects.filter(fk_id_people=people).first()
@@ -252,12 +280,12 @@ def update_people(request, pk):
                               'status': True})
 
     except Peoples.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND, 
+        return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No encontrado', 
                               'status': False})
 
     except requests.ConnectionError:
-        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
+        return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Error de red', 
                               'status': False})
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Users, Peoples, Rol, Measures, Materials, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys
+from .models import Users, Peoples, Rol, Measures, Materials, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys, Cart, CartItem
 
 
 class StateSerializer(serializers.ModelSerializer):
@@ -40,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PeopleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Peoples
-        fields = ('id', 'name', 'last_name', 'email', 'type_document', 'document', 'gender', 'date_birth', 'phone', 'address', 'empleado', 'proveedor', 'cliente')
+        fields = ('id', 'name', 'last_name', 'email', 'type_document', 'document', 'gender', 'date_birth', 'phone', 'address', 'employee', 'supplier', 'customer')
 
     
 class recup_ContrasenaSerializer(serializers.ModelSerializer):
@@ -93,8 +93,20 @@ class DetailProdSerializer(serializers.ModelSerializer):
         model = DetailProds
         fields = ['id','date','fk_id_product', 'color', 'fk_id_measures', 'fk_id_materials']
 
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = '__all__'
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = '__all__'
+
 
 class SaleSerializer(serializers.ModelSerializer):
+    fk_id_people = serializers.PrimaryKeyRelatedField(queryset=Peoples.objects.all(), allow_null=True)
     class Meta:
         model = Sales
         fields = '__all__'
