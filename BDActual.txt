@@ -19,9 +19,10 @@ CREATE TABLE peoples(
     	date_birth date,
     	phone varchar(10),
     	address varchar(30),
-	empleado boolean,
-    	proveedor boolean,
-    	cliente boolean
+	employee boolean,
+	supplier boolean,
+	customer boolean,
+	is_guest boolean
 );
 
 CREATE TABLE users (
@@ -30,7 +31,7 @@ CREATE TABLE users (
 	fk_id_rol int,
 	fk_id_people int,
 	password varchar(100),
-	last_login timestamp,
+	last_login datetime,
 	FOREIGN KEY (fk_id_rol) REFERENCES rol(id),
 	FOREIGN KEY (fk_id_state) REFERENCES states(id),
 	FOREIGN KEY (fk_id_people) REFERENCES peoples(id)
@@ -85,6 +86,27 @@ CREATE TABLE detail_prods(
 	FOREIGN KEY (fk_id_product) REFERENCES products(id),
 	FOREIGN KEY (fk_id_measures) REFERENCES measures(id),
 	FOREIGN KEY (fk_id_materials) REFERENCES materials(id)
+);
+
+CREATE TABLE carts(
+    	id serial PRIMARY KEY,
+    	fk_id_user int,
+    	fk_id_product int,
+    	total_price numeric(10,2),
+    	created_ad timestamp without time zone,
+    	updated_ad timestamp without time zone,
+   	FOREIGN KEY (fk_id_user) REFERENCES users(id),
+	FOREIGN KEY (fk_id_product) REFERENCES products(id)
+);
+
+CREATE TABLE cart_items(
+    	id serial PRIMARY KEY,
+    	fk_id_cart int,
+    	fk_id_product int,
+    	quantity integer,
+    	total_price numeric(10,2),
+    	FOREIGN KEY (fk_id_cart) REFERENCES carts(id),
+	FOREIGN KEY (fk_id_product) REFERENCES products(id)
 );
 
 CREATE TABLE sales(

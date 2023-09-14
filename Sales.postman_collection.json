@@ -179,7 +179,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/list-user/",
+							"raw": "http://127.0.0.1:8000/obtener_clientes/inactivo",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -189,8 +189,8 @@
 							],
 							"port": "8000",
 							"path": [
-								"list-user",
-								""
+								"obtener_clientes",
+								"inactivo"
 							]
 						}
 					},
@@ -1351,7 +1351,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"prueba2@yopmail.com\",\r\n  \"name\": \"Alejandra\",\r\n  \"last_name\": \"Millan\",\r\n  \"type_document\": \"cedula\",\r\n  \"document\": \"1146232393\",\r\n  \"gender\": \"Femenino\",\r\n  \"date_birth\": \"2000-01-03\",\r\n  \"phone\": \"3024559885\",\r\n  \"address\": \"Dirección 123 \",\r\n  \"empleado\": false,\r\n  \"proveedor\": false,   // O false si no es empleado\r\n  \"cliente\": false,\r\n  \"password\": \"123456asda\"    // O true si es cliente\r\n}\r\n\r\n",
+							"raw": "{\r\n  \"email\": \"brayan2@gmail.com\",\r\n  \"name\": \"Brayan2\",\r\n  \"last_name\": \"Ramos\",\r\n  \"type_document\": \"cedula\",\r\n  \"document\": \"45879648\",\r\n  \"gender\": \"Masculino\",\r\n  \"date_birth\": \"2004-12-03\",\r\n  \"phone\": \"3046549898\",\r\n  \"address\": \"Calle falsa 123\",\r\n  \"employee\": false,\r\n  \"supplier\": false,   // O false si no es empleado\r\n  \"customer\": true,\r\n  \"password\": \"Brayan123\"    // O true si es cliente\r\n}\r\n\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1430,7 +1430,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/delete-people/6/",
+							"raw": "http://127.0.0.1:8000/delete-people/11/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1441,7 +1441,7 @@
 							"port": "8000",
 							"path": [
 								"delete-people",
-								"6",
+								"11",
 								""
 							]
 						}
@@ -1557,7 +1557,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/list_sale_detail/",
+							"raw": "http://127.0.0.1:8000/list_sale_detail/?start_date=2023-09-10&end_date=2023-09-15",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1569,6 +1569,16 @@
 							"path": [
 								"list_sale_detail",
 								""
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2023-09-10"
+								},
+								{
+									"key": "end_date",
+									"value": "2023-09-15"
+								}
 							]
 						}
 					},
@@ -1581,7 +1591,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"fk_id_state\": 1,\r\n  \"fk_id_people\": 7,\r\n  \"products\": [\r\n    {\r\n      \"product_id\": 9,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_id\": 9,\r\n      \"quantity\": 3\r\n    }\r\n  ]\r\n}",
+							"raw": "{\r\n  \"fk_id_state\": 1,\r\n  \"fk_id_people\": \"\",\r\n  \"name\":\"juan\",\r\n  \"document\": \"1021548\",\r\n  \"products\": [\r\n    {\r\n      \"product_id\": 7,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_id\": 8,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1687,7 +1697,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n  \"start_date\": \"2023-01-01\",\r\n  \"end_date\": \"2023-01-31\",\r\n  \"export_format\": \"pdf\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1695,7 +1705,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/sales/statistics/?start_date=2021-01-01&end_date=2023-08-31&report_type=both",
+							"raw": "http://127.0.0.1:8000/sales_report/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1705,23 +1715,227 @@
 							],
 							"port": "8000",
 							"path": [
-								"sales",
-								"statistics",
+								"sales_report",
 								""
-							],
-							"query": [
-								{
-									"key": "start_date",
-									"value": "2021-01-01"
-								},
-								{
-									"key": "end_date",
-									"value": "2023-08-31"
-								},
-								{
-									"key": "report_type",
-									"value": "both"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generate_product_sales_report",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"start_date\": \"2023-01-01\",\r\n    \"end_date\": \"2023-12-31\",\r\n    \"calculate_average\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/generate_product_sales_report/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"generate_product_sales_report",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart_item",
+			"item": [
+				{
+					"name": "create_and_add_cart",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "access_token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk0NjI0ODQyLCJpYXQiOjE2OTQ2MjQyNDIsImp0aSI6IjMwMWE5NDE3NzVmYjQ4MWM5MjJlOGJlNDJmZDYzYzg5IiwidXNlcl9pZCI6MTV9.BrkQjljmvOssL2EaUal-uzGRaejn_Iqe6kTn_A165F0",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "user_id",
+								"value": "8",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"user_id\": 16,\r\n  \"product_id\": 9\r\n  \r\n}\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/add_to_cart/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"add_to_cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list_cart",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/list_cart/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list_cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove_cart_item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": 16,       // Reemplaza 123 con el ID del usuario\r\n    \"product_id\": 7     // Reemplaza 456 con el ID del producto que deseas eliminar\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/remove_cart_item/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"remove_cart_item",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "decrease_cart_item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": 16,       // Reemplaza 123 con el ID del usuario\r\n    \"product_id\": 7     // Reemplaza 456 con el ID del producto que deseas disminuir\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/decrease_cart_item/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"decrease_cart_item",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "clear_cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/clear_cart/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"clear_cart",
+								""
 							]
 						}
 					},
@@ -1762,41 +1976,6 @@
 			"response": []
 		},
 		{
-			"name": "User All",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/get_all_dataUser/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"get_all_dataUser",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Iniciar_sesion",
 			"request": {
 				"auth": {
@@ -1819,7 +1998,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"prueba@yopmail.com\",\r\n  \"password\": \"contrasena\"\r\n}"
+					"raw": "{\r\n  \"email\": \"jairo@gmail.com\",\r\n  \"password\": \"Jairo123\"\r\n}"
 				},
 				"url": {
 					"raw": "http://127.0.0.1:8000/login/",
@@ -1846,7 +2025,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"refresh_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY5NDExNzkzNiwiaWF0IjoxNjk0MDMxNTM2LCJqdGkiOiI2N2YyYjFiYTQ2Mzg0MjU1YjdmZTFjNWY5YWVhMmMzMyIsInVzZXJfaWQiOjJ9.bw3eDu6ls-_PppycGf9yP6ERhy10DbkbL9yM7kUvKV0\"\r\n}",
+					"raw": "{\r\n  \"refresh_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY5NDcwNjM5NywiaWF0IjoxNjk0NjE5OTk3LCJqdGkiOiI2YjI1NjAzMGJjMTE0Mjg0YjAyODJjNWEzNTU3MGYxYyIsInVzZXJfaWQiOjd9.8oxg-RtSDnrcQQpS71h8wribFDiXyZp0NAIDUCVWmq0\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

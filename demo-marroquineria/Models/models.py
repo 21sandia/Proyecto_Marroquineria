@@ -51,7 +51,7 @@ class Users(models.Model):
         self.save()
 
     def get_email_field_name(self):
-        return 'fk_id_people__email'
+        return 'fk_id_people__email'  
 
 
 class Categorys(models.Model):
@@ -110,25 +110,24 @@ class DetailProds(models.Model):
         db_table = 'detail_prods'
 
 
-class Cart(models.Model):
+class Carts(models.Model):
     fk_id_user = models.ForeignKey(Users, models.DO_NOTHING, db_column='fk_id_user')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_ad = models.DateTimeField(auto_now_add=True)
+    updated_ad = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'cart'
+        db_table = 'carts'
         managed = False
 
 
-
-class CartItem(models.Model):
+class Cart_items(models.Model):
     fk_id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='fk_id_product')
-    fk_id_cart = models.ForeignKey(Cart, models.DO_NOTHING, db_column='fk_id_cart')
+    fk_id_cart = models.ForeignKey(Carts, models.DO_NOTHING, db_column='fk_id_cart')
     quantity = models.PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
-        db_table = 'cart_item'
+        db_table = 'cart_items'
         managed = False
 
 

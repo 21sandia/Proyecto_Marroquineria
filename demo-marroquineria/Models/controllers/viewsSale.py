@@ -19,7 +19,8 @@ def create_sale_detail(request):
     state_id = request.data.get('fk_id_state')
     people_id = request.data.get('fk_id_people')
     name = request.data.get('name')
-    document = request.data.get('document')
+    documentSale = request.data.get('document')
+    email = request.data.get('email')
     products = request.data.get('products', [])
     
     # Verificar si se proporcionaron valores para los campos state_id y people_id
@@ -33,19 +34,82 @@ def create_sale_detail(request):
                 "message": "Estado no encontrado.",
                 "status": False})
 
-    people = None
+   # Verificar si se proporcionó un people_id
     if people_id:
         try:
-            people = Peoples.objects.get(id=people_id)  # Obtener la persona correspondiente
+            # Obtener el usuario correspondiente al people_id proporcionado
+            people = Peoples.objects.get(id=people_id)
+            
+            # Verificar si se proporciona el documento y si coincide con el usuario encontrado
+            if documentSale and people.document != documentSale:
+                return Response({
+                    "code": status.HTTP_200_OK,
+                    "message": "El documento proporcionado no coincide con el usuario existente.",
+                    "status": False
+                })
+            
+            # Asociar el estado (si se proporciona)
+            if state_id:
+                try:
+                    state = States.objects.get(id=state_id)
+                except States.DoesNotExist:
+                    return Response({
+                        "code": status.HTTP_200_OK,
+                        "message": "Estado no encontrado.",
+                        "status": False
+                    })
+
         except Peoples.DoesNotExist:
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": "Persona no encontrada.",
                 "status": False
             })
+
     else:
-        # Create a new People object for unregistered user
-        people = Peoples.objects.create(is_guest=True, name=name, document=document)
+        # Si no se proporciona un people_id, se espera que se proporcione un documento
+        if not documentSale:
+            return Response({
+                "code": status.HTTP_200_OK,
+                "message": "El documento es obligatorio cuando no se proporciona un people_id.",
+                "status": False
+            })
+
+        try:
+            # Buscar usuarios con el documento proporcionado
+            people_list = Peoples.objects.filter(document=documentSale)
+
+            if people_list.exists():
+                # Si hay al menos un usuario con el documento, usa el primero
+                people = people_list.first()
+            else:
+                # Si no se encontraron usuarios con el documento, crea uno nuevo
+                if not name:
+                    return Response({
+                        "code": status.HTTP_200_OK,
+                        "message": "El nombre es obligatorio para crear un nuevo usuario.",
+                        "status": False
+                    })
+                people = Peoples.objects.create(is_guest=True, name=name, document=documentSale)
+            
+            # Asociar el estado (si se proporciona)
+            if state_id:
+                try:
+                    state = States.objects.get(id=state_id)
+                except States.DoesNotExist:
+                    return Response({
+                        "code": status.HTTP_200_OK,
+                        "message": "Estado no encontrado.",
+                        "status": False
+                    })
+
+        except Peoples.DoesNotExist:
+            return Response({
+                "code": status.HTTP_200_OK,
+                "message": "Persona no encontrada.",
+                "status": False
+            })
+        
 
     total_sale = 0
     detail_data_list = []
@@ -154,7 +218,7 @@ def create_sale_detail(request):
 # **Lista los datos de venta junto con detalle venta**
 @api_view(['GET'])
 def list_sale_detail(request):
-     # Obtener los parámetros de filtrado de la solicitud
+    # Obtener los parámetros de filtrado de la solicitud
     customer_id = request.query_params.get('customer_id', None)
     state_id = request.query_params.get('state_id', None)
     min_total_sale = request.query_params.get('min_total_sale', None)
@@ -175,19 +239,14 @@ def list_sale_detail(request):
 
     # Filtrar ventas según los parámetros proporcionados
     sales_query = Q()
-    # Por cliente
     if customer_id:
         sales_query &= Q(fk_id_people=customer_id)
-    # Por estado
     if state_id:
         sales_query &= Q(fk_id_state=state_id)
-    # Por total mínimo
     if min_total_sale:
         sales_query &= Q(total_sale__gte=min_total_sale)
-    # Por total máximo
     if max_total_sale:
         sales_query &= Q(total_sale__lte=max_total_sale)
-    # Por rango de fecha
     if start_date:
         sales_query &= Q(date__gte=start_date)
     if end_date:
@@ -199,28 +258,21 @@ def list_sale_detail(request):
         return Response({
             "code": status.HTTP_200_OK,
             "message": "No hay ventas registradas.",
-            "status": True})
+            "status": True
+        })
 
     response_data = []
 
     for sale in sales:
         sale_serializer = SaleSerializer(sale)
-        
-        details = DetailSales.objects.filter(fk_id_sale=sale)
-        detail_serializer = DetailSaleSerializer(details, many=True)
-        
-        sale_data = {
-            "sale": sale_serializer.data,
-            "details": detail_serializer.data,
-        }
-        
-        response_data.append(sale_data)
+        response_data.append(sale_serializer.data)
 
     return Response({
         "code": status.HTTP_200_OK,
         "message": "Consulta realizada exitosamente.",
         "status": True,
-        "data": response_data})
+        "data": response_data
+    })
 
 
 # **Edita la venta junto con el detalle de venta**

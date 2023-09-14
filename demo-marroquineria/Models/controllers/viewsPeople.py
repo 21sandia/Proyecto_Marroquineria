@@ -1,53 +1,54 @@
-from rest_framework import status
+from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from ..models import Peoples, Users
+from ..models import Peoples, Users, Carts
 from ..serializers import *
 import requests
 
-@api_view(['GET'])
-def obtener_employee(request):
-    # Obtener empleados según el estado proporcionado
-    if estado == 'activo':
-        estado = States.objects.get(pk=2)  # ID del estado activo
-    elif estado == 'inactivo':
-        estado = States.objects.get(pk=3)  # ID del estado inactivo
-    else:
-        return []
+# @api_view(['GET'])
+# def obtener_employee(request):
+#     # Obtener empleados según el estado proporcionado
+#     if estado == 'activo':
+#         estado = States.objects.get(pk=2)  # ID del estado activo
+#     elif estado == 'inactivo':
+#         estado = States.objects.get(pk=3)  # ID del estado inactivo
+#     else:
+#         return []
 
-    employees = Peoples.objects.filter(employee=True, fk_id_state=estado)
+#     employees = Peoples.objects.filter(employee=True, fk_id_state=estado)
 
-    return employees
+#     return employees
 
-@api_view(['GET'])
-def obtener_supplier(estado):
-    # Obtener proveedores según el estado proporcionado
-    if estado == 'activo':
-        estado = States.objects.get(pk=2)  # ID del estado activo
-    elif estado == 'inactivo':
-        estado = States.objects.get(pk=3)  # ID del estado inactivo
-    else:
-        return []
+# @api_view(['GET'])
+# def obtener_supplier(estado):
+#     # Obtener proveedores según el estado proporcionado
+#     if estado == 'activo':
+#         estado = States.objects.get(pk=2)  # ID del estado activo
+#     elif estado == 'inactivo':
+#         estado = States.objects.get(pk=3)  # ID del estado inactivo
+#     else:
+#         return []
 
-    suppliers = Peoples.objects.filter(supplier=True, fk_id_state=estado)
+#     suppliers = Peoples.objects.filter(supplier=True, fk_id_state=estado)
 
-    return suppliers
+#     return suppliers
 
-@api_view(['GET'])
-def obtener_customer(request, estado):
-    # Obtener clientes según el estado proporcionado
-    if estado == 'activo':
-        estado = States.objects.get(pk=2)  # ID del estado activo
-    elif estado == 'inactivo':
-        estado = States.objects.get(pk=3)  # ID del estado inactivo
-    else:
-        return []
+# @api_view(['GET'])
+# def obtener_customer(request, estado):
+#     # Obtener clientes según el estado proporcionado
+#     if estado == 'activo':
+#         estado = States.objects.get(pk=2)  # ID del estado activo
+#     elif estado == 'inactivo':
+#         estado = States.objects.get(pk=3)  # ID del estado inactivo
+#     else:
+#         return []
 
-    customers = Peoples.objects.filter(customer=True, fk_id_state=estado)
+#     customers = Peoples.objects.filter(customer=True, fk_id_state=estado)
 
-    return customers
+#     return customers
 
 
 @api_view(['POST'])
@@ -118,25 +119,30 @@ def create_people_and_user(request):
 
     # Crear una instancia de User asociada a People, Rol y Estado si es empleado
     if people.employee:
-        rol, _ = Rol.objects.get_or_create(name='Employee')
-        state = States.objects.get(pk=2)  # ID del estado activo
+        rol, _ = Rol.objects.get_or_create(name='Empleado')
+        state, _ = States.objects.get_or_create(name='Activo')  # ID del estado activo
     elif people.supplier:
-        rol, _ = Rol.objects.get_or_create(name='Supplier')
-        state = States.objects.get(pk=2)  # ID del estado activo
+        rol, _ = Rol.objects.get_or_create(name='Proveedor')
+        state, _ = States.objects.get_or_create(name='Activo')   # ID del estado activo
     elif people.customer:
-        rol, _ = Rol.objects.get_or_create(name='Customer')
-        state = States.objects.get(pk=2)  # ID del estado inactivo
+        rol, _ = Rol.objects.get_or_create(name='Cliente')
+        state, _ = States.objects.get_or_create(name='Activo')   # ID del estado activo
     # Si ninguno de los roles está configurado como True, no se asigna un rol ni un estado
     else:
         rol = None
         state = None
 
-    Users.objects.create(
+    user = Users.objects.create(
         fk_id_state=state,
         fk_id_rol=rol,
         fk_id_people=people,
         password=make_password(password)
     )
+
+    # Crear un carrito para el usuario
+    carts, _ = Carts.objects.get_or_create(fk_id_user=user)
+    user.carts = carts
+    carts.save()
 
     # Envío de correo de confirmación y bienvenida
     subject = 'Confirmación de registro y bienvenida'
@@ -161,18 +167,40 @@ def create_people_and_user(request):
 
 @api_view(['GET'])
 def list_people(request):
-
-    filters= {}
+    filters = {}
     query_params = [
         'document',
         'email',
         'phone',
-        'rol'
+        'rol',
+        'state'
     ]
-    for parem in query_params:
-        value = request.query_params.get(parem)
-        if value:
-            filters[f'{parem}__icontains'] = value
+
+    rol_id = request.query_params.get('rol')
+    estado_id = request.query_params.get('state')
+
+    if rol_id:
+        try:
+            rol_id = int(rol_id)
+        except ValueError:
+            # Si no es un número, intenta buscar el ID por el nombre del rol
+            rol = Rol.objects.filter(name=rol_id).first()
+            if rol:
+                rol_id = rol.id
+            else:
+                # Si no se encontró el rol, no se aplica el filtro
+                rol_id = None
+
+        if rol_id is not None:
+            filters['users__fk_id_rol'] = rol_id
+
+    if estado_id:
+        filters['users__fk_id_state'] = estado_id
+
+    for param in query_params:
+        value = request.query_params.get(param)
+        if value and param not in ['rol', 'state']:
+            filters[f'{param}__icontains'] = value
 
     people_queryset = Peoples.objects.filter(**filters).order_by('id')
     people_serializer = PeopleSerializer(people_queryset, many=True)

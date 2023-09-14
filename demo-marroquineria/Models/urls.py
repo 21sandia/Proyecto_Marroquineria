@@ -141,10 +141,16 @@ urlpatterns = [
     path('delete-product/<int:pk>/', viewsProductDetail.delete_product, name='delete_product'),
 
     # ** Carrito y Cart_item **
-    path('create_cart/', viewsCartItem.create_cart, name='create_cart'),
-    path('add_to_cart/<int:pk>/', viewsCartItem.add_to_cart, name='add_to_cart'),
-    path('list_cart/', viewsCartItem.list_cart, name='list_cart'),
-    path('delete_cart/', viewsCartItem.delete_cart, name='delete_cart'),
+    # Crear y Añadir un producto al carrito
+    path('add_to_cart/', viewsCartItem.add_to_cart, name='add_to_cart'),
+    # Actualizar la cantidad de un producto en el carrito
+    path('remove_cart_item/', viewsCartItem.remove_product_from_cart, name='remove_cart_item'),
+    # Disminuir la cantidad de un producto
+    path('decrease_cart_item/', viewsCartItem.decrease_product_quantity, name='decrease_cart_item'),
+    # Ver el contenido del carrito con detalles de productos
+    path('list_cart/<int:user_id>/', viewsCartItem.list_cart, name='list_cart'),
+    # Vaciar completamente el carrito
+    path('clear_cart/<int:user_id>/', viewsCartItem.clear_cart, name='clear_cart'), 
 
     # ** Venta con Detalle Venta **
     # Crea la venta con el detalle de venta

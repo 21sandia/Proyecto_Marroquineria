@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Users, Peoples, Rol, Measures, Materials, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys, Cart, CartItem
+from .models import Users, Peoples, Rol, Measures, Materials, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys, Carts, Cart_items
 
 
 class StateSerializer(serializers.ModelSerializer):
@@ -95,29 +95,38 @@ class DetailProdSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cart
+        model = Carts
         fields = '__all__'
 
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CartItem
+        model = Cart_items
         fields = '__all__'
 
 
 class SaleSerializer(serializers.ModelSerializer):
-    fk_id_people = serializers.PrimaryKeyRelatedField(queryset=Peoples.objects.all(), allow_null=True)
+    person_id = serializers.IntegerField(source='fk_id_people.id', read_only=True)
+    person_name = serializers.CharField(source='fk_id_people.name', read_only=True)
+    person_document = serializers.IntegerField(source='fk_id_people.document', read_only=True)
+    person_email = serializers.CharField(source='fk_id_people.email', read_only=True)
+    state_id = serializers.IntegerField(source='fk_id_state.id', read_only=True)
+    state_name = serializers.CharField(source='fk_id_state.name', read_only=True)
+    products = serializers.SerializerMethodField()
+
     class Meta:
         model = Sales
-        fields = '__all__'
+        fields = ['id', 'date', 'total_sale', 'person_id', 'person_name', 'person_document', 'person_email', 'state_id', 'state_name', 'products']
+
+    def get_products(self, obj):
+        products = DetailSales.objects.filter(fk_id_sale_id=obj.id).values('fk_id_prod__id', 'fk_id_prod__name', 'quantity', 'price_unit', 'total_product')
+        return list(products)
 
 
 class DetailSaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailSales
         fields = '__all__'
-
-
 
 
 

@@ -65,6 +65,9 @@ def get_all_Product(request):
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
     sort_by = request.GET.get('sort_by', '-date')
+    name = request.GET.get('name')
+    reference = request.GET.get('reference')
+    state_id = request.GET.get('state_id')
 
     # Aplicar filtrado según ID del producto, categoría y/o tipo de producto si se proporcionan
     if product_id:
@@ -80,15 +83,20 @@ def get_all_Product(request):
     if max_price:
         detail_prods = detail_prods.filter(fk_id_product__price_sale__lte=max_price)
     
+    # Filtrar por nombre si se proporciona
+    if name:
+        detail_prods = detail_prods.filter(fk_id_product__name__icontains=name)
+    
+    # Filtrar por referencia si se proporciona
+    if reference:
+        detail_prods = detail_prods.filter(fk_id_product__reference__icontains=reference)
+
+    # Filtrar por estado si se proporciona
+    if state_id:
+        detail_prods = detail_prods.filter(fk_id_product__fk_id_state_id=state_id)
+    
     # Ordenar los resultados
     detail_prods = detail_prods.order_by(sort_by)
-
-    if not detail_prods.exists():
-        return Response({'code': 200,
-                         'status': True,
-                         'message': 'No hay productos registrados',
-                         'data': []
-                        })
 
     for detail_prod in detail_prods:
         product = detail_prod.fk_id_product
@@ -147,6 +155,7 @@ def get_all_Product(request):
         'message': 'Consulta realizada Exitosamente',
         'data': data
         })
+
 
 
 
