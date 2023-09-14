@@ -1,7 +1,5 @@
-from email.mime.text import MIMEText
 from django.core.mail import send_mail
 from django.conf import settings
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -22,7 +20,7 @@ def enviar_correo_confirmacion(user_name, user_email):
 
 @api_view(['GET'])
 def list_user(request):
-    queryset = Users.objects.all().order_by('name')
+    queryset = Users.objects.all().order_by('id')
     serializer = UserSerializer(queryset, many=True)
 
     if not serializer.data:
@@ -83,43 +81,3 @@ def delete_user(request, pk):
                           'status': True})
 
 
-# @api_view(['POST'])
-# def create_user(request):
-#     serializer = UserSerializer(data=request.data)
-#     serializer.is_valid(raise_exception=True)
-#     validated_data = serializer.validated_data
-
-#     if Users.objects.filter(email=validated_data['email']).exists():
-#         return Response(
-#             data={
-#                 'code':status.HTTP_200_OK,
-#                 'message':'Este usuario ya existe',
-#                 'status': True
-#             })
-
-#     user_name = validated_data['name']
-#     user_email = validated_data['email']
-    
-#     try:
-#         enviar_correo_confirmacion(user_name,user_email)
-#         serializer.save()
-
-#     except requests.ConnectionError:
-#         return Response(
-#             data={
-#                 'code': status.HTTP_503_SERVICE_UNAVAILABLE,
-#                 'message': 'Error de conexión o de red',
-#                 'status': False
-#             })
-
-#     except Exception:
-#         return Response(
-#             data={
-#                 'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-#                 'message': 'El servidor ha fallado',
-#                 'status': False
-#             })
-
-#     return Response(data={'code': status.HTTP_200_OK, 
-#                           'message': 'Creado Exitosamente', 
-#                           'status': True})

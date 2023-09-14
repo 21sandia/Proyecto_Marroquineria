@@ -18,18 +18,18 @@ def product_create(request):
     if product_serializer.is_valid():
         # valida si un roducto ya esta existe con ese nombre
         if Products.objects.filter(name=request.data['name']).exists():
-            alerts.append('A product with the same name already exists')
+            alerts.append('Ya hay un producto con este nombre')
             return Response({
-                    "code": status.HTTP_404_NOT_FOUND,
+                    "code": status.HTTP_200_OK,
                     "status": False,
                     "message": "Ya hay un producto con este nombre"
                 })
         
         # valida si un roducto ya esta existe con esa referencia
         if Products.objects.filter(reference=request.data['reference']).exists():
-            alerts.append('A product with the same reference already exists')
+            alerts.append('Ya hay un producto con esta referencia')
             return Response({
-                    "code": status.HTTP_404_NOT_FOUND,
+                    "code": status.HTTP_200_OK,
                     "status": False,
                     "message": "Ya hay un producto con esta referencia"
                 })
@@ -51,15 +51,22 @@ def product_create(request):
         product.delete()
         return Response(detail_serializer.errors, status=400)
 
-    # Check if any alerts were triggered
+    # Comprobar si se han activado alertas
     if alerts:
         return Response({'alerts': alerts}, status=200)
+    
+    # Comprobar la cantidad del producto creado
+    if product.quantity == 0:
+        product_status = "No Disponible"
+    else:
+        product_status = "Disponible"
 
     return Response({
-                    "code": status.HTTP_201_CREATED,
+                    "code": status.HTTP_200_OK,
                     "status": True,
-                    "message": "Producto y detalle creados exitosamente."
-                })
+                    "message": "Producto y detalle creados exitosamente.",
+                    "product_status": product_status
+                    })
 
 
 @api_view(['PUT'])
@@ -99,6 +106,7 @@ def edit_product(request, product_id):
         detail_serializer.save()
 
     product_serializer.save()
+<<<<<<< HEAD
 
     response["status"] = True
     response["message"] = "Producto y detalle del producto actualizados exitosamente."
@@ -137,7 +145,41 @@ def delete_product(request, pk):
                                })
 
 
+=======
+>>>>>>> 185c76a2020d13d14e0616e166da2f447f00c1f7
 
+    response["status"] = True
+    response["message"] = "Producto y detalle del producto actualizados exitosamente."
+    return Response(response, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+def delete_product(request, pk):
+    try:
+        product = Products.objects.get(pk=pk)
+    except Products.DoesNotExist:
+         return Response(data={'code': status.HTTP_404_NOT_FOUND,
+                               'message': 'No se encontró el producto',
+                               'status': False,
+                               'data': []
+                               })
+    
+    try:
+        details = DetailProds.objects.filter(fk_id_product=pk)
+        details.delete()
+        product.delete()
+    except DatabaseError:
+         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                               'message': 'No se puede eliminar el producto porque generó una venta, intenta desabilitarlo',
+                               'status': False,
+                               'data': []
+                              })
+    
+    return Response(data={'code': status.HTTP_200_OK,
+                               'message': 'Producto eliminado exitosamente',
+                               'status': True,
+                               'data': []
+                               })
 
 
 # Lista producto con detalle de producto
@@ -204,8 +246,12 @@ def product_details(request):
             "status": False,
             "message": "No hay materiales registrados",
             'data': []
+<<<<<<< HEAD
         })
 
 
 
 
+=======
+        })
+>>>>>>> 185c76a2020d13d14e0616e166da2f447f00c1f7

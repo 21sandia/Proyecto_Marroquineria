@@ -2,9 +2,10 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsProductDetail, viewsUser
-from Models.controllers import viewsSale, viewsUserGetAllData, viewsMeasures, viewsMaterial
+from Models.controllers import viewsSale, viewsUserAllData, viewsMeasures, viewsMaterial, viewsCartItem
 from Models.controllers import viewsRecupContrasena 
-from .views import iniciar_sesion, cerrar_sesion
+from Models.controllers import viewsReports
+from Models import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import reverse
@@ -12,14 +13,15 @@ from django.urls import reverse
 urlpatterns = [
 
     # **Iniciar Sesion**
-    path('iniciar-sesion/', iniciar_sesion, name='iniciar_sesion'),
+    path('login/', views.login, name='login'),
     # **Cerrar Sesion**
-    path('cerrar-sesion/', cerrar_sesion, name='cerrar-sesion'),
+    path('log_out/', views.log_out, name='log_out'),
 
     #  **RECUPERAR CONTRASEÑA**
-    #path('recup_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'), 
-    path('recuperar_contrasena/', viewsRecupContrasena.recuperar_contrasena, name='recuperar_contrasena'),
-    path('cambiar_contrasena/', viewsRecupContrasena.cambiar_contrasena, name='cambiar_contrasena'), 
+    path('recover_password/', viewsRecupContrasena.recover_password, name='recover_password'),
+
+    # **Cambiar la contraseña**
+    path('change_password/<str:uidb64>/<str:token>/', viewsRecupContrasena.change_password, name='change_password'), 
 
     # **Token**
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -53,6 +55,7 @@ urlpatterns = [
 
     # Listar People
     path('list-people/', viewsPeople.list_people, name='list_people'),
+
     # Crear People
     path('create-people/', viewsPeople.create_people_and_user, name='create_people'), 
     # Editar People
@@ -70,7 +73,7 @@ urlpatterns = [
     path('delete-user/<int:pk>/', viewsUser.delete_user, name='delete_user'), 
 
     # Trae toda la información de las tablas relacionadas con el usuario 
-    path('get_all_dataUser/', viewsUserGetAllData.get_related_foreign_keys, name='get_all_models_data'),
+    path('all_data_user/', viewsUserAllData.all_data_user, name='all_data_user'),
 
     # ** Categorías **
 
@@ -138,6 +141,18 @@ urlpatterns = [
     # Elimina el Producto con el Detalle de producto
     path('delete-product/<int:pk>/', viewsProductDetail.delete_product, name='delete_product'),
 
+    # ** Carrito y Cart_item **
+    # Crear y Añadir un producto al carrito
+    path('add_to_cart/', viewsCartItem.add_to_cart, name='add_to_cart'),
+    # Actualizar la cantidad de un producto en el carrito
+    path('remove_cart_item/', viewsCartItem.remove_product_from_cart, name='remove_cart_item'),
+    # Disminuir la cantidad de un producto
+    path('decrease_cart_item/', viewsCartItem.decrease_product_quantity, name='decrease_cart_item'),
+    # Ver el contenido del carrito con detalles de productos
+    path('list_cart/<int:user_id>/', viewsCartItem.list_cart, name='list_cart'),
+    # Vaciar completamente el carrito
+    path('clear_cart/<int:user_id>/', viewsCartItem.clear_cart, name='clear_cart'), 
+
     # ** Venta con Detalle Venta **
     # Crea la venta con el detalle de venta
     path('create-sale-detail/', viewsSale.create_sale_detail, name='create-sale-detail'),
@@ -148,7 +163,11 @@ urlpatterns = [
     # Elimina la venta con el detalle de venta
     path('delete-sale-detail/<int:pk>/', viewsSale.delete_sale_detail, name='delete_sale_detail'),
     
+    # Reports
+    path('sales_report/', viewsReports.sales_report, name='sales_report'),  
+    path('generate_product_sales_report/', viewsReports.generate_product_sales_report, name='generate_product_sales_report'), 
     
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

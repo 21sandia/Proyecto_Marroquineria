@@ -129,9 +129,11 @@ def create_sale_detail(request):
 
 
 # **Lista los datos de venta junto con detalle venta**
+from django.db.models import F
+
 @api_view(['GET'])
 def list_sale_detail(request):
-     # Obtener los parámetros de filtrado de la solicitud
+    # Obtener los parámetros de filtrado de la solicitud
     customer_id = request.query_params.get('customer_id', None)
     state_id = request.query_params.get('state_id', None)
     min_total_sale = request.query_params.get('min_total_sale', None)
@@ -177,16 +179,20 @@ def list_sale_detail(request):
     response_data = []
 
     for sale in sales:
+        # Obtener los datos de la persona, producto y estado
+        person_data = Peoples.objects.filter(id=sale.fk_id_people_id).values('name', 'document', 'email').first()
+        product_data = DetailSales.objects.filter(fk_id_sale_id=sale.id).values('fk_id_prod__id', 'fk_id_prod__name')
+        state_data = States.objects.filter(id=sale.fk_id_state_id).values('id', 'name').first()
+
         sale_serializer = SaleSerializer(sale)
-        
-        details = DetailSales.objects.filter(fk_id_sale=sale)
-        detail_serializer = DetailSaleSerializer(details, many=True)
-        
+
         sale_data = {
             "sale": sale_serializer.data,
-            "details": detail_serializer.data,
+            "person": person_data,
+            "state": state_data,
+            "products": product_data,
         }
-        
+
         response_data.append(sale_data)
 
     return Response({
@@ -308,7 +314,7 @@ def delete_sale_detail(request, pk):
                               'status': True})
 
     except Sales.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND, 
+        return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No encontrado', 
                               'status': False})
 
@@ -319,27 +325,3 @@ def delete_sale_detail(request, pk):
 
 
 
-# @api_view(['DELETE'])
-# def delete_sale(request, pk):
-#     try:
-#         sale = Sales.objects.get(pk=pk)
-#         sale.delete()
-
-#         return Response(data={'code': status.HTTP_200_OK, 
-#                               'message': 'Eliminada exitosamente', 
-#                               'status': True})
-
-#     except Sales.DoesNotExist:
-#         return Response(data={'code': status.HTTP_404_NOT_FOUND, 
-#                               'message': 'No encontrada', 
-#                               'status': False})
-
-#     except requests.ConnectionError:
-#         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
-#                               'message': 'Error de red', 
-#                               'status': False})
-
-#     except Exception as e:
-#         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
-#                               'message': 'Error del servidor', 
-#                               'status': False})

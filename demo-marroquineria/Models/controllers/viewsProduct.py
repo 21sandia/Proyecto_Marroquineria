@@ -65,6 +65,9 @@ def get_all_Product(request):
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
     sort_by = request.GET.get('sort_by', '-date')
+    name = request.GET.get('name')
+    reference = request.GET.get('reference')
+    state_id = request.GET.get('state_id')
 
     # Aplicar filtrado según ID del producto, categoría y/o tipo de producto si se proporcionan
     if product_id:
@@ -80,6 +83,18 @@ def get_all_Product(request):
     if max_price:
         detail_prods = detail_prods.filter(fk_id_product__price_sale__lte=max_price)
     
+    # Filtrar por nombre si se proporciona
+    if name:
+        detail_prods = detail_prods.filter(fk_id_product__name__icontains=name)
+    
+    # Filtrar por referencia si se proporciona
+    if reference:
+        detail_prods = detail_prods.filter(fk_id_product__reference__icontains=reference)
+
+    # Filtrar por estado si se proporciona
+    if state_id:
+        detail_prods = detail_prods.filter(fk_id_product__fk_id_state_id=state_id)
+    
     # Ordenar los resultados
     detail_prods = detail_prods.order_by(sort_by)
 
@@ -90,6 +105,12 @@ def get_all_Product(request):
         state = product.fk_id_state
         measure = detail_prod.fk_id_measures if hasattr(detail_prod, 'fk_id_measures') else None
         material = detail_prod.fk_id_materials if hasattr(detail_prod, 'fk_id_materials') else None
+
+        # Verificar si la cantidad es cero y mostrar el estado "no disponible"
+        if product.quantity == 0:
+            product_status = "No disponible"
+        else:
+            product_status = str(product.quantity)
 
         data.append({
             "id": detail_prod.id,
@@ -102,7 +123,7 @@ def get_all_Product(request):
                 "image_url": product.image.url if product.image else None,
                 "reference": product.reference,
                 "description": product.description,
-                "quantity": product.quantity,
+                "quantity": product_status,  # Mostrar estado "no disponible" si la cantidad es cero
                 "price_shop": str(product.price_shop),
                 "price_sale": str(product.price_sale),
                 "state_data": {
@@ -132,8 +153,10 @@ def get_all_Product(request):
         'code': 200,
         'status': True,
         'message': 'Consulta realizada Exitosamente',
-        'data': data,
-    })
+        'data': data
+        })
+
+
 
 
 

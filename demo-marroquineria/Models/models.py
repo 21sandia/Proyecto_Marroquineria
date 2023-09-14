@@ -19,27 +19,29 @@ class States(models.Model):
 
 class Peoples(models.Model):
     email = models.CharField(max_length=50)
-    name = models.CharField(max_length=30)
+    is_guest = models.BooleanField(default=False)
+    name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30)
     type_document = models.CharField(max_length=30)
-    document = models.IntegerField()
+    document = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=30)
     date_birth = models.DateField()
     phone = models.CharField(max_length=10)
     address = models.CharField(max_length=30)
-    is_empleado = models.BooleanField(default=False)
-    is_cliente = models.BooleanField(default=False)
+    employee = models.BooleanField(default=False)
+    supplier = models.BooleanField(default=False)
+    customer = models.BooleanField(default=False)
     
     class Meta:
         db_table = 'peoples'
 
 
 class Users(models.Model):
-    fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state')
-    fk_id_rol = models.ForeignKey(Rol, models.DO_NOTHING, db_column='fk_id_rol')
+    fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state', null=True, blank=True)
+    fk_id_rol = models.ForeignKey(Rol, models.DO_NOTHING, db_column='fk_id_rol', null=True, blank=True)
     fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')
     password = models.CharField(max_length=100)
-    last_login = models.DateTimeField(default=timezone.now)
+    last_login = models.DateTimeField(null=True, blank=True, default=timezone.now)
 
     class Meta:
         db_table = 'users'
@@ -49,7 +51,7 @@ class Users(models.Model):
         self.save()
 
     def get_email_field_name(self):
-        return 'fk_id_people__email'
+        return 'fk_id_people__email'  
 
 
 class Categorys(models.Model):
@@ -109,9 +111,30 @@ class DetailProds(models.Model):
         db_table = 'detail_prods'
 
 
+class Carts(models.Model):
+    fk_id_user = models.ForeignKey(Users, models.DO_NOTHING, db_column='fk_id_user')
+    created_ad = models.DateTimeField(auto_now_add=True)
+    updated_ad = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'carts'
+        managed = False
+
+
+class Cart_items(models.Model):
+    fk_id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='fk_id_product')
+    fk_id_cart = models.ForeignKey(Carts, models.DO_NOTHING, db_column='fk_id_cart')
+    quantity = models.PositiveIntegerField(default=1)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        db_table = 'cart_items'
+        managed = False
+
+
 class Sales(models.Model):
     fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state')
-    fk_id_people = models.ForeignKey(Peoples, models.DO_NOTHING, db_column='fk_id_people')
+    fk_id_people = models.ForeignKey(Peoples, on_delete=models.SET_NULL, null=True, db_column='fk_id_people')
     date = models.DateField(auto_now_add=True)
     total_sale = models.DecimalField(max_digits=10, decimal_places=2)
 
