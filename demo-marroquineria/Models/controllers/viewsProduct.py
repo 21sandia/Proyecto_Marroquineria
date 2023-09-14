@@ -8,7 +8,7 @@ from ..serializers import *
 @api_view(['GET'])
 def get_Product(request): # FUNCIONA
     # Obtener los productos y sus foreign keys relacionadas usando prefetch_related
-    product_data = Products.objects.prefetch_related('fk_id_state', 'fk_id_type_prod__fk_id_category').all().order_by('id')
+    product_data = Products.objects.prefetch_related('fk_id_state', 'fk_id_type_prod__fk_id_category').all()
 
     if product_data:
         # Serializar los datos

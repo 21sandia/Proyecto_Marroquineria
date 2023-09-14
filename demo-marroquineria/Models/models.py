@@ -79,7 +79,6 @@ class Products(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     price_shop = models.DecimalField(max_digits=10, decimal_places=2)
     price_sale = models.DecimalField(max_digits=10, decimal_places=2)
-    
 
     class Meta:
         managed = False

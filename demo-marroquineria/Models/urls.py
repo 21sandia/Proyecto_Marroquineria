@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
+
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsProductDetail, viewsUser
 from Models.controllers import viewsSale, viewsUserAllData, viewsMeasures, viewsMaterial, viewsCartItem
 from Models.controllers import viewsRecupContrasena 
@@ -24,10 +25,8 @@ urlpatterns = [
     path('change_password/<str:uidb64>/<str:token>/', viewsRecupContrasena.change_password, name='change_password'), 
 
     # **Token**
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
-    # path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # link Ingreso usuario, para generar token
+    path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # ** Estados **
 

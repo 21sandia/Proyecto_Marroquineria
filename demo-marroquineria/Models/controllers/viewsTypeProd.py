@@ -37,7 +37,6 @@ def create_type_prod(request):
                               'status': False})
 
 
-
 # ** Lista los datos de categoría y Tipo de producto en un solo EndPoint **
 @api_view(['GET'])
 def get_all_tpcateg(request):

@@ -106,47 +106,6 @@ def edit_product(request, product_id):
         detail_serializer.save()
 
     product_serializer.save()
-<<<<<<< HEAD
-
-    response["status"] = True
-    response["message"] = "Producto y detalle del producto actualizados exitosamente."
-    return Response(response, status=status.HTTP_200_OK)
-
-
-
-
-
-@api_view(['DELETE'])
-def delete_product(request, pk):
-    try:
-        product = Products.objects.get(pk=pk)
-    except Products.DoesNotExist:
-         return Response(data={'code': status.HTTP_404_NOT_FOUND,
-                               'message': 'No se encontró el producto',
-                               'status': False,
-                               'data': []
-                               })
-    
-    try:
-        details = DetailProds.objects.filter(fk_id_product=pk)
-        details.delete()
-        product.delete()
-    except DatabaseError:
-         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                               'message': 'No se puede eliminar el producto porque generó una venta, intenta desabilitarlo',
-                               'status': False,
-                               'data': []
-                              })
-    
-    return Response(data={'code': status.HTTP_200_OK,
-                               'message': 'Producto eliminado exitosamente',
-                               'status': True,
-                               'data': []
-                               })
-
-
-=======
->>>>>>> 185c76a2020d13d14e0616e166da2f447f00c1f7
 
     response["status"] = True
     response["message"] = "Producto y detalle del producto actualizados exitosamente."
@@ -246,12 +205,4 @@ def product_details(request):
             "status": False,
             "message": "No hay materiales registrados",
             'data': []
-<<<<<<< HEAD
         })
-
-
-
-
-=======
-        })
->>>>>>> 185c76a2020d13d14e0616e166da2f447f00c1f7
