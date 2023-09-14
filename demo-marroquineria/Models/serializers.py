@@ -84,14 +84,6 @@ class MaterialSerializer(serializers.ModelSerializer):
         model = Materials
         fields = '__all__'
 
-<<<<<<< HEAD
-=======
-    
-class DetailProdSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DetailProds
-        fields = ['id','date','fk_id_product', 'color', 'fk_id_measures', 'fk_id_materials']
-
 class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carts
@@ -104,7 +96,6 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
->>>>>>> 185c76a2020d13d14e0616e166da2f447f00c1f7
 class SaleSerializer(serializers.ModelSerializer):
     person_id = serializers.IntegerField(source='fk_id_people.id', read_only=True)
     person_name = serializers.CharField(source='fk_id_people.name', read_only=True)
