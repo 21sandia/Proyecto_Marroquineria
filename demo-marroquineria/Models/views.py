@@ -52,7 +52,7 @@ def login(request):
     if not check_password(password, user.password):
         return Response({
             'code': status.HTTP_200_OK,
-            'message': 'Contraseña incorrecta',
+            'message': 'Usuario o contraseña incorrectos',
             'status': False
         })
 
