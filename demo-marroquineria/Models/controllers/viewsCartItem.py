@@ -26,20 +26,33 @@ def add_to_cart(request: Request):
     # Buscar el usuario por su ID o devolver un error si no existe
     user = get_object_or_404(Users, pk=user_id)
 
+    # Obtener el ID del producto y la cantidad del cuerpo del request
+    product_id = request.data.get('product_id')
+    quantity = request.data.get('quantity', 1)
+    
+    # Obtener el producto y verificar si hay suficiente stock
+    try:
+        product = Products.objects.get(pk=product_id)
+    except Products.DoesNotExist:
+        return Response({'code': status.HTTP_400_BAD_REQUEST,
+                         'message': 'Producto no encontrado',
+                         'status': False})
+    
+    if product.quantity == 0 or product.quantity < quantity:
+        # Si la cantidad en stock es igual a cero o menor que la cantidad solicitada, devuelve un mensaje de error
+        return Response({'code': status.HTTP_400_BAD_REQUEST,
+                         'message': 'No hay suficiente stock disponible',
+                         'status': False})
+
+    # Calcular el precio total
+    total_price = product.price_sale * int(quantity)
+
     # Verificar si el usuario tiene un carrito existente
     try:
         cart = Carts.objects.get(fk_id_user=user)
     except Carts.DoesNotExist:
         # Si el usuario no tiene un carrito, crea uno
         cart = Carts.objects.create(fk_id_user=user)
-
-    # Obtener el ID del producto y la cantidad del cuerpo del request
-    product_id = request.data.get('product_id')
-    quantity = request.data.get('quantity',1)
-    
-    # Obtener el producto y calcular el precio total
-    product = Products.objects.get(pk=product_id)
-    total_price = product.price_sale * int(quantity)
 
     # Verificar si el producto ya está en el carrito del usuario
     try:

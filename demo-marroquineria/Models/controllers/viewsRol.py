@@ -74,6 +74,21 @@ def update_rol(request, pk):
     try:
         rol = Rol.objects.get(pk=pk)
 
+        # Obtén el nombre enviado en los datos del request
+        name = request.data.get('name')
+
+        # Verifica si el nuevo nombre ya existe en la base de datos, excluyendo la categoría actual
+        if name != rol.name:
+            exist_rol = Rol.objects.filter(name=name).first()
+            if exist_rol:
+                return Response(
+                    data={
+                        'code': status.HTTP_200_OK,
+                        'message': f'El tipo de producto con el nombre {rol.name} ya existe',
+                        'status': True,
+                        'data': None
+                        })
+
         serializer = RolSerializer(rol, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

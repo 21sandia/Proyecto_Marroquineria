@@ -99,6 +99,21 @@ def update_type_prod(request, pk):
     try:
         type_prod = TypeProds.objects.get(pk=pk)
 
+        # Obtén el nombre enviado en los datos del request
+        name = request.data.get('name')
+
+        # Verifica si el nuevo nombre ya existe en la base de datos, excluyendo la categoría actual
+        if name != type_prod.name:
+            exist_type_prod = TypeProds.objects.filter(name=name).first()
+            if exist_type_prod:
+                return Response(
+                    data={
+                        'code': status.HTTP_200_OK,
+                        'message': 'El nombre de este tipo de producto ya existe',
+                        'status': True,
+                        'data': None
+                        })
+
         serializer = TypeProdSerializer(type_prod, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

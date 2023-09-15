@@ -106,23 +106,11 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class SaleSerializer(serializers.ModelSerializer):
-    person_id = serializers.IntegerField(source='fk_id_people.id', read_only=True)
-    person_name = serializers.CharField(source='fk_id_people.name', read_only=True)
-    person_document = serializers.IntegerField(source='fk_id_people.document', read_only=True)
-    person_email = serializers.CharField(source='fk_id_people.email', read_only=True)
-    state_id = serializers.IntegerField(source='fk_id_state.id', read_only=True)
-    state_name = serializers.CharField(source='fk_id_state.name', read_only=True)
-    products = serializers.SerializerMethodField()
-
+    fk_id_people = serializers.PrimaryKeyRelatedField(queryset=Peoples.objects.all(), allow_null=True)
     class Meta:
         model = Sales
-        fields = ['id', 'date', 'total_sale', 'person_id', 'person_name', 'person_document', 'person_email', 'state_id', 'state_name', 'products']
-
-    def get_products(self, obj):
-        products = DetailSales.objects.filter(fk_id_sale_id=obj.id).values('fk_id_prod__id', 'fk_id_prod__name', 'quantity', 'price_unit', 'total_product')
-        return list(products)
-
-
+        fields = '__all__'
+        
 class DetailSaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailSales

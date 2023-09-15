@@ -62,26 +62,43 @@ def update_category(request, pk):
     try:
         category = Categorys.objects.get(pk=pk)
 
+        # Obtén el nombre enviado en los datos del request
+        name = request.data.get('name')
+
+        # Verifica si el nuevo nombre ya existe en la base de datos, excluyendo la categoría actual
+        if name != category.name:
+            exist_category = Categorys.objects.filter(name=name).first()
+            if exist_category:
+                return Response(
+                    data={
+                        'code': status.HTTP_200_OK,
+                        'message': 'El nombre de esta categoría ya existe',
+                        'status': True,
+                        'data': None
+                        })
+
         serializer = CategorySerializer(category, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+        category.name = name
         serializer.save()
-        return Response(data={'code': status.HTTP_200_OK, 
-                              'message': 'Actualizado exitosamente', 
-                              'status': True})
+        return Response(data={'code': status.HTTP_200_OK,
+                              'message': 'Actualizado exitosamente',
+                              'status': True,
+                              'data': serializer.data})
 
     except Categorys.DoesNotExist:
-        return Response(data={'code': status.HTTP_200_OK, 
-                              'message': 'No encontrado', 
+        return Response(data={'code': status.HTTP_404_NOT_FOUND,
+                              'message': 'No encontrado',
                               'status': False})
 
     except requests.ConnectionError:
-        return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
-                              'message': 'Error de red', 
+        return Response(data={'code': status.HTTP_400_BAD_REQUEST,
+                              'message': 'Error de red',
                               'status': False})
 
     except Exception as e:
-        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                              'message': 'Error del servidor', 
+        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                              'message': 'Error del servidor',
                               'status': False})
 
 @api_view(['DELETE'])

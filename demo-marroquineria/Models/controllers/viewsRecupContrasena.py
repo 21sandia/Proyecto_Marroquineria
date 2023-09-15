@@ -82,7 +82,7 @@ def change_password(request, uidb64, token):
                 data={
                     'code': status.HTTP_200_OK,
                     'message': 'Las contraseñas no coinciden',
-                    'status': False
+                    'status': True
                 })
 
         # Establecer la nueva contraseña para el usuario y guardar los cambios
@@ -113,7 +113,7 @@ def change_password(request, uidb64, token):
             data={
                 'code': status.HTTP_200_OK,
                 'message': 'El enlace de restablecimiento de contraseña es inválido',
-                'status': False
+                'status': True
             })
 
 

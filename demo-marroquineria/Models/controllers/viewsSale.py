@@ -90,7 +90,7 @@ def create_sale_detail(request):
                         "message": "El nombre es obligatorio para crear un nuevo usuario.",
                         "status": False
                     })
-                people = Peoples.objects.create(is_guest=True, name=name, document=documentSale)
+                people = Peoples.objects.create(is_guest=True, name=name, document=documentSale, email=email)
             
             # Asociar el estado (si se proporciona)
             if state_id:
@@ -164,7 +164,8 @@ def create_sale_detail(request):
         # Crear los detalles de venta en la base de datos
         DetailSales.objects.bulk_create([DetailSales(**data) for data in detail_data_list])
 
-        # Crear el PDF con los detalles de la compra
+
+       # Crear el PDF con los detalles de la compra
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=letter)
         styles = getSampleStyleSheet()
@@ -206,6 +207,7 @@ def create_sale_detail(request):
         )
         email.attach('comprobante.pdf', buffer.read(), 'application/pdf')
         email.send()
+
 
         return Response({"code": status.HTTP_200_OK,
                          "message": "Venta creada exitosamente. Se ha enviado un correo de notificación con el comprobante PDF adjunto.",
@@ -252,7 +254,7 @@ def list_sale_detail(request):
     if end_date:
         sales_query &= Q(date__lte=end_date)
 
-    sales = Sales.objects.filter(sales_query)
+    sales = Sales.objects.filter(sales_query).select_related('fk_id_state', 'fk_id_people')
 
     if not sales:
         return Response({
@@ -264,8 +266,31 @@ def list_sale_detail(request):
     response_data = []
 
     for sale in sales:
-        sale_serializer = SaleSerializer(sale)
-        response_data.append(sale_serializer.data)
+        sale_data = {
+            "id": sale.id,
+            "date": sale.date,
+            "total_sale": str(sale.total_sale),
+            "state_id": sale.fk_id_state.id,
+            "state_name": sale.fk_id_state.name,
+            "people_id": sale.fk_id_people.id if sale.fk_id_people else None,
+            "people_name": sale.fk_id_people.name if sale.fk_id_people else None,
+            "details": []
+        }
+
+        # Obtener los detalles de venta para esta venta
+        details = DetailSales.objects.filter(fk_id_sale=sale).select_related('fk_id_prod')
+
+        for detail in details:
+            product_data = {
+                "id": detail.fk_id_prod.id,
+                "name": detail.fk_id_prod.name,
+                "quantity": detail.quantity,
+                "price_unit": str(detail.price_unit),
+                "total_product": str(detail.total_product)
+            }
+            sale_data["details"].append(product_data)
+
+        response_data.append(sale_data)
 
     return Response({
         "code": status.HTTP_200_OK,
@@ -273,6 +298,8 @@ def list_sale_detail(request):
         "status": True,
         "data": response_data
     })
+
+
 
 
 # **Edita la venta junto con el detalle de venta**
@@ -405,3 +432,51 @@ def delete_sale_detail(request, pk):
         return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
                               'message': 'Error del servidor', 
                               'status': True})
+
+
+
+
+# def export_pdf():
+#         people = Peoples.objects.get()
+#      # Crear el PDF con los detalles de la compra
+#         buffer = BytesIO()
+#         doc = SimpleDocTemplate(buffer, pagesize=letter)
+#         styles = getSampleStyleSheet()
+
+#         pdf_content = []
+#         pdf_content.append(Paragraph(f'Comprobante de compra - Factura #{sale.id}', styles['Title']))
+
+#         # Agregar datos del Marketplace, cliente, etc.
+#         pdf_content.append(Paragraph(f'Marketplace Ecommerce.com', styles['Normal']))
+#         pdf_content.append(Paragraph(f'Cliente: {people.name}', styles['Normal']))
+#         pdf_content.append(Paragraph(f'Teléfono: {people.phone}', styles['Normal']))
+#         pdf_content.append(Paragraph(f'Correo: {people.email}', styles['Normal']))
+#         pdf_content.append(Paragraph(f'Dirección: {people.address}', styles['Normal']))
+
+#         data = [['Producto', 'Cantidad', 'Precio Unitario', 'Subtotal']]
+#         for detail in detail_data_list:
+#             product = detail['fk_id_prod']
+#             quantity = detail['quantity']
+#             subtotal_product = detail['total_product']
+#             data.append([product.name, quantity, f"${product.price_sale}", f"${subtotal_product}"])
+
+#         total_row = ['Total de la compra', '', '', f"${total_sale}"]
+#         data.append(total_row)
+
+#         table_style = TableStyle([])
+#         table = Table(data, colWidths=[4 * cm, 2 * cm, 3 * cm, 3 * cm])
+#         table.setStyle(table_style)
+#         pdf_content.append(table)
+
+#         doc.build(pdf_content)
+#         buffer.seek(0)
+
+#         # Adjuntar el PDF al correo electrónico
+#         email = EmailMessage(
+#             'Comprobante de compra',
+#             f'Querido(a) {people.name}, te informamos que tu compra con número de factura: {sale.id} ha sido captada con éxito.\n',
+#             'ecommerce.marquetp@gmail.com',
+#             [people.email],
+#         )
+#         email.attach('comprobante.pdf', buffer.read(), 'application/pdf')
+#         email.send()
