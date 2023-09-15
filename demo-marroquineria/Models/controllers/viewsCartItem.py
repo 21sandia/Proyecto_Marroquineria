@@ -202,7 +202,7 @@ def serialize_cart_items(cart_items):
         serialized_item = {
             'product_id': item.fk_id_product.id,
             'product_name': item.fk_id_product.name,
-            'product_image': item.fk_id_product.image,
+            'product_image': item.fk_id_product.image.url,
             'measure_name': item.fk_id_product.detailprods_set.first().fk_id_measures.name,
             'material_name': item.fk_id_product.detailprods_set.first().fk_id_materials.name,
             'quantity': item.quantity,
