@@ -11,6 +11,7 @@ from ..serializers import *
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import JSONParser
 from rest_framework.request import Request
+from decimal import Decimal
 
 
 @api_view(['POST'])
@@ -64,6 +65,11 @@ def add_to_cart(request: Request):
     except Cart_items.DoesNotExist:
         # Si el producto no está en el carrito, crea un nuevo elemento en el carrito
         Cart_items.objects.create(fk_id_cart=cart, fk_id_product=product, quantity=quantity, total_price=total_price)
+    
+        # Calcular el total de la venta después de actualizar el carrito
+    total_sale = Decimal(0)
+    for item in Cart_items.objects.filter(fk_id_cart=cart):
+        total_sale += item.total_price
 
     return Response({'code': status.HTTP_200_OK,
                      'message': 'Producto añadido al carrito con éxito',
@@ -186,15 +192,27 @@ def list_cart(request, user_id):
     # Obtener los elementos del carrito del usuario
     cart_items = Cart_items.objects.filter(fk_id_cart=cart)
 
+    # Calcular el total de la venta
+    total_sale = Decimal(0)
+    for item in cart_items:
+        total_sale += item.total_price
+
     # Serializar los elementos del carrito a JSON (puedes usar serializers de Django Rest Framework)
-    serialized_cart_items = serialize_cart_items(cart_items)
+    serialized_cart_items = serialize_cart_items(cart_items, total_sale)
 
-    # Devolver la respuesta con los elementos del carrito
-    return Response({'cart_items': serialized_cart_items}, status=status.HTTP_200_OK)
+    # Crear el diccionario de respuesta que incluye los elementos del carrito y el total de la venta
+    response_data = {
+        'cart_items': serialized_cart_items,
+        'total_sale': str(total_sale),  # Convertir el total a una cadena
+    }
 
-def serialize_cart_items(cart_items):
-    # Esta función debe tomar una lista de elementos del carrito y serializarlos a formato JSON.
-    # Puedes utilizar serializers de Django Rest Framework o crear un diccionario manualmente.
+    # Devolver la respuesta con los elementos del carrito y el total de la venta
+    return Response(response_data, status=status.HTTP_200_OK)
+
+def serialize_cart_items(cart_items, total_sale):
+    # Esta función debe tomar una lista de elementos del carrito y el total de la venta,
+    # y serializarlos a formato JSON. Puedes utilizar serializers de Django Rest Framework
+    # o crear un diccionario manualmente.
 
     serialized_items = []
 
@@ -211,6 +229,7 @@ def serialize_cart_items(cart_items):
         serialized_items.append(serialized_item)
 
     return serialized_items
+
 
 
 
