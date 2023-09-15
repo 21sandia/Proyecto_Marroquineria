@@ -103,10 +103,10 @@ def edit_product(request, product_id):
     detail_data = product_data.pop("color", None)
 
     # Obtén el nuevo nombre del producto desde los datos de la solicitud
-    new_product_name = product_data.get("nombre")
+    new_product_name = product_data.get("name")
 
     # Verifica si ya existe un producto con el nuevo nombre, excluyendo el producto actual
-    if Products.objects.exclude(pk=product_id).filter(nombre=new_product_name).exists():
+    if Products.objects.exclude(pk=product_id).filter(name=new_product_name).exists():
         # Si existe, devolvemos una respuesta de error y un mensaje indicando que el nombre ya existe
         response["message"] = "El nombre de producto ya existe en la base de datos."
         return Response({"code": status.HTTP_200_OK,
@@ -153,7 +153,7 @@ def edit_product(request, product_id):
     return Response({"code": status.HTTP_200_OK,
                      "status": True,
                      "message": "Producto actualizado exitosamente.",
-                     "data": []})
+                     "data": [product_serializer.data]})
 
 
 @api_view(['DELETE'])
