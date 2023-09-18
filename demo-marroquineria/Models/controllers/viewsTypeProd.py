@@ -111,8 +111,7 @@ def update_type_prod(request, pk):
                         'code': status.HTTP_200_OK,
                         'message': 'El nombre de este tipo de producto ya existe',
                         'status': True,
-                        'data': None
-                        })
+                        'data': None})
 
         serializer = TypeProdSerializer(type_prod, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)

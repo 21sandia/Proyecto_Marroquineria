@@ -65,7 +65,7 @@ def update_category(request, pk):
         # Obtén el nombre enviado en los datos del request
         name = request.data.get('name')
 
-        # Verifica si el nuevo nombre ya existe en la base de datos, excluyendo la categoría actual
+        # Verifica si el nuevo nombre ya existe en la base de datos
         if name != category.name:
             exist_category = Categorys.objects.filter(name=name).first()
             if exist_category:
@@ -74,8 +74,7 @@ def update_category(request, pk):
                         'code': status.HTTP_200_OK,
                         'message': 'El nombre de esta categoría ya existe',
                         'status': True,
-                        'data': None
-                        })
+                        'data': None})
 
         serializer = CategorySerializer(category, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)

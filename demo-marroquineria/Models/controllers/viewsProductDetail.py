@@ -83,19 +83,34 @@ def edit_product(request, product_id):
         # Buscamos el detalle del producto existente en la base de datos
         detail = DetailProds.objects.get(fk_id_product=product_id)
     except Products.DoesNotExist:
-        # Si el producto no existe, devolvemos una respuesta de error 404
+        # Si el producto no existe, devolvemos una respuesta de error
         response["message"] = "Producto no encontrado."
         return Response({"code": status.HTTP_200_OK,
                         "status": False,
                         "message": "Producto no encontrado.",
                         "data": []})
     except DetailProds.DoesNotExist:
-        # Si el detalle del producto no existe, devolvemos una respuesta de error 404
+        # Si el detalle del producto no existe, devolvemos una respuesta de error
         response["message"] = "Detalle del producto no encontrado."
         return Response({"code": status.HTTP_200_OK,
                         "status": True,
                         "message": "Detalle de Producto no encontrado.",
                         "data": []})
+
+    # Obtén el nombre enviado en los datos del request
+    name = request.data.get('name')
+
+    # Verifica si el nuevo nombre ya existe en la base de datos
+    if name != product.name:
+        exist_product = Products.objects.filter(name=name).first()
+        if exist_product:
+            return Response(
+                data={
+                    'code': status.HTTP_200_OK,
+                    'message': 'El nombre de este producto ya existe',
+                    'status': True,
+                    'data': None
+                })
 
     # Copiamos los datos de la solicitud en una variable separada
     product_data = request.data.copy()

@@ -77,14 +77,14 @@ def update_rol(request, pk):
         # Obtén el nombre enviado en los datos del request
         name = request.data.get('name')
 
-        # Verifica si el nuevo nombre ya existe en la base de datos, excluyendo la categoría actual
+        # Verifica si el nuevo nombre ya existe en la base de datos
         if name != rol.name:
             exist_rol = Rol.objects.filter(name=name).first()
             if exist_rol:
                 return Response(
                     data={
                         'code': status.HTTP_200_OK,
-                        'message': f'El tipo de producto con el nombre {rol.name} ya existe',
+                        'message': f'Ya existe un rol con ese nombre',
                         'status': True,
                         'data': None
                         })

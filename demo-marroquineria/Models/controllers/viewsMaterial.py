@@ -65,6 +65,21 @@ def update_material(request, pk):
     try:
         material = Materials.objects.get(pk=pk)
 
+        # Obtén el nombre enviado en los datos del request
+        name = request.data.get('name')
+
+        # Verifica si el nuevo nombre ya existe en la base de datos, excluyendo la categoría actual
+        if name != material.name:
+            exist_material = Materials.objects.filter(name=name).first()
+            if exist_material:
+                return Response(
+                    data={
+                        'code': status.HTTP_200_OK,
+                        'message': 'El nombre de este material ya existe',
+                        'status': True,
+                        'data': None
+                        })
+
         serializer = MaterialSerializer(material, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

@@ -97,7 +97,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 5,\r\n    \"name\": \"En proceso\"\r\n}",
+							"raw": "{\r\n    \"name\": \"No disponible\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -105,7 +105,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/update-state/5/",
+							"raw": "http://127.0.0.1:8000/update-state/4/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -116,7 +116,7 @@
 							"port": "8000",
 							"path": [
 								"update-state",
-								"5",
+								"4",
 								""
 							]
 						}
@@ -501,7 +501,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 15,\r\n    \"name\": \"Ropa\"\r\n        }",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -577,7 +577,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 3,\r\n    \"name\": \"Accesorios\"\r\n    \r\n}",
+							"raw": "{\r\n    \"name\": \"Ropa\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -585,7 +585,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/update-category/3/",
+							"raw": "http://127.0.0.1:8000/update-category/2/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -596,7 +596,7 @@
 							"port": "8000",
 							"path": [
 								"update-category",
-								"3",
+								"2",
 								""
 							]
 						}
@@ -762,10 +762,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Formal\",\r\n    \"fk_id_category\": 1\r\n}"
+							"raw": "{\r\n    \"name\": \"Bebés de 6 a 12 meses\",\r\n    \"fk_id_category\": 3\r\n}"
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/update-type_prod/2/",
+							"raw": "http://127.0.0.1:8000/update-type_prod/8/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -776,7 +776,7 @@
 							"port": "8000",
 							"path": [
 								"update-type_prod",
-								"2",
+								"8",
 								""
 							]
 						}
@@ -874,7 +874,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/get-all-Product/",
+							"raw": "http://127.0.0.1:8000/get-all-Product/?reference=23",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -886,6 +886,12 @@
 							"path": [
 								"get-all-Product",
 								""
+							],
+							"query": [
+								{
+									"key": "reference",
+									"value": "23"
+								}
 							]
 						}
 					},
@@ -904,7 +910,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Portatiles Asus\",\r\n    \"reference\": \"11111\",\r\n    \"description\": \"Descripción producto3\",\r\n    \"quantity\": 120,\r\n    \"price_shop\": \"180.00\",\r\n    \"price_sale\": \"360.00\",\r\n    \"fk_id_state\": 1,\r\n    \"fk_id_type_prod\": 3,\r\n    \"color\": \"Morado\",\r\n    \"fk_id_measures\": \"1\",\r\n    \"fk_id_materials\":\"1\"\r\n}\r\n\r\n\r\n\r\n"
+							"raw": "{\r\n    \"name\": \"Portatiles juana\",\r\n    \"reference\": \"23\",\r\n    \"description\": \"Descripción producto3\",\r\n    \"quantity\": 120,\r\n    \"price_shop\": \"180.00\",\r\n    \"price_sale\": \"360.00\",\r\n    \"fk_id_state\": 1,\r\n    \"fk_id_type_prod\": 3,\r\n    \"color\": \"Morado\",\r\n    \"fk_id_measures\": \"1\",\r\n    \"fk_id_materials\":\"1\"\r\n}\r\n\r\n\r\n\r\n"
 						},
 						"url": {
 							"raw": "http://127.0.0.1:8000/create-product/",
@@ -1320,7 +1326,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/list-people/",
+							"raw": "http://127.0.0.1:8000/list-people/?document=114613",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1332,6 +1338,12 @@
 							"path": [
 								"list-people",
 								""
+							],
+							"query": [
+								{
+									"key": "document",
+									"value": "114613"
+								}
 							]
 						}
 					},
@@ -1351,7 +1363,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"brayan2@gmail.com\",\r\n  \"name\": \"Brayan2\",\r\n  \"last_name\": \"Ramos\",\r\n  \"type_document\": \"cedula\",\r\n  \"document\": \"45879648\",\r\n  \"gender\": \"Masculino\",\r\n  \"date_birth\": \"2004-12-03\",\r\n  \"phone\": \"3046549898\",\r\n  \"address\": \"Calle falsa 123\",\r\n  \"employee\": false,\r\n  \"supplier\": false,   // O false si no es empleado\r\n  \"customer\": true,\r\n  \"password\": \"Brayan123\"    // O true si es cliente\r\n}\r\n\r\n",
+							"raw": "{\r\n  \"email\": \"alexandra@yopmail.com\",\r\n  \"name\": \"Alexandra\",\r\n  \"last_name\": \"Millan\",\r\n  \"type_document\": \"cedula\",\r\n  \"document\": \"123456789\",\r\n  \"gender\": \"Femenino\",\r\n  \"date_birth\": \"2004-07-03\",\r\n  \"phone\": \"3024555555\",\r\n  \"address\": \"Avenida siempre viva\",\r\n  \"employee\": false,\r\n  \"supplier\": false,   // O false si no es empleado\r\n  \"customer\": true,\r\n  \"password\": \"Alexandra123\"    // O true si es cliente\r\n}\r\n\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1507,7 +1519,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"new_password\": \"contrasena\",\r\n    \"confirm_password\": \"contrasena\"\r\n}\r\n",
+							"raw": "{\r\n    \"new_password\": \"Alexandra1\",\r\n    \"confirm_password\": \"Alexandra1\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1515,7 +1527,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/change_password/Mg==/bu42he-a24c5bbaf8a1af85976ef2cca01fb964/",
+							"raw": "http://127.0.0.1:8000/change_password/Mg==/buk9n1-3460b077b1ef4b8a7a82beb26118801e/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1527,7 +1539,7 @@
 							"path": [
 								"change_password",
 								"Mg==",
-								"bu42he-a24c5bbaf8a1af85976ef2cca01fb964",
+								"buk9n1-3460b077b1ef4b8a7a82beb26118801e",
 								""
 							]
 						}
@@ -1557,7 +1569,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/list_sale_detail/?start_date=2023-09-10&end_date=2023-09-15",
+							"raw": "http://127.0.0.1:8000/list_sale_detail/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1569,16 +1581,6 @@
 							"path": [
 								"list_sale_detail",
 								""
-							],
-							"query": [
-								{
-									"key": "start_date",
-									"value": "2023-09-10"
-								},
-								{
-									"key": "end_date",
-									"value": "2023-09-15"
-								}
 							]
 						}
 					},
@@ -1591,7 +1593,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"fk_id_state\": 1,\r\n  \"fk_id_people\": \"\",\r\n  \"name\":\"juan\",\r\n  \"document\": \"1021548\",\r\n  \"products\": [\r\n    {\r\n      \"product_id\": 7,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_id\": 8,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
+							"raw": "{\r\n  \"fk_id_state\": 1,\r\n  \"fk_id_people\": \"18\",\r\n  \"name\":\"\",\r\n  \"document\": \"\",\r\n  \"products\": [\r\n   \r\n    {\r\n      \"product_id\": 8,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product_id\": 9,\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1785,7 +1787,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"user_id\": 16,\r\n  \"product_id\": 9\r\n  \r\n}\r\n\r\n\r\n",
+							"raw": "{\r\n   \"user_id\": 16,\r\n  \"product_id\": 7\r\n  \r\n}\r\n\r\n\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1828,7 +1830,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/list_cart/",
+							"raw": "http://127.0.0.1:8000/list_cart/16/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1839,6 +1841,7 @@
 							"port": "8000",
 							"path": [
 								"list_cart",
+								"16",
 								""
 							]
 						}
@@ -1912,7 +1915,7 @@
 				{
 					"name": "clear_cart",
 					"request": {
-						"method": "DELETE",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -1924,7 +1927,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/clear_cart/",
+							"raw": "http://127.0.0.1:8000/clear_cart/16/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1935,6 +1938,7 @@
 							"port": "8000",
 							"path": [
 								"clear_cart",
+								"16",
 								""
 							]
 						}
@@ -1998,7 +2002,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"jairo@gmail.com\",\r\n  \"password\": \"Jairo123\"\r\n}"
+					"raw": "{\r\n  \"email\": \"alexandra@yopmail.com\",\r\n  \"password\": \"Alexandra123\"\r\n}"
 				},
 				"url": {
 					"raw": "http://127.0.0.1:8000/login/",

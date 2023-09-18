@@ -45,8 +45,7 @@ def create_sale_detail(request):
                 return Response({
                     "code": status.HTTP_200_OK,
                     "message": "El documento proporcionado no coincide con el usuario existente.",
-                    "status": False
-                })
+                    "status": False})
             
             # Asociar el estado (si se proporciona)
             if state_id:
@@ -56,15 +55,13 @@ def create_sale_detail(request):
                     return Response({
                         "code": status.HTTP_200_OK,
                         "message": "Estado no encontrado.",
-                        "status": False
-                    })
+                        "status": False})
 
         except Peoples.DoesNotExist:
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": "Persona no encontrada.",
-                "status": False
-            })
+                "status": False})
 
     else:
         # Si no se proporciona un people_id, se espera que se proporcione un documento
@@ -72,8 +69,7 @@ def create_sale_detail(request):
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": "El documento es obligatorio cuando no se proporciona un people_id.",
-                "status": False
-            })
+                "status": False})
 
         try:
             # Buscar usuarios con el documento proporcionado
@@ -110,7 +106,6 @@ def create_sale_detail(request):
                 "status": False
             })
         
-
     total_sale = 0
     detail_data_list = []
     for product_data in products:

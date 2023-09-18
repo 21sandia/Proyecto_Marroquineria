@@ -65,6 +65,21 @@ def update_measures(request, pk):
     try:
         measure = Measures.objects.get(pk=pk)
 
+        # Obtén el nombre enviado en los datos del request
+        name = request.data.get('name')
+
+        # Verifica si el nuevo nombre ya existe en la base de datos
+        if name != measure.name:
+            exist_measure = Measures.objects.filter(name=name).first()
+            if exist_measure:
+                return Response(
+                    data={
+                        'code': status.HTTP_200_OK,
+                        'message': 'El nombre de esta medida ya existe',
+                        'status': True,
+                        'data': None
+                        })
+
         serializer = MeasureSerializer(measure, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

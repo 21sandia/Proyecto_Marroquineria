@@ -67,6 +67,20 @@ def update_States(request, pk):
     try:
         states = States.objects.get(pk=pk)
 
+        # Obtén el nombre enviado en los datos del request
+        name = request.data.get('name')
+
+        # Verifica si el nuevo nombre ya existe en la base de datos
+        if name != states.name:
+            exist_states = States.objects.filter(name=name).first()
+            if exist_states:
+                return Response(
+                    data={
+                        'code': status.HTTP_200_OK,
+                        'message': 'El estado con este nombre ya existe',
+                        'status': True,
+                        'data': None})
+
         serializer = StateSerializer(states, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
