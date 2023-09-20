@@ -18,7 +18,7 @@ def create_category(request):
         if existing_category:
             return Response(data={'code': status.HTTP_200_OK, 
                                   'message': 'Esta categoría ya existe', 
-                                  'status': False,
+                                  'status': True,
                                   'data':[name]
                                   })
 
@@ -45,7 +45,7 @@ def list_category(request):
         response_data = {
             'code': status.HTTP_200_OK,
             'message': 'No hay categorías registradas',
-            'status': False
+            'status': True
         }
         return Response(response_data)
 
@@ -86,9 +86,9 @@ def update_category(request, pk):
                               'data': serializer.data})
 
     except Categorys.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND,
+        return Response(data={'code': status.HTTP_200_OK,
                               'message': 'No encontrado',
-                              'status': False})
+                              'status': True})
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST,
@@ -113,7 +113,7 @@ def delete_category(request, pk):
     except Categorys.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Categoría No encontrada', 
-                              'status': False})
+                              'status': True})
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 

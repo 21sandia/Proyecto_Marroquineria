@@ -50,7 +50,6 @@ def get_Product(request): # FUNCIONA
                     'data': []}
 
         return Response(response)
-    
 
 
 @api_view(['GET'])

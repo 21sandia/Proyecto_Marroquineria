@@ -14,7 +14,7 @@ def list_States(request):
     if not serializer.data:
         response_data = {'code': status.HTTP_200_OK,
                          'message': 'No hay estados registrados',
-                         'status': False}
+                         'status': True}
         return Response(response_data)
 
     response_data = {'code': status.HTTP_200_OK,
@@ -35,7 +35,7 @@ def create_States(request):
         if existing_states:
             return Response(data={'code': status.HTTP_200_OK, 
                                   'message': 'El estado ya existe', 
-                                  'status': False})
+                                  'status': True})
         # Si el estado no existe, lo guarda
         serializer.save()
 
@@ -100,7 +100,7 @@ def update_States(request, pk):
     except States.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No encontrado', 
-                              'status': False})
+                              'status': True})
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
@@ -126,7 +126,7 @@ def delete_States(request, pk):
     except States.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Estado No encontrado', 
-                              'status': False})
+                              'status': True})
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 

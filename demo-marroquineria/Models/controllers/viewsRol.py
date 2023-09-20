@@ -24,7 +24,7 @@ def create_rol(request):
         if existing_rol:
             return Response(data={'code': status.HTTP_200_OK, 
                                   'message': 'El rol ya existe', 
-                                  'status': False
+                                  'status': True
                                   })
 
         serializer.save()
@@ -58,7 +58,7 @@ def list_rol(request):
     if not serializer.data:
         response_data = {'code': status.HTTP_200_OK,
                          'message': 'No hay roles registrados',
-                         'status': False,
+                         'status': True,
                          'data':[]}
         return Response(response_data)
 
@@ -99,7 +99,7 @@ def update_rol(request, pk):
     except Rol.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Rol No encontrado', 
-                              'status': False})
+                              'status': True})
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
@@ -122,9 +122,9 @@ def delete_rol(request, pk):
                               'status': True})
 
     except Rol.DoesNotExist:
-        return Response(data={'code': status.HTTP_404_NOT_FOUND, 
+        return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Rol No encontrado', 
-                              'status': False})
+                              'status': True})
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 

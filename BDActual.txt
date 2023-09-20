@@ -109,6 +109,23 @@ CREATE TABLE cart_items(
 	FOREIGN KEY (fk_id_product) REFERENCES products(id)
 );
 
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    fk_id_state INTEGER REFERENCES states(id),
+    fk_id_user INTEGER REFERENCES users(id),
+    total_price DECIMAL(10, 2),
+    address VARCHAR(255),
+    date TIMESTAMP WITH TIME ZONE
+);
+
+CREATE TABLE order_items (
+    id SERIAL PRIMARY KEY,
+    fk_id_order INTEGER REFERENCES orders(id) ON DELETE CASCADE,
+    product INTEGER REFERENCES products(id) ON DELETE CASCADE,
+    quantity INTEGER CHECK (quantity > 0),
+    price DECIMAL(10, 2)
+);
+
 CREATE TABLE sales(
 	id serial PRIMARY KEY,
 	fk_id_state int,

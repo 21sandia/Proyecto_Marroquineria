@@ -131,6 +131,29 @@ class Cart_items(models.Model):
         managed = False
 
 
+class Orders(models.Model):
+    fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state')
+    fk_id_user = models.ForeignKey(Users, models.DO_NOTHING, db_column='fk_id_user')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    address = models.CharField(max_length=255)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'orders'
+        managed = False
+
+
+class Order_items(models.Model):
+    fk_id_order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    fk_id_product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        db_table = 'order_items'
+        managed = False
+
+
 class Sales(models.Model):
     fk_id_state = models.ForeignKey(States, models.DO_NOTHING, db_column='fk_id_state')
     fk_id_people = models.ForeignKey(Peoples, on_delete=models.SET_NULL, null=True, db_column='fk_id_people')

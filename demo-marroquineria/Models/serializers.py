@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Users, Peoples, Rol, Measures, Materials, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys, Carts, Cart_items
+from .models import Users, Peoples, Rol, Measures, Materials, DetailProds, DetailSales, Sales, States, Products, TypeProds, Categorys, Carts, Cart_items, Orders, Order_items
 
 
 class StateSerializer(serializers.ModelSerializer):
@@ -102,6 +102,18 @@ class CartSerializer(serializers.ModelSerializer):
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart_items
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Orders
+        fields = '__all__'
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order_items
         fields = '__all__'
 
 

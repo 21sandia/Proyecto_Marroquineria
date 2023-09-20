@@ -3,7 +3,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 from Models.controllers import viewsRol, viewsCategory , viewsPeople, viewsProduct, viewsState, viewsTypeProd, viewsProductDetail, viewsUser
-from Models.controllers import viewsSale, viewsUserAllData, viewsMeasures, viewsMaterial, viewsCartItem
+from Models.controllers import viewsSale, viewsUserAllData, viewsMeasures, viewsMaterial, viewsCartItem, viewsOrder
 from Models.controllers import viewsRecupContrasena 
 from Models.controllers import viewsReports
 from Models import views
@@ -151,6 +151,10 @@ urlpatterns = [
     path('list_cart/<int:user_id>/', viewsCartItem.list_cart, name='list_cart'),
     # Vaciar completamente el carrito
     path('clear_cart/<int:user_id>/', viewsCartItem.clear_cart, name='clear_cart'), 
+
+    # ** Pedidos **
+    path('register_order/', viewsOrder.create_order, name='register_order'),
+    #path('list-order/', viewsOrder.list_products_order, name='listar_productos_order'),
 
     # ** Venta con Detalle Venta **
     # Crea la venta con el detalle de venta

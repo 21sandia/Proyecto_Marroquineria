@@ -32,7 +32,7 @@ def create_sale_detail(request):
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": "Estado no encontrado.",
-                "status": False})
+                "status": True})
 
    # Verificar si se proporcionó un people_id
     if people_id:
@@ -45,7 +45,7 @@ def create_sale_detail(request):
                 return Response({
                     "code": status.HTTP_200_OK,
                     "message": "El documento proporcionado no coincide con el usuario existente.",
-                    "status": False})
+                    "status": True})
             
             # Asociar el estado (si se proporciona)
             if state_id:
@@ -55,13 +55,13 @@ def create_sale_detail(request):
                     return Response({
                         "code": status.HTTP_200_OK,
                         "message": "Estado no encontrado.",
-                        "status": False})
+                        "status": True})
 
         except Peoples.DoesNotExist:
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": "Persona no encontrada.",
-                "status": False})
+                "status": True})
 
     else:
         # Si no se proporciona un people_id, se espera que se proporcione un documento
@@ -69,7 +69,7 @@ def create_sale_detail(request):
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": "El documento es obligatorio cuando no se proporciona un people_id.",
-                "status": False})
+                "status": True})
 
         try:
             # Buscar usuarios con el documento proporcionado
@@ -84,8 +84,7 @@ def create_sale_detail(request):
                     return Response({
                         "code": status.HTTP_200_OK,
                         "message": "El nombre es obligatorio para crear un nuevo usuario.",
-                        "status": False
-                    })
+                        "status": True})
                 people = Peoples.objects.create(is_guest=True, name=name, document=documentSale, email=email)
             
             # Asociar el estado (si se proporciona)
@@ -96,15 +95,13 @@ def create_sale_detail(request):
                     return Response({
                         "code": status.HTTP_200_OK,
                         "message": "Estado no encontrado.",
-                        "status": False
-                    })
+                        "status": True})
 
         except Peoples.DoesNotExist:
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": "Persona no encontrada.",
-                "status": False
-            })
+                "status": True})
         
     total_sale = 0
     detail_data_list = []
@@ -118,19 +115,19 @@ def create_sale_detail(request):
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": f"El producto con el id {product_id} no existe.",
-                "status": False})
+                "status": True})
         # Verificar campos obligatorios en los detalles del producto
         if not product_id or not quantity:
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": "Campos obligatorios faltantes en los detalles del producto: product_id, quantity.",
-                "status": False})
+                "status": True})
         # Verificar si hay suficiente stock
         if quantity > product.quantity:
             return Response({
                 "code": status.HTTP_200_OK,
                 "message": f"No hay suficiente stock para el producto {product.name}.",
-                "status": False})
+                "status": True})
         # Actualizar la cantidad de productos
         product.quantity -= quantity  # Restar la cantidad vendida del stock del producto
         product.save()  # Guardar los cambios en el producto
@@ -255,8 +252,7 @@ def list_sale_detail(request):
         return Response({
             "code": status.HTTP_200_OK,
             "message": "No hay ventas registradas.",
-            "status": True
-        })
+            "status": True})
 
     response_data = []
 
@@ -291,10 +287,7 @@ def list_sale_detail(request):
         "code": status.HTTP_200_OK,
         "message": "Consulta realizada exitosamente.",
         "status": True,
-        "data": response_data
-    })
-
-
+        "data": response_data})
 
 
 # **Edita la venta junto con el detalle de venta**

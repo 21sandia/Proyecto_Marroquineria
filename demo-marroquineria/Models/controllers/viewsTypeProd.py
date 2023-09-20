@@ -19,7 +19,7 @@ def create_type_prod(request):
         if existing_type_prod:
             return Response(data={'code': status.HTTP_200_OK, 
                                   'message': 'El tipo de producto Ya existe', 
-                                  'status': False})
+                                  'status': True})
 
         serializer.save()
         return Response(data={'code': status.HTTP_200_OK, 
@@ -69,7 +69,7 @@ def get_all_tpcateg(request):
         return Response(response)
     else:
         response = {'code': status.HTTP_200_OK,
-                    'status': False,
+                    'status': True,
                     'message': 'No hay información disponible',
                     'data': []}
 
@@ -84,7 +84,7 @@ def list_type_prod(request):
     if not serializer.data:
         response_data = {'code': status.HTTP_200_OK,
                          'message': 'No hay productos registrados',
-                         'status': False}
+                         'status': True}
         return Response(response_data)
 
     response_data = {'code': status.HTTP_200_OK,
@@ -123,7 +123,7 @@ def update_type_prod(request, pk):
     except TypeProds.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No encontrado', 
-                              'status': False})
+                              'status': True})
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
@@ -149,7 +149,7 @@ def delete_type_prod(request, pk):
     except TypeProds.DoesNotExist:
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'No se encontró', 
-                              'status': False})
+                              'status': True})
 
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 

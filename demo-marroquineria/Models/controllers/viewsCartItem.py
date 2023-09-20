@@ -35,15 +35,15 @@ def add_to_cart(request: Request):
     try:
         product = Products.objects.get(pk=product_id)
     except Products.DoesNotExist:
-        return Response({'code': status.HTTP_400_BAD_REQUEST,
+        return Response({'code': status.HTTP_200_OK,
                          'message': 'Producto no encontrado',
-                         'status': False})
+                         'status': True})
     
     if product.quantity == 0 or product.quantity < quantity:
         # Si la cantidad en stock es igual a cero o menor que la cantidad solicitada, devuelve un mensaje de error
-        return Response({'code': status.HTTP_400_BAD_REQUEST,
+        return Response({'code': status.HTTP_200_OK,
                          'message': 'No hay suficiente stock disponible',
-                         'status': False})
+                         'status': True})
 
     # Calcular el precio total
     total_price = product.price_sale * int(quantity)
