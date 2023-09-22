@@ -154,7 +154,8 @@ urlpatterns = [
 
     # ** Pedidos **
     path('register_order/', viewsOrder.create_order, name='register_order'),
-    #path('list-order/', viewsOrder.list_products_order, name='listar_productos_order'),
+    path('list-order/', viewsOrder.list_products_order, name='listar_productos_order'),
+    path('edit-order/<int:order_id>/', viewsOrder.edit_order, name='edit_order'),
 
     # ** Venta con Detalle Venta **
     # Crea la venta con el detalle de venta

@@ -942,41 +942,11 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "image",
-									"type": "file",
-									"src": "/C:/Users/User/Pictures/Logo Fabrica.png"
-								},
-								{
-									"key": "color",
-									"value": "update l3",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "fk_id_measures",
-									"value": "1",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "fk_id_materials",
-									"value": "1",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "name",
-									"value": "Producto_update52",
-									"type": "text",
-									"disabled": true
-								}
-							]
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Sudaderas\",\r\n    \"reference\": \"34\",\r\n    \"description\": \"Sudaderas Adidas\",\r\n    \"quantity\": 100,\r\n    \"price_shop\": \"100.00\",\r\n    \"price_sale\": \"200.00\",\r\n    \"fk_id_state\": 4,\r\n    \"fk_id_type_prod\": 2,\r\n    \"color\": \"Negro\",\r\n    \"fk_id_measures\": \"3\",\r\n    \"fk_id_materials\":\"1\"\r\n}"
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/update-product/13/",
+							"raw": "http://127.0.0.1:8000/update-product/11/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -987,7 +957,7 @@
 							"port": "8000",
 							"path": [
 								"update-product",
-								"13",
+								"11",
 								""
 							]
 						}
@@ -1976,6 +1946,74 @@
 							"port": "8000",
 							"path": [
 								"register_order",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list-order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/list-order/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"list-order",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit-order/1/",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fk_id_state\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/edit-order/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"edit-order",
+								"1",
 								""
 							]
 						}

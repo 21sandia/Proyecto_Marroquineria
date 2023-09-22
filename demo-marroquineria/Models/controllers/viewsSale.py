@@ -219,6 +219,7 @@ def list_sale_detail(request):
     max_total_sale = request.query_params.get('max_total_sale', None)
     start_date_str = request.query_params.get('start_date', None)
     end_date_str = request.query_params.get('end_date', None)
+    sale_id = request.query_params.get('id', None)
 
     # Convertir las fechas en objetos datetime si se proporcionan
     if start_date_str:
@@ -245,6 +246,8 @@ def list_sale_detail(request):
         sales_query &= Q(date__gte=start_date)
     if end_date:
         sales_query &= Q(date__lte=end_date)
+    if sale_id:
+        sales_query &= Q(id=sale_id)
 
     sales = Sales.objects.filter(sales_query).select_related('fk_id_state', 'fk_id_people')
 
@@ -265,6 +268,7 @@ def list_sale_detail(request):
             "state_name": sale.fk_id_state.name,
             "people_id": sale.fk_id_people.id if sale.fk_id_people else None,
             "people_name": sale.fk_id_people.name if sale.fk_id_people else None,
+            "document": sale.fk_id_people.document if sale.fk_id_people else None,
             "details": []
         }
 

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,7 +7,7 @@ from ..serializers import *
 
 # ** Lista los datos de estado, categoría, tipo de producto y producto en un solo EndPoint **
 @api_view(['GET'])
-def get_Product(request): # FUNCIONA
+def get_Product(request):
     # Obtener los productos y sus foreign keys relacionadas usando prefetch_related
     product_data = Products.objects.prefetch_related('fk_id_state', 'fk_id_type_prod__fk_id_category').all()
 
@@ -111,6 +112,9 @@ def get_all_Product(request):
         else:
             product_status = str(product.quantity)
 
+        formatted_price_sale = "{:,.0f}".format(Decimal(product.price_sale))
+        formatted_price_shop = "{:,.0f}".format(Decimal(product.price_shop))
+
         data.append({
             "id": detail_prod.id,
             "date": detail_prod.date,
@@ -123,8 +127,8 @@ def get_all_Product(request):
                 "reference": product.reference,
                 "description": product.description,
                 "quantity": product_status,  # Mostrar estado "no disponible" si la cantidad es cero
-                "price_shop": str(product.price_shop),
-                "price_sale": str(product.price_sale),
+                "price_shop": formatted_price_shop,
+                "price_sale": formatted_price_sale,
                 "state_data": {
                     "id": state.id,
                     "name": state.name

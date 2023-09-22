@@ -136,22 +136,22 @@ class Orders(models.Model):
     fk_id_user = models.ForeignKey(Users, models.DO_NOTHING, db_column='fk_id_user')
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     address = models.CharField(max_length=255)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
 
     class Meta:
-        db_table = 'orders'
         managed = False
+        db_table = 'orders'
 
 
-class Order_items(models.Model):
-    fk_id_order = models.ForeignKey(Orders, on_delete=models.CASCADE)
-    fk_id_product = models.ForeignKey(Products, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+class OrderItems(models.Model):
+    fk_id_order = models.ForeignKey(Orders, models.DO_NOTHING, db_column='fk_id_order')
+    fk_id_product = models.ForeignKey(Products, models.DO_NOTHING, db_column='fk_id_product')
+    quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
-        db_table = 'order_items'
         managed = False
+        db_table = 'order_items'
 
 
 class Sales(models.Model):
