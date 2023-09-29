@@ -68,107 +68,184 @@ def product_create(request):
                     "product_status": product_status})
 
 
-@api_view(['PUT'])
+
+@api_view(['PUT', 'PATCH'])
 def edit_product(request, product_id):
-    # Inicializamos la respuesta de la API con valores predeterminados
-    response = {
-        "code": status.HTTP_200_OK,
-        "status": True,
-        "message": "No hay información disponible",
-        "data": []}
-
     try:
-        # Buscamos el producto existente en la base de datos utilizando su ID
+        # Obtener el producto a editar
         product = Products.objects.get(pk=product_id)
-        # Buscamos el detalle del producto existente en la base de datos
-        detail = DetailProds.objects.get(fk_id_product=product_id)
-    except Products.DoesNotExist:
-        # Si el producto no existe, devolvemos una respuesta de error
-        response["message"] = "Producto no encontrado."
-        return Response({"code": status.HTTP_200_OK,
-                        "status": False,
-                        "message": "Producto no encontrado.",
-                        "data": []})
-    except DetailProds.DoesNotExist:
-        # Si el detalle del producto no existe, devolvemos una respuesta de error
-        response["message"] = "Detalle del producto no encontrado."
-        return Response({"code": status.HTTP_200_OK,
-                        "status": True,
-                        "message": "Detalle de Producto no encontrado.",
-                        "data": []})
 
-    # Obtén el nombre enviado en los datos del request
-    name = request.data.get('name')
-
-    # Verifica si el nuevo nombre ya existe en la base de datos
-    if name != product.name:
-        exist_product = Products.objects.filter(name=name).first()
-        if exist_product:
-            return Response(
-                data={
-                    'code': status.HTTP_200_OK,
-                    'message': 'El nombre de este producto ya existe',
-                    'status': True,
-                    'data': None
+        # Validar si ya existe un producto con el mismo nombre (excepto si es el mismo producto)
+        if 'name' in request.data and request.data['name'] != product.name:
+            if Products.objects.filter(name=request.data['name']).exclude(pk=product_id).exists():
+                return Response({
+                    "code": status.HTTP_200_OK,
+                    "status": False,
+                    "message": "Ya existe un producto con este nombre.",
                 })
 
-    # Copiamos los datos de la solicitud en una variable separada
-    product_data = request.data.copy()
-    # Extraemos el dato "color" de la solicitud (si existe) y lo eliminamos del diccionario de datos
-    detail_data = product_data.pop("color", None)
+        # Validar si ya existe un producto con la misma referencia (excepto si es el mismo producto)
+        if 'reference' in request.data and request.data['reference'] != product.reference:
+            if Products.objects.filter(reference=request.data['reference']).exclude(pk=product_id).exists():
+                return Response({
+                    "code": status.HTTP_200_OK,
+                    "status": False,
+                    "message": "Ya existe un producto con esta referencia.",
+                })
 
-    # Obtén el nuevo nombre del producto desde los datos de la solicitud
-    new_product_name = product_data.get("name")
-
-    # Verifica si ya existe un producto con el nuevo nombre, excluyendo el producto actual
-    if Products.objects.exclude(pk=product_id).filter(name=new_product_name).exists():
-        # Si existe, devolvemos una respuesta de error y un mensaje indicando que el nombre ya existe
-        response["message"] = "El nombre de producto ya existe en la base de datos."
-        return Response({"code": status.HTTP_200_OK,
-                        "status": True,
-                        "message": "¡Ya existe un producto con ese nombre!",
-                        "data": []})
-
-    # Creamos un serializador para el producto con los datos de la solicitud
-    product_serializer = ProductSerializer(product, data=product_data, partial=True)
-    if not product_serializer.is_valid():
-        # Si los datos no son válidos, devolvemos una respuesta de error con los errores de validación
-        response["message"] = "Datos inválidos para el producto."
-        response["data"] = product_serializer.errors
-        return Response({"code": status.HTTP_200_OK,
-                        "status": True,
-                        "message": "Datos inválidos para el producto.",
-                        "data": []})
-
-    if detail_data is not None:
-        # Si hay datos de detalle, creamos un serializador para el detalle del producto
-        detail_serializer = DetailProdSerializer(detail, data=detail_data, partial=True)
-        if not detail_serializer.is_valid():
-            # Si los datos de detalle no son válidos, devolvemos una respuesta de error con los errores de validación
-            response["message"] = "Datos inválidos para el detalle del producto."
-            response["data"] = detail_serializer.errors
-            return Response({"code": status.HTTP_200_OK,
-                        "status": True,
-                        "message": "Datos inválidos para el detalle de producto.",
-                        "data": []})
-        # Guardamos los datos de detalle actualizados en la base de datos
-        detail_serializer.save()
-
-    # Guardamos los datos del producto actualizados en la base de datos
-    product_serializer.save()
-
-    # Verifica si la cantidad del producto es igual a cero
-    if product.quantity == 0:
-        product.available = False  # Cambia el estado del producto a no disponible
+        # Actualizar campos del producto
+        product.name = request.data.get("name", product.name)
+        product.reference = request.data.get("reference", product.reference)
+        product.image = request.data.get("image", product.image)
+        product.description = request.data.get("description", product.description)
+        product.quantity = request.data.get("quantity", product.quantity)
+        product.price_shop = request.data.get("price_shop", product.price_shop)
+        product.price_sale = request.data.get("price_sale", product.price_sale)
+        product.fk_id_state_id = request.data.get("fk_id_state", product.fk_id_state_id)
+        product.fk_id_type_prod_id = request.data.get("fk_id_type_prod", product.fk_id_type_prod_id)
+        
+        # Guardar cambios en el producto
         product.save()
 
-    # Preparamos una respuesta exitosa indicando que la operación se realizó con éxito
-    response["status"] = True
-    response["message"] = "Producto y detalle del producto actualizados exitosamente."
-    return Response({"code": status.HTTP_200_OK,
-                     "status": True,
-                     "message": "Producto actualizado exitosamente.",
-                     "data": [product_serializer.data]})
+        # Obtener el detalle del producto relacionado
+        detail, created = DetailProds.objects.get_or_create(fk_id_product=product)
+        
+        # Actualizar campos del detalle del producto
+        detail.date = request.data.get("date", detail.date)
+        detail.color = request.data.get("color", detail.color)
+        detail.fk_id_measures_id = request.data.get("fk_id_measures", detail.fk_id_measures_id)
+        detail.fk_id_materials_id = request.data.get("fk_id_materials", detail.fk_id_materials_id)
+        
+        # Guardar cambios en el detalle del producto
+        detail.save()
+
+        # Verifica si la cantidad del producto es igual a cero
+        if product.quantity == 0:
+            product.available = False  # Cambia el estado del producto a no disponible
+            product.save()
+
+        return Response({
+            "code": status.HTTP_200_OK,
+            "status": True,
+            "message": "Producto y detalles actualizados exitosamente.",
+        })
+    except Products.DoesNotExist:
+        return Response({
+            "code": status.HTTP_200_OK,
+            "status": False,
+            "message": "Producto no encontrado.",
+        })
+    except Exception as e:
+        return Response({
+            "code": status.HTTP_400_BAD_REQUEST,
+            "status": False,
+            "message": str(e),
+        })
+
+
+
+# @api_view(['PUT'])
+# def edit_product(request, product_id):
+
+#     # Inicializamos la respuesta de la API con valores predeterminados
+#     response = {
+#         "code": status.HTTP_200_OK,
+#         "status": True,
+#         "message": "No hay información disponible",
+#         "data": []}
+
+#     try:
+#         # Buscamos el producto existente en la base de datos utilizando su ID
+#         product = Products.objects.get(pk=product_id)
+#         # Buscamos el detalle del producto existente en la base de datos
+#         detail = DetailProds.objects.get(fk_id_product=product_id)
+#     except Products.DoesNotExist:
+#         # Si el producto no existe, devolvemos una respuesta de error
+#         response["message"] = "Producto no encontrado."
+#         return Response({"code": status.HTTP_200_OK,
+#                         "status": False,
+#                         "message": "Producto no encontrado.",
+#                         "data": []})
+#     except DetailProds.DoesNotExist:
+#         # Si el detalle del producto no existe, devolvemos una respuesta de error
+#         response["message"] = "Detalle del producto no encontrado."
+#         return Response({"code": status.HTTP_200_OK,
+#                         "status": True,
+#                         "message": "Detalle de Producto no encontrado.",
+#                         "data": []})
+
+#     # Obtén el nombre enviado en los datos del request
+#     name = request.data.get('name')
+
+#     # Verifica si el nuevo nombre ya existe en la base de datos
+#     if name != product.name:
+#         exist_product = Products.objects.filter(name=name).first()
+#         if exist_product:
+#             return Response(
+#                 data={
+#                     'code': status.HTTP_200_OK,
+#                     'message': 'El nombre de este producto ya existe',
+#                     'status': True,
+#                     'data': None
+#                 })
+
+#     # Copiamos los datos de la solicitud en una variable separada
+#     product_data = request.data.copy()
+#     # Extraemos el dato "color" de la solicitud (si existe) y lo eliminamos del diccionario de datos
+#     detail_data = product_data.pop("color", None)
+
+#     # Obtén el nuevo nombre del producto desde los datos de la solicitud
+#     new_product_name = product_data.get("name")
+
+#     # Verifica si ya existe un producto con el nuevo nombre, excluyendo el producto actual
+#     if Products.objects.exclude(pk=product_id).filter(name=new_product_name).exists():
+#         # Si existe, devolvemos una respuesta de error y un mensaje indicando que el nombre ya existe
+#         response["message"] = "El nombre de producto ya existe en la base de datos."
+#         return Response({"code": status.HTTP_200_OK,
+#                         "status": True,
+#                         "message": "¡Ya existe un producto con ese nombre!",
+#                         "data": []})
+
+#     # Creamos un serializador para el producto con los datos de la solicitud
+#     product_serializer = ProductSerializer(product, data=product_data, partial=True)
+#     if not product_serializer.is_valid():
+#         # Si los datos no son válidos, devolvemos una respuesta de error con los errores de validación
+#         response["message"] = "Datos inválidos para el producto."
+#         response["data"] = product_serializer.errors
+#         return Response({"code": status.HTTP_200_OK,
+#                         "status": True,
+#                         "message": "Datos inválidos para el producto.",
+#                         "data": []})
+
+#     if detail_data is not None:
+#         # Si hay datos de detalle, creamos un serializador para el detalle del producto
+#         detail_serializer = DetailProdSerializer(detail, data=detail_data, partial=True)
+#         if not detail_serializer.is_valid():
+#             # Si los datos de detalle no son válidos, devolvemos una respuesta de error con los errores de validación
+#             response["message"] = "Datos inválidos para el detalle del producto."
+#             response["data"] = detail_serializer.errors
+#             return Response({"code": status.HTTP_200_OK,
+#                         "status": True,
+#                         "message": "Datos inválidos para el detalle de producto.",
+#                         "data": []})
+#         # Guardamos los datos de detalle actualizados en la base de datos
+#         detail_serializer.save()
+
+#     # Guardamos los datos del producto actualizados en la base de datos
+#     product_serializer.save()
+
+#     # Verifica si la cantidad del producto es igual a cero
+#     if product.quantity == 0:
+#         product.available = False  # Cambia el estado del producto a no disponible
+#         product.save()
+
+#     # Preparamos una respuesta exitosa indicando que la operación se realizó con éxito
+#     response["status"] = True
+#     response["message"] = "Producto y detalle del producto actualizados exitosamente."
+#     return Response({"code": status.HTTP_200_OK,
+#                      "status": True,
+#                      "message": "Producto actualizado exitosamente.",
+#                      "data": [product_serializer.data]})
 
 
 @api_view(['DELETE'])

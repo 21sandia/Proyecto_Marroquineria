@@ -108,12 +108,22 @@ def get_all_Product(request):
 
         # Verificar si la cantidad es cero y mostrar el estado "no disponible"
         if product.quantity == 0:
-            product_status = "No disponible"
+            product_status = 0
         else:
-            product_status = str(product.quantity)
+            product_status = int(product.quantity)
 
         formatted_price_sale = "{:,.0f}".format(Decimal(product.price_sale))
         formatted_price_shop = "{:,.0f}".format(Decimal(product.price_shop))
+
+        print(product.image)
+
+        if isinstance(product.image, str):
+            image_url = product.image
+            image_url = "/media/" + image_url
+        else:
+            image_url = product.image.url if product.image else None
+
+        print("/media/" + image_url)
 
         data.append({
             "id": detail_prod.id,
@@ -123,7 +133,7 @@ def get_all_Product(request):
             "product_data": {
                 "id": product.id,
                 "name": product.name,
-                "image_url": product.image.url if product.image else None,
+                "image_url": image_url,
                 "reference": product.reference,
                 "description": product.description,
                 "quantity": product_status,  # Mostrar estado "no disponible" si la cantidad es cero
