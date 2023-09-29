@@ -61,8 +61,8 @@ def export_to_excel(data, filename, headers):
 @api_view(['GET'])
 def sales_report(request):
     # Obtener las fechas de inicio y fin desde los datos de la solicitud
-    start_date = request.data.get('start_date')
-    end_date = request.data.get('end_date')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
 
     # Verificar que se proporcionen ambas fechas
     if not start_date or not end_date:
