@@ -8,48 +8,6 @@ from ..models import Peoples, Users, Carts
 from ..serializers import *
 import requests
 
-# @api_view(['GET'])
-# def obtener_employee(request):
-#     # Obtener empleados según el estado proporcionado
-#     if estado == 'activo':
-#         estado = States.objects.get(pk=2)  # ID del estado activo
-#     elif estado == 'inactivo':
-#         estado = States.objects.get(pk=3)  # ID del estado inactivo
-#     else:
-#         return []
-
-#     employees = Peoples.objects.filter(employee=True, fk_id_state=estado)
-
-#     return employees
-
-# @api_view(['GET'])
-# def obtener_supplier(estado):
-#     # Obtener proveedores según el estado proporcionado
-#     if estado == 'activo':
-#         estado = States.objects.get(pk=2)  # ID del estado activo
-#     elif estado == 'inactivo':
-#         estado = States.objects.get(pk=3)  # ID del estado inactivo
-#     else:
-#         return []
-
-#     suppliers = Peoples.objects.filter(supplier=True, fk_id_state=estado)
-
-#     return suppliers
-
-# @api_view(['GET'])
-# def obtener_customer(request, estado):
-#     # Obtener clientes según el estado proporcionado
-#     if estado == 'activo':
-#         estado = States.objects.get(pk=2)  # ID del estado activo
-#     elif estado == 'inactivo':
-#         estado = States.objects.get(pk=3)  # ID del estado inactivo
-#     else:
-#         return []
-
-#     customers = Peoples.objects.filter(customer=True, fk_id_state=estado)
-
-#     return customers
-
 
 @api_view(['POST'])
 def create_people_and_user(request):
@@ -76,7 +34,17 @@ def create_people_and_user(request):
         }
         return Response(data=response_data)
 
-    # Verificar si la clave 'email' está presente en los datos
+    existing_person_email = Peoples.objects.filter(email=data['email']).first()
+    if existing_person_email:
+        response_data = {
+            'code': status.HTTP_200_OK,
+            'status': True,
+            'message': 'Este correo electrónico ya se encuentra en uso',
+            'data': None
+        }
+        return Response(data=response_data)
+
+    # Verificar si 'email' está presente en los datos
     if 'email' in data:
         existing_person_email = Peoples.objects.filter(email=data['email']).first()
         if existing_person_email:
@@ -244,6 +212,77 @@ def list_people(request):
     return Response(response_data)
 
 
+@api_view(['GET'])
+def get_person_by_id_and_role(request):
+    # Obtén los parámetros de la URL
+    user_id = request.query_params.get('user_id')
+    rol_name = request.query_params.get('rol')
+
+    # Verifica que los parámetros requeridos estén presentes
+    if not user_id or not rol_name:
+        response_data = {
+            'code': status.HTTP_400_BAD_REQUEST,
+            'message': 'Se requieren los parámetros "user_id" y "rol" en la URL',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+    # Convierte el valor del ID del usuario a entero si es necesario
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        response_data = {
+            'code': status.HTTP_400_BAD_REQUEST,
+            'message': 'El parámetro "user_id" debe ser un número entero',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+    # Filtra el usuario por ID
+    try:
+        user = Users.objects.get(id=user_id)
+    except Users.DoesNotExist:
+        response_data = {
+            'code': status.HTTP_404_NOT_FOUND,
+            'message': 'No se encontró el usuario con el ID especificado',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+
+    # Filtra el rol por nombre
+    try:
+        rol = Rol.objects.get(name=rol_name)
+    except Rol.DoesNotExist:
+        response_data = {
+            'code': status.HTTP_404_NOT_FOUND,
+            'message': 'No se encontró el rol con el nombre especificado',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+
+    # Verifica si el usuario tiene el rol especificado
+    if user.fk_id_rol != rol:
+        response_data = {
+            'code': status.HTTP_404_NOT_FOUND,
+            'message': 'El usuario no tiene el rol especificado',
+            'status': False
+        }
+        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+
+    # Obtiene la persona asociada al usuario
+    person = user.fk_id_people
+
+    # Serializa y devuelve la persona encontrada
+    person_serializer = PeopleSerializer(person)
+    response_data = {
+        'code': status.HTTP_200_OK,
+        'message': 'Persona encontrada exitosamente',
+        'status': True,
+        'data': person_serializer.data
+    }
+    return Response(response_data)
+
+
 @api_view(['PATCH'])
 def update_people(request, pk):
     try:
@@ -271,19 +310,19 @@ def update_people(request, pk):
         supplier = request.data.get('supplier', people.supplier)
 
         # Actualizar estado y rol según el estado de empleado, cliente y proveedor
-        state = States.objects.get(pk=3)  # Estado inactivo por defecto
+        state = States.objects.get(pk=2)  # Estado inactivo por defecto
         rol_name = 'Customer'  # Rol cliente por defecto
 
         if employee:
-            state = States.objects.get(pk=2)  # Estado activo para empleado
+            state = States.objects.get(pk=1)  # Estado activo para empleado
             rol_name = 'Employee'  # Rol empleado
 
         if supplier:
-            state = States.objects.get(pk=2)  # Estado activo para proveedor
+            state = States.objects.get(pk=1)  # Estado activo para proveedor
             rol_name = 'Supplier'  # Rol proveedor
 
         if customer:
-            state = States.objects.get(pk=3)  # Estado inactivo para cliente
+            state = States.objects.get(pk=2)  # Estado inactivo para cliente
 
         rol, _ = Rol.objects.get_or_create(name=rol_name)
 

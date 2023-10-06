@@ -173,6 +173,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 
-FRONTEND_URL = 'http://127.0.0.1:8000/change_password'
+FRONTEND_URL = 'http://localhost:3000/login/repassword/changepass'
 #'http://localhost:3000/login/repassword/changepass'
 

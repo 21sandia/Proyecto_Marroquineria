@@ -54,7 +54,7 @@ urlpatterns = [
 
     # Listar People
     path('list-people/', viewsPeople.list_people, name='list_people'),
-
+    path('api/get_person/', viewsPeople.get_person_by_id_and_role, name='get_person_by_id_and_role'), 
     # Crear People
     path('create-people/', viewsPeople.create_people_and_user, name='create_people'), 
     # Editar People
@@ -156,6 +156,7 @@ urlpatterns = [
     path('register_order/', viewsOrder.create_order, name='register_order'),
     path('list-order/', viewsOrder.list_products_order, name='listar_productos_order'),
     path('edit-order/<int:order_id>/', viewsOrder.edit_order, name='edit_order'),
+    path('list-order-user/', viewsOrder.list_products_order_user, name='listar_productos_order'),
 
     # ** Venta con Detalle Venta **
     # Crea la venta con el detalle de venta

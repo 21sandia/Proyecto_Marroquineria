@@ -39,14 +39,6 @@ def create_States(request):
         # Si el estado no existe, lo guarda
         serializer.save()
 
-        # Luego de guardar el estado, verifica si la cantidad del producto asociado es igual a 0
-        product_id = serializer.data.get('product_id')  # Asume que el ID del producto está en el serializer
-        product = Products.objects.get(id=product_id)
-        
-        if product.quantity == 0:
-            product.available = False  # Cambia el estado del producto a no disponible
-            product.save()
-
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Estado Creado Exitosamente', 
                               'status': True})
@@ -85,14 +77,6 @@ def update_States(request, pk):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        # Verifica si la cantidad del producto asociado es igual a 0
-        product_id = serializer.data.get('product_id')  # Asume que el ID del producto está en el serializer
-        product = Products.objects.get(id=product_id)
-        
-        if product.quantity == 0:
-            product.available = False  # Cambia el estado del producto a no disponible
-            product.save()
-
         return Response(data={'code': status.HTTP_200_OK, 
                               'message': 'Estado Actualizado exitosamente', 
                               'status': True})
@@ -105,11 +89,6 @@ def update_States(request, pk):
     except requests.ConnectionError:
         return Response(data={'code': status.HTTP_400_BAD_REQUEST, 
                               'message': 'Error de red', 
-                              'status': False})
-
-    except Exception as e:
-        return Response(data={'code': status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                              'message': 'Error del servidor', 
                               'status': False})
     
 

@@ -190,7 +190,7 @@ def list_cart(request, user_id):
         return Response({'error': 'El usuario no tiene un carrito'}, status=status.HTTP_200_OK)
 
     # Obtener los elementos del carrito del usuario
-    cart_items = Cart_items.objects.filter(fk_id_cart=cart)
+    cart_items = Cart_items.objects.filter(fk_id_cart=cart).order_by('id')
 
     # Calcular el total de la venta
     total_sale = Decimal(0)
@@ -213,17 +213,26 @@ def serialize_cart_items(cart_items, total_sale):
     # Esta función debe tomar una lista de elementos del carrito y el total de la venta,
     # y serializarlos a formato JSON. Puedes utilizar serializers de Django Rest Framework
     # o crear un diccionario manualmente.
+  
 
     serialized_items = []
 
     for item in cart_items:
+
+        if isinstance(item.fk_id_product.image, str):
+            image_url = item.fk_id_product.image
+            image_url = "/media/" + image_url
+        else:
+            image_url = item.fk_id_product.image.url if item.fk_id_product.image else None
+
         serialized_item = {
             'product_id': item.fk_id_product.id,
             'product_name': item.fk_id_product.name,
-            'product_image': item.fk_id_product.image.url,
+            'product_image':image_url,
             'measure_name': item.fk_id_product.detailprods_set.first().fk_id_measures.name,
             'material_name': item.fk_id_product.detailprods_set.first().fk_id_materials.name,
             'quantity': item.quantity,
+            'color':item.fk_id_product.detailprods_set.first().color,
             'total_price': str(item.total_price),
         }
         serialized_items.append(serialized_item)
